@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'background.dart';
+/*
+everytime you want to add changes to git hub we use this : 
+git add .
+git commit -m "describe your change"
+git push
+*/
 
 const Color textcolor = Color(0xFFA8A6A7);
 const Color PrimaryColor = Color(0xFF1A237E);
@@ -31,7 +37,7 @@ class _SignUpState extends State<SignUp> {
           children: [
             BackgroundCurves(),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -45,152 +51,171 @@ class _SignUpState extends State<SignUp> {
                     style: TextStyle(fontSize: 16, color: textcolor),
                   ),
                   const SizedBox(height: 20),
-                  TextField(
-                    //this for name input
-                    decoration: InputDecoration(
-                      labelText: 'Full name',
-                      labelStyle: TextStyle(color: textcolor),
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    //this for email input
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: textcolor),
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    obscureText: _obsecureText,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: textcolor),
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obsecureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: textcolor.withOpacity(0.4),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
+                    child: TextField(
+                      //this for name input
+                      decoration: InputDecoration(
+                        labelText: 'Full name',
+                        labelStyle: TextStyle(color: textcolor),
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          borderSide: BorderSide(color: textcolor),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obsecureText = !_obsecureText;
-                          });
-                        },
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  TextField(
-                    obscureText: _obsecureText,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm your password',
-                      labelStyle: TextStyle(color: textcolor),
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obsecureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: textcolor.withOpacity(0.4),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
+                    child: TextField(
+                      //this for email input
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: textcolor),
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          borderSide: BorderSide(color: textcolor),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obsecureText = !_obsecureText;
-                          });
-                        },
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: SizedBox(
-                      width: 200,
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Pick a Role',
-                          labelStyle: GoogleFonts.nunito(
-                            color: PrimaryColor,
-                            fontSize: 21,
-                            fontWeight: FontWeight.w700,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
+                    child: TextField(
+                      obscureText: _obsecureText,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: textcolor),
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          borderSide: BorderSide(color: textcolor),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obsecureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: textcolor.withOpacity(0.4),
                           ),
-
-                          // 👇 Default border
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: textcolor.withOpacity(0.4),
-                            ),
+                          onPressed: () {
+                            setState(() {
+                              _obsecureText = !_obsecureText;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
+                    child: TextField(
+                      obscureText: _obsecureText,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm your password',
+                        labelStyle: TextStyle(color: textcolor),
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          borderSide: BorderSide(color: textcolor),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obsecureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: textcolor.withOpacity(0.4),
                           ),
-
-                          // 👇 When NOT focused
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: textcolor.withOpacity(0.4),
-                            ),
-                          ),
-
-                          // 👇 When focused (clicked)
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
+                          onPressed: () {
+                            setState(() {
+                              _obsecureText = !_obsecureText;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(95, 0, 90, 0),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SizedBox(
+                        width: 190,
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelText: 'Pick a Role',
+                            labelStyle: GoogleFonts.nunito(
                               color: PrimaryColor,
-                              width: 2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+
+                            // 👇 Default border
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: textcolor.withOpacity(0.4),
+                              ),
+                            ),
+
+                            // 👇 When NOT focused
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: textcolor.withOpacity(0.4),
+                              ),
+                            ),
+
+                            // 👇 When focused (clicked)
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: PrimaryColor,
+                                width: 2,
+                              ),
                             ),
                           ),
+                          items: Roles.map(
+                            (roles) => DropdownMenuItem<String>(
+                              value: roles,
+                              child: Text(roles),
+                            ),
+                          ).toList(),
+                          onChanged: (value) {
+                            // Handle role selection
+                          },
                         ),
-                        items: Roles.map(
-                          (roles) => DropdownMenuItem<String>(
-                            value: roles,
-                            child: Text(roles),
-                          ),
-                        ).toList(),
-                        onChanged: (value) {
-                          // Handle role selection
-                        },
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SignupButtonColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 200,
-                        vertical: 15,
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: SignupButtonColor,
+                        padding: const EdgeInsets.only(
+                          left: 132,
+                          right: 140,
+                          top: 15,
+                          bottom: 15,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      child: Text(
+                        '   SIGN UP',
+                        style: TextStyle(color: Colors.white),
                       ),
-                    ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

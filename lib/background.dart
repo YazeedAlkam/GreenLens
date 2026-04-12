@@ -93,7 +93,7 @@ class BackgroundCurves extends StatelessWidget {
           ClipPath(
             clipper: WaveClipper2(),
             child: Container(
-              height: 150,
+              height: 140,
               color: Color(0xFF5B57D1).withOpacity(0.4),
             ),
           ),
