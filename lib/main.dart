@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/SginIn.dart';
 import 'background.dart';
 /*
 everytime you want to add changes to git hub we use this : 
@@ -17,7 +18,7 @@ const Color LoginButtonColorInSignUpPage = Color(0xFFD87234);
 bool _obsecureText = true;
 final List<String> Roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
-void main() => runApp(const SignUp());
+void main() => runApp(const SignInPage());
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -30,6 +31,9 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: GoogleFonts.nunito().fontFamily,
+      ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: backgroundColor,
@@ -45,12 +49,12 @@ class _SignUpState extends State<SignUp> {
                     'Sign Up',
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Text(
                     'Create your account',
                     style: TextStyle(fontSize: 16, color: textcolor),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
                     child: TextField(
@@ -65,7 +69,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
                     child: TextField(
@@ -80,7 +84,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
                     child: TextField(
@@ -108,7 +112,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(90, 0, 90, 0),
                     child: TextField(
@@ -136,7 +140,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(95, 0, 90, 0),
                     child: Align(
@@ -193,7 +197,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   SizedBox(
                     child: ElevatedButton(
                       onPressed: () {},
