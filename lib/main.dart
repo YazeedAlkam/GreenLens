@@ -16,7 +16,13 @@ const Color secondaryColor = Color(0xFFA8A6A7);
 const Color backgroundColor = Color(0xFFFFFCED);
 const Color SignupButtonColor = Color(0xFF222222);
 const Color DashsButtonColor = Color(0xFF393C5A);
+const Color InProgressColor = Color(0xFF8A90CE);
+const Color AwaitingApprovalColor = Color(0xFFEB9D4A);
 const Color LoginButtonColorInSignUpPage = Color(0xFFD87234);
+const Color DraftColor = Color(0xFFBFC0CD);
+const Color DeniedColor = Color(0xFFE53935);
+const Color ReadyColor = Color(0xFF1A7A4A);
+Color StatusColor = Color(0xFFFFFFFF);
 final List<String> Roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
 void main() => runApp(const MyApp());
@@ -27,9 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        fontFamily: GoogleFonts.nunito().fontFamily,
-      ),
+      theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SectionHeadPage(), // start page
     );
   }
