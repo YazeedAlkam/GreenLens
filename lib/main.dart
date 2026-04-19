@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: GoogleFonts.nunito().fontFamily,
       ),
-      home: SectionHeadPage(), // start page
+      home: SignInPage(), // start page
     );
   }
 }
