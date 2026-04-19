@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/SectionHeadDash.dart';
 import 'package:greenlens/SginIn.dart';
+
 /*
 everytime you want to add changes to git hub we use this : 
 git add .
@@ -13,6 +15,7 @@ const Color PrimaryColor = Color(0xFF1A237E);
 const Color secondaryColor = Color(0xFFA8A6A7);
 const Color backgroundColor = Color(0xFFFFFCED);
 const Color SignupButtonColor = Color(0xFF222222);
+const Color DashsButtonColor = Color(0xFF393C5A);
 const Color LoginButtonColorInSignUpPage = Color(0xFFD87234);
 final List<String> Roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: GoogleFonts.nunito().fontFamily,
       ),
-      home: SignInPage(), // start page
+      home: SectionHeadPage(), // start page
     );
   }
 }
