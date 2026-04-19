@@ -19,7 +19,7 @@ class CustomAppBar {
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset('assets/images/logo.svg', height: 100),
+          SvgPicture.asset('assets/images/GreenLensLogo.svg', height: 100),
           Text(
             title,
             textAlign: TextAlign.center,

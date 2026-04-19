@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "358157670459",
+    "project_id": "greenlens-b5dc4",
+    "storage_bucket": "greenlens-b5dc4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358157670459:android:d28b6143e348132c23241e",
+        "android_client_info": {
+          "package_name": "com.example.greenlens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1EdtprwiLNAZGEcYG-1sDuFs-eqd2EjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
