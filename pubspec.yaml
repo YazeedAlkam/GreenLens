@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter_svg: ^2.0.10
   google_fonts: ^6.1.0
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
   flutter:
     sdk: flutter
 
@@ -54,7 +57,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/logo.svg
+    - assets/images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SignUp.dart';
-import 'background.dart';
-import 'main.dart';
-
-bool _obsecureTextSignIn = true;
+import 'package:greenlens/SectionHeadDash.dart';
+import 'package:greenlens/authentication/SignUp.dart';
+import '../firebase/auth_service.dart';
+import '../shared_files/background.dart';
+import '../main.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,6 +14,49 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  // Controllers
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  // State
+  bool _obscureText = true;
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  final _authService = AuthService();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _authService.signIn(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => SectionHeadPage()),
+      );
+    } catch (e) {
+      setState(
+        () => _errorMessage = e.toString().replaceFirst('Exception: ', ''),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,9 +74,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-
                 SizedBox(height: 32),
-
                 Text(
                   "Enter your email and password",
                   style: TextStyle(
@@ -44,8 +85,10 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 SizedBox(height: 20),
 
+                // ── Email ──────────────────────────────────────────
                 TextField(
-                  //this for name input
+                  controller: _emailController, // <-- added
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(
@@ -59,11 +102,12 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 20),
 
+                // ── Password ───────────────────────────────────────
                 TextField(
-                  obscureText: _obsecureTextSignIn,
+                  controller: _passwordController, // <-- added
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(
@@ -77,29 +121,22 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obsecureTextSignIn
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
                         color: textcolor.withOpacity(0.4),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obsecureTextSignIn = !_obsecureTextSignIn;
-                        });
-                      },
+                      onPressed: () =>
+                          setState(() => _obscureText = !_obscureText),
                     ),
                   ),
                 ),
-
                 SizedBox(height: 16),
 
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO: implement forgot password
+                    },
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(
@@ -111,36 +148,48 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ),
 
+                // ── Error message ──────────────────────────────────
+                if (_errorMessage != null) ...[
+                  SizedBox(height: 8),
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(color: Colors.red, fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+
                 SizedBox(height: 32),
 
+                // ── Login button ───────────────────────────────────
                 SizedBox(
                   width: double.infinity,
                   height: 72,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _isLoading ? null : _signIn, // <-- calls _signIn
                     style: ElevatedButton.styleFrom(
                       backgroundColor: SignupButtonColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(color: Colors.white, fontSize: 36),
-                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            color: Colors.white,
+                          ) // <-- loading spinner
+                        : Text(
+                            'LOGIN',
+                            style: TextStyle(color: Colors.white, fontSize: 36),
+                          ),
                   ),
                 ),
+
                 SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Dont have an account?',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 26,
-                        fontWeight: FontWeight.normal,
-                      ),
+                      style: TextStyle(color: Colors.black, fontSize: 26),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -148,18 +197,15 @@ class _SignInPageState extends State<SignInPage> {
                         minimumSize: Size(0, 0),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUp()),
-                        );
-                      },
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SignUp()),
+                      ),
                       child: const Text(
                         ' Sign Up',
                         style: TextStyle(
                           color: LoginButtonColorInSignUpPage,
                           fontSize: 26,
-                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ),

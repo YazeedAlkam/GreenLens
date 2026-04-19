@@ -1,7 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/SectionHeadDash.dart';
-import 'package:greenlens/SginIn.dart';
+import 'package:greenlens/authentication/SginIn.dart';
+
+import 'firebase/firebase_options.dart';
 
 /*
 everytime you want to add changes to git hub we use this : 
@@ -19,7 +22,13 @@ const Color DashsButtonColor = Color(0xFF393C5A);
 const Color LoginButtonColorInSignUpPage = Color(0xFFD87234);
 final List<String> Roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,9 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        fontFamily: GoogleFonts.nunito().fontFamily,
-      ),
+      theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page
     );
   }

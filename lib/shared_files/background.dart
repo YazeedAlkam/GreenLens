@@ -32,16 +32,14 @@ class AuthBackground extends StatelessWidget {
             ),
           ),
 
-          // ✅ Logo pinned to the top, sitting ON the blue ellipse
           Positioned(
             top: 48,
             left: 0,
             right: 0,
             child: Center(
-              child: SvgPicture.asset('assets/images/logo.svg', height: 170),
+              child: SvgPicture.asset('assets/images/GreenLensLogo.svg', height: 170),
             ),
           ),
-          // Page content (Sign In form, etc.) — stays sharp
           child,
         ],
       ),
@@ -123,7 +121,6 @@ class _EllipseBackgroundBottom extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Positioned(
-      // 👈 anchor to bottom of Stack
       bottom: 0,
       left: 0,
       right: 0,
@@ -145,7 +142,7 @@ class _EllipsePainterBottom extends CustomPainter {
         center: Offset(
           size.width * 0.5,
           size.height + 260,
-        ), // 👈 pushed below, peeks up
+        ),
         width: 1655.15,
         height: 933.58,
       ),
