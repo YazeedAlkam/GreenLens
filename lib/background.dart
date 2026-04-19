@@ -1,126 +1,177 @@
 import 'package:flutter/material.dart';
+import 'package:greenlens/main.dart';
+import 'dart:ui';
 
-class WaveClipper1 extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 80);
-    path.quadraticBezierTo(
-      size.width * 0.3,
-      size.height + 40,
-      size.width,
-      size.height - 100,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
+const double opacity = 0.48;
 
-  @override
-  bool shouldReclip(oldClipper) => false;
-}
+class AuthBackground extends StatelessWidget {
+  final Widget child;
 
-// WaveClipper2
-class WaveClipper2 extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 60);
-    path.quadraticBezierTo(
-      size.width * 0.5,
-      size.height - 20,
-      size.width,
-      size.height - 60,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(oldClipper) => false;
-}
-
-// WaveClipper3
-class WaveClipper3 extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-
-    // 👇 start from top RIGHT
-    path.moveTo(size.width, 0);
-
-    // 👇 go down on the right side
-    path.lineTo(size.width, size.height - 100);
-
-    // 👇 curve toward the LEFT
-    path.quadraticBezierTo(
-      size.width * 0.9,
-      size.height + 40,
-      0,
-      size.height - 115,
-    );
-
-    // 👇 go back to top left
-    path.lineTo(0, 0);
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(oldClipper) => false;
-}
-
-class BackgroundCurves extends StatelessWidget {
-  const BackgroundCurves({super.key});
+  const AuthBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // 🔹 Wave 1 (back)
-          ClipPath(
-            clipper: WaveClipper1(),
-            child: Container(
-              height: 110,
-              color: Color(0xFF2E2B8F).withOpacity(0.6),
+          // Both ellipse layers blurred together as one
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: 3,          // 👈 reduced from 60
+              sigmaY: 3,
+              tileMode: TileMode.decal,
+            ),
+            child: Stack(
+              fit: StackFit.expand, // 👈 forces Stack to fill full screen so Positioned works
+              children: [
+                const _EllipseBackground(),
+                const _EllipseBackgroundBottom(),
+              ],
             ),
           ),
 
-          // 🔹 Wave 2 (middle)
-          ClipPath(
-            clipper: WaveClipper2(),
-            child: Container(
-              height: 140,
-              color: Color(0xFF5B57D1).withOpacity(0.4),
-            ),
-          ),
-
-          // 🔹 Wave 3 (front)
-          ClipPath(
-            clipper: WaveClipper3(),
-            child: Container(
-              height: 120,
-              color: Color(0xFF3F3CA6).withOpacity(0.7),
-            ),
-          ),
-
-          // 🔹 Your content
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: 120),
-              Text(
-                "GreenLens",
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
-            ],
-          ),
+          // Content is NOT inside ImageFiltered, so it stays sharp
+          child,
         ],
       ),
     );
   }
+}
+
+// ─── TOP ──────────────────────────────────────────────────────────────────────
+
+class _EllipseBackground extends StatelessWidget {
+  const _EllipseBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return SizedBox(
+      width: size.width,
+      height: size.height * 0.45,
+      child: CustomPaint(
+        painter: _EllipsePainterTop(),
+      ),
+    );
+  }
+}
+
+class _EllipsePainterTop extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Ellipse 1
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: const Offset(400, -175),
+        width: 1383.33,
+        height: 857.83,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+
+    // Ellipse 2
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: const Offset(600, -150),
+        width: 1383.33,
+        height: 857.83,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+
+    // Ellipse 3
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.5, -110),
+        width: 2084,
+        height: 857.83,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ─── BOTTOM ───────────────────────────────────────────────────────────────────
+
+class _EllipseBackgroundBottom extends StatelessWidget {
+  const _EllipseBackgroundBottom();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Positioned(                        // 👈 anchor to bottom of Stack
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: SizedBox(
+        width: size.width,
+        height: size.height * 0.45,
+        child: CustomPaint(
+          painter: _EllipsePainterBottom(),
+        ),
+      ),
+    );
+  }
+}
+
+class _EllipsePainterBottom extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Ellipse 4
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width*0.5, size.height + 260),  // 👈 pushed below, peeks up
+        width: 1655.15,
+        height: 933.58,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+
+    // Ellipse 5 — Left
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(300, size.height + 275),
+        width: 1403.93,
+        height: 798.18,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+
+    // Ellipse 6 — right
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(600, size.height + 250),
+        width: 1692.56,
+        height: 798.18,
+      ),
+      Paint()
+        ..color = PrimaryColor.withOpacity(opacity)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.overlay
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

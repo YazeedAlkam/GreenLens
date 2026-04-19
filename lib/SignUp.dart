@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/Just.dart';
 import 'package:greenlens/SginIn.dart';
-import 'package:greenlens/background.dart';
+import 'package:greenlens/background.dart'; // <-- make sure AuthBackground is exported from here
 import 'package:greenlens/main.dart';
 
 bool _obsecureText = true;
@@ -20,13 +20,11 @@ class _SignUpState extends State<SignUp> {
     return MaterialApp(
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: backgroundColor,
-        body: Stack(
-          children: [
-            BackgroundCurves(),
-            Container(
-              padding: const EdgeInsets.fromLTRB(190, 90, 190, 0),
+      home: AuthBackground(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(190, 110, 190, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -45,10 +43,13 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 20),
                   TextField(
-                    //this for name input
                     decoration: InputDecoration(
                       labelText: 'Full name',
-                      labelStyle: TextStyle(color: textcolor),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                       border: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
                         borderSide: BorderSide(color: textcolor, width: 1),
@@ -57,13 +58,16 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 20),
                   TextField(
-                    //this for email input
                     decoration: InputDecoration(
                       labelText: "Email",
-                      labelStyle: TextStyle(color: textcolor),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                       border: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
+                        borderSide: BorderSide(color: textcolor, width: 1),
                       ),
                     ),
                   ),
@@ -72,10 +76,14 @@ class _SignUpState extends State<SignUp> {
                     obscureText: _obsecureText,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: textcolor),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                       border: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
+                        borderSide: BorderSide(color: textcolor, width: 1),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -97,10 +105,14 @@ class _SignUpState extends State<SignUp> {
                     obscureText: _obsecureText,
                     decoration: InputDecoration(
                       labelText: 'Confirm your password',
-                      labelStyle: TextStyle(color: textcolor),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                       border: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(color: textcolor),
+                        borderSide: BorderSide(color: textcolor, width: 1),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -117,39 +129,39 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 32),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: SizedBox(
-                      width: 190,
+                      width: 260,
                       child: DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
+                          isDense: false,
+                          contentPadding: EdgeInsets.symmetric(
+                            // Add this
+                            horizontal: 21,
+                            vertical: 23,
+                          ),
                           labelText: 'Pick a Role',
                           labelStyle: GoogleFonts.nunito(
                             color: PrimaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
                           ),
-
-                          // 👇 Default border
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
                               color: textcolor.withOpacity(0.4),
                             ),
                           ),
-
-                          // 👇 When NOT focused
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
                               color: textcolor.withOpacity(0.4),
                             ),
                           ),
-
-                          // 👇 When focused (clicked)
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
@@ -159,39 +171,34 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                         items: Roles.map(
-                              (roles) => DropdownMenuItem<String>(
+                          (roles) => DropdownMenuItem<String>(
                             value: roles,
                             child: Text(roles),
                           ),
                         ).toList(),
-                        onChanged: (value) {
-                          // Handle role selection
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 32),
                   SizedBox(
                     width: double.infinity,
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 72,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: SignupButtonColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                    height: 72,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: SignupButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        child: Text(
-                          'SIGN UP',
-                          style: TextStyle(color: Colors.white, fontSize: 36),
-                        ),
+                      ),
+                      child: Text(
+                        'SIGN UP',
+                        style: TextStyle(color: Colors.white, fontSize: 36),
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 32),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -210,7 +217,12 @@ class _SignUpState extends State<SignUp> {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignInPage()),);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInPage(),
+                            ),
+                          );
                         },
                         child: const Text(
                           ' Login',
@@ -223,10 +235,11 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 40), // bottom breathing room
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
