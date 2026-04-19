@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/Just.dart';
 import 'package:greenlens/SginIn.dart';
 import 'package:greenlens/background.dart'; // <-- make sure AuthBackground is exported from here
 import 'package:greenlens/main.dart';
