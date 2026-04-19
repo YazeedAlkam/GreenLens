@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 import 'dart:ui';
 
@@ -15,15 +16,15 @@ class AuthBackground extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Both ellipse layers blurred together as one
+          // Blurred ellipse background
           ImageFiltered(
             imageFilter: ImageFilter.blur(
-              sigmaX: 3,          // 👈 reduced from 60
+              sigmaX: 3,
               sigmaY: 3,
               tileMode: TileMode.decal,
             ),
             child: Stack(
-              fit: StackFit.expand, // 👈 forces Stack to fill full screen so Positioned works
+              fit: StackFit.expand,
               children: [
                 const _EllipseBackground(),
                 const _EllipseBackgroundBottom(),
@@ -31,7 +32,16 @@ class AuthBackground extends StatelessWidget {
             ),
           ),
 
-          // Content is NOT inside ImageFiltered, so it stays sharp
+          // ✅ Logo pinned to the top, sitting ON the blue ellipse
+          Positioned(
+            top: 48,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SvgPicture.asset('assets/images/logo.svg', height: 170),
+            ),
+          ),
+          // Page content (Sign In form, etc.) — stays sharp
           child,
         ],
       ),
@@ -51,9 +61,7 @@ class _EllipseBackground extends StatelessWidget {
     return SizedBox(
       width: size.width,
       height: size.height * 0.45,
-      child: CustomPaint(
-        painter: _EllipsePainterTop(),
-      ),
+      child: CustomPaint(painter: _EllipsePainterTop()),
     );
   }
 }
@@ -71,7 +79,7 @@ class _EllipsePainterTop extends CustomPainter {
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
 
     // Ellipse 2
@@ -84,7 +92,7 @@ class _EllipsePainterTop extends CustomPainter {
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
 
     // Ellipse 3
@@ -97,7 +105,7 @@ class _EllipsePainterTop extends CustomPainter {
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
   }
 
@@ -114,16 +122,15 @@ class _EllipseBackgroundBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Positioned(                        // 👈 anchor to bottom of Stack
+    return Positioned(
+      // 👈 anchor to bottom of Stack
       bottom: 0,
       left: 0,
       right: 0,
       child: SizedBox(
         width: size.width,
         height: size.height * 0.45,
-        child: CustomPaint(
-          painter: _EllipsePainterBottom(),
-        ),
+        child: CustomPaint(painter: _EllipsePainterBottom()),
       ),
     );
   }
@@ -135,14 +142,17 @@ class _EllipsePainterBottom extends CustomPainter {
     // Ellipse 4
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(size.width*0.5, size.height + 260),  // 👈 pushed below, peeks up
+        center: Offset(
+          size.width * 0.5,
+          size.height + 260,
+        ), // 👈 pushed below, peeks up
         width: 1655.15,
         height: 933.58,
       ),
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
 
     // Ellipse 5 — Left
@@ -155,7 +165,7 @@ class _EllipsePainterBottom extends CustomPainter {
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
 
     // Ellipse 6 — right
@@ -168,7 +178,7 @@ class _EllipsePainterBottom extends CustomPainter {
       Paint()
         ..color = PrimaryColor.withOpacity(opacity)
         ..style = PaintingStyle.fill
-        ..blendMode = BlendMode.overlay
+        ..blendMode = BlendMode.overlay,
     );
   }
 

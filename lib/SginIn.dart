@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/SignUp.dart';
+import 'background.dart';
 import 'main.dart';
 
 bool _obsecureTextSignIn = true;
@@ -14,54 +16,61 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(
-          left: 24.0,
-          right: 24.0,
-          top: 48.0,
-          bottom: 0,
-        ),
+    return MaterialApp(
+      theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
+      debugShowCheckedModeBanner: false,
+      home: AuthBackground(
         child: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(190, 110, 190, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
                   'Sign In',
                   style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Enter your email and password",
-                style: TextStyle(fontSize: 16, color: textcolor),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(320, 0, 320, 0),
-                child: TextField(
+
+                SizedBox(height: 32),
+
+                Text(
+                  "Enter your email and password",
+                  style: TextStyle(
+                    fontSize: 26,
+                    color: textcolor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                TextField(
                   //this for name input
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    labelStyle: TextStyle(color: textcolor),
+                    labelStyle: TextStyle(
+                      color: textcolor,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
                       borderSide: BorderSide(color: textcolor),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(320, 0, 320, 0),
-                child: TextField(
+
+                SizedBox(height: 20),
+
+                TextField(
                   obscureText: _obsecureTextSignIn,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: TextStyle(color: textcolor),
+                    labelStyle: TextStyle(
+                      color: textcolor,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
                       borderSide: BorderSide(color: textcolor),
@@ -81,97 +90,83 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              //forgot password row
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 24.0,
-                  right: 170,
-                  top: 0,
-                  bottom: 0,
+
+                SizedBox(height: 16),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {},
+                    child: const Text(
+                      'Forgot password?',
+                      style: TextStyle(
+                        color: PrimaryColor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(450, 0, 100, 0),
-                  child: SizedBox(
-                    child: TextButton(
+
+                SizedBox(height: 32),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 72,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SignupButtonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: Text(
+                      'LOGIN',
+                      style: TextStyle(color: Colors.white, fontSize: 36),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Dont have an account?',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 26,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    TextButton(
                       style: TextButton.styleFrom(
-                        textStyle: TextStyle(fontWeight: FontWeight.bold),
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       onPressed: () {
-                        // Navigate to login page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUp()),
+                        );
                       },
                       child: const Text(
-                        'Forgot the password?',
+                        ' Sign Up',
                         style: TextStyle(
-                          color: PrimaryColor,
-                          fontWeight: FontWeight.bold,
+                          color: LoginButtonColorInSignUpPage,
+                          fontSize: 26,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-
-              SizedBox(height: 16),
-
-              SizedBox(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SignupButtonColor,
-                    padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: SizedBox(
-                    height: 25,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: SignupButtonColor,
-                        padding: const EdgeInsets.fromLTRB(60, 0, 60, 0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Text(
-                        '   LOGIN',
-                        style: TextStyle(color: Colors.white, fontSize: 21),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 13),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Dont have an account?',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size(0, 0),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUp()),
-                      );
-                    },
-                    child: const Text(
-                      ' Sign Up',
-                      style: TextStyle(color: LoginButtonColorInSignUpPage),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
