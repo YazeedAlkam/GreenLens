@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SectionHead/section_head_dashboard.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
+import 'package:greenlens/section_head_pages/client_info_page.dart';
+import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
+import 'ceo_pages/ceo_dashboard.dart';
+import 'engineer_pages/engineer_dashboard.dart';
 import 'firebase/firebase_options.dart';
 
 /*
@@ -46,8 +49,11 @@ class MyApp extends StatelessWidget {
         // Add your other routes here, for example:
         // '/home': (context) => HomePage(),
         // '/dashboard': (context) => DashboardPage(),
-        '/section_head_dashboard': (context) => SectionHeadPage(),
         '/sign_up': (context) => SignUp(),
+        '/section_head_dashboard': (context) => SectionHeadPage(),
+        '/engineer_dashboard': (context) => EngineerPage(),
+        '/ceo_dashboard': (context) => CEOPage(),
+        '/create_new_project' : (context) => Clientinfo(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page

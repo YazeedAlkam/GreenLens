@@ -4,14 +4,14 @@ import 'package:greenlens/active_projects.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SectionHeadPage extends StatelessWidget {
-  const SectionHeadPage({super.key});
+class CEOPage extends StatelessWidget {
+  const CEOPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.build(
-        title: 'Dashboard|Section Head',
+        title: 'Dashboard|CEO',
         subtitle: 'Manage and monitor your audit projects',
       ),
       body: Padding(
@@ -34,6 +34,7 @@ class SectionHeadPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     // TODO: Handle button press, navigate to create project page
+                    Navigator.pushNamed(context, "/create_new_project");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
