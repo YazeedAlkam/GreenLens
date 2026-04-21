@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/shared_files/background.dart';
 import 'package:greenlens/main.dart';
 

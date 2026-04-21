@@ -45,7 +45,6 @@ class _SignInPageState extends State<SignInPage> {
       if (!mounted) return;
       final user = await UserModel.fetchCurrent();
       if (!mounted) return;
-      print(user?.role);
       switch (user?.role) {
         case 'Section Head':
           Navigator.pushReplacementNamed(context, "/section_head_dashboard");
