@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/shared_files/background.dart';
@@ -15,14 +16,14 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   // Controllers
-  final _nameController            = TextEditingController();
-  final _emailController           = TextEditingController();
-  final _passwordController        = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   // State
-  bool _obscureText    = true;
-  bool _isLoading      = false;
+  bool _obscureText = true;
+  bool _isLoading = false;
   String? _errorMessage;
   String? _selectedRole;
 
@@ -52,7 +53,10 @@ class _SignUpState extends State<SignUp> {
       return;
     }
 
-    setState(() { _isLoading = true; _errorMessage = null; });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
     try {
       await _authService.signUp(
@@ -65,7 +69,9 @@ class _SignUpState extends State<SignUp> {
       if (!mounted) return;
       Navigator.pushNamed(context, '/');
     } catch (e) {
-      setState(() => _errorMessage = e.toString().replaceFirst('Exception: ', ''));
+      setState(
+        () => _errorMessage = e.toString().replaceFirst('Exception: ', ''),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
@@ -84,20 +90,39 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Sign Up',
-                      style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Sign Up',
+                    style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 32),
-                  Text('Create your account',
-                      style: TextStyle(fontSize: 26, color: textcolor, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Create your account',
+                    style: TextStyle(
+                      fontSize: 26,
+                      color: textcolor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(height: 20),
 
                   // ── Full Name ──────────────────────────────────
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(0),
+                        borderSide: BorderSide(color: textcolor, width: 2.0),
+                      ),
+                      hoverColor: Colors.transparent,
                       labelText: 'Full name',
-                      labelStyle: TextStyle(color: textcolor, fontSize: 26, fontWeight: FontWeight.bold),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: textcolor),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -107,9 +132,21 @@ class _SignUpState extends State<SignUp> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(0),
+                        borderSide: BorderSide(color: textcolor, width: 2.0),
+                      ),
+                      hoverColor: Colors.transparent,
+
                       labelText: 'Email',
-                      labelStyle: TextStyle(color: textcolor, fontSize: 26, fontWeight: FontWeight.bold),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: textcolor),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -119,13 +156,32 @@ class _SignUpState extends State<SignUp> {
                     controller: _passwordController,
                     obscureText: _obscureText,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(0),
+                        borderSide: BorderSide(
+                          color: textcolor,
+                          width: 2.0,
+                        ),
+                      ),
+                      hoverColor: Colors.transparent,
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: textcolor, fontSize: 26, fontWeight: FontWeight.bold),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: textcolor),
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: textcolor.withValues(alpha: 0.4)),
-                        onPressed: () => setState(() => _obscureText = !_obscureText),
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: textcolor.withValues(alpha: 0.4),
+                        ),
+                        onPressed: () =>
+                            setState(() => _obscureText = !_obscureText),
                       ),
                     ),
                   ),
@@ -136,13 +192,32 @@ class _SignUpState extends State<SignUp> {
                     controller: _confirmPasswordController,
                     obscureText: _obscureText,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(0),
+                        borderSide: BorderSide(
+                          color: textcolor,
+                          width: 2.0,
+                        ),
+                      ),
+                      hoverColor: Colors.transparent,
                       labelText: 'Confirm your password',
-                      labelStyle: TextStyle(color: textcolor, fontSize: 26, fontWeight: FontWeight.bold),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
+                      labelStyle: TextStyle(
+                        color: textcolor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: textcolor),
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: textcolor.withValues(alpha: 0.4)),
-                        onPressed: () => setState(() => _obscureText = !_obscureText),
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: textcolor.withValues(alpha: 0.4),
+                        ),
+                        onPressed: () =>
+                            setState(() => _obscureText = !_obscureText),
                       ),
                     ),
                   ),
@@ -152,28 +227,62 @@ class _SignUpState extends State<SignUp> {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: SizedBox(
-                      width: 260,
+                      width: 300,
                       child: DropdownButtonFormField<String>(
+                        icon: SvgPicture.asset(
+                          'assets/images/Down 4.svg',
+                          width: 40,
+                          height: 40,
+                          colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                        ),
                         initialValue: _selectedRole,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 21, vertical: 23),
-                          labelText: 'Pick a Role',
-                          labelStyle: GoogleFonts.nunito(
-                              color: primaryColor, fontSize: 26, fontWeight: FontWeight.bold),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: textcolor.withValues(alpha: 0.4)),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 21,
+                            vertical: 23,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          labelStyle: GoogleFonts.nunito(
+                            color: primaryColor,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          hintText: 'Pick a Role',
+                          hintStyle: GoogleFonts.nunito(
+                            color: primaryColor,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: primaryColor, width: 2),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: primaryColor, width: 2), // 👈 was faded
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: primaryColor, width: 2.5),
+                          ),
                         ),
-                        items: roles.map((role) =>
-                            DropdownMenuItem<String>(value: role, child: Text(role))).toList(),
+                        style: GoogleFonts.nunito(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        items: roles.map((role) => DropdownMenuItem<String>(
+                          value: role,
+                          child: Text(
+                            role,
+                            style: GoogleFonts.nunito(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold, // 👈 bold items in dropdown
+                              color: Colors.black,
+                            ),
+                          ),
+                        )).toList(),
                         onChanged: (value) => setState(() => _selectedRole = value),
                       ),
                     ),
@@ -182,9 +291,11 @@ class _SignUpState extends State<SignUp> {
 
                   // ── Error message ──────────────────────────────
                   if (_errorMessage != null) ...[
-                    Text(_errorMessage!,
-                        style: TextStyle(color: Colors.red, fontSize: 20),
-                        textAlign: TextAlign.center),
+                    Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red, fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                     SizedBox(height: 12),
                   ],
 
@@ -193,14 +304,24 @@ class _SignUpState extends State<SignUp> {
                     width: double.infinity,
                     height: 72,
                     child: ElevatedButton(
-                      onPressed: _isLoading ? null : _signUp, // <-- calls _signUp
+                      onPressed: _isLoading
+                          ? null
+                          : _signUp, // <-- calls _signUp
                       style: ElevatedButton.styleFrom(
                         backgroundColor: signupButtonColor,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
                       ),
                       child: _isLoading
                           ? CircularProgressIndicator(color: Colors.white)
-                          : Text('SIGN UP', style: TextStyle(color: Colors.white, fontSize: 36)),
+                          : Text(
+                              'SIGN UP',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 36,
+                              ),
+                            ),
                     ),
                   ),
                   SizedBox(height: 32),
@@ -208,10 +329,13 @@ class _SignUpState extends State<SignUp> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Already have an account?',
-                          style: TextStyle(color: Colors.black, fontSize: 26)),
+                      Text(
+                        'Already have an account?',
+                        style: TextStyle(color: Colors.black, fontSize: 26),
+                      ),
                       TextButton(
                         style: TextButton.styleFrom(
+                          overlayColor: Colors.transparent,
                           padding: EdgeInsets.zero,
                           minimumSize: Size(0, 0),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -219,8 +343,13 @@ class _SignUpState extends State<SignUp> {
                         onPressed: () {
                           Navigator.pushNamed(context, '/');
                         },
-                        child: const Text(' Login',
-                            style: TextStyle(color: loginButtonColorInSignUpPage, fontSize: 26)),
+                        child: const Text(
+                          ' Login',
+                          style: TextStyle(
+                            color: loginButtonColorInSignUpPage,
+                            fontSize: 26,
+                          ),
+                        ),
                       ),
                     ],
                   ),
