@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/Test.dart';
+import 'package:greenlens/SectionHead/section_head_dashboard.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'firebase/firebase_options.dart';
 
@@ -41,6 +41,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/': (context) => SignInPage(),
+        // Add your other routes here, for example:
+        // '/home': (context) => HomePage(),
+        // '/dashboard': (context) => DashboardPage(),
+        '/section_head_dashboard': (context) => SectionHeadPage(),
+      },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page
     );
