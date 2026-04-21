@@ -115,11 +115,11 @@ class _StepperDemoState extends State<StepperDemo> {
               color: isActive
                   ? Colors.white
                   : isCompleted
-                  ? Colors.white.withOpacity(0.3)
-                  : Colors.white.withOpacity(0.15),
+                  ? Colors.white.withValues(alpha: 0.3)
+                  : Colors.white.withValues(alpha: 0.15),
               border: Border.all(
                 color: isCompleted
-                    ? Colors.white.withOpacity(0.6)
+                    ? Colors.white.withValues(alpha: 0.6)
                     : Colors.transparent,
                 width: 2,
               ),
@@ -154,8 +154,8 @@ class _StepperDemoState extends State<StepperDemo> {
                 color: isActive
                     ? Colors.white
                     : isCompleted
-                    ? Colors.white.withOpacity(0.7)
-                    : Colors.white.withOpacity(0.4),
+                    ? Colors.white.withValues(alpha: 0.7)
+                    : Colors.white.withValues(alpha: 0.4),
               ),
             ),
           ),
@@ -179,8 +179,8 @@ class _StepperDemoState extends State<StepperDemo> {
               height: 2,
               decoration: BoxDecoration(
                 color: isActive
-                    ? Colors.white.withOpacity(0.7)
-                    : Colors.white.withOpacity(0.2),
+                    ? Colors.white.withValues(alpha: 0.7)
+                    : Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -204,7 +204,7 @@ class _StepperDemoState extends State<StepperDemo> {
           return LinearProgressIndicator(
             value: value,
             minHeight: 5,
-            backgroundColor: Colors.white.withOpacity(0.15),
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
             valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
           );
         },
@@ -223,7 +223,7 @@ class _StepperDemoState extends State<StepperDemo> {
         TextButton(
           onPressed: _currentStep > 0 ? _back : null,
           style: TextButton.styleFrom(
-            backgroundColor: Colors.white.withOpacity(0.15),
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
             foregroundColor: Colors.white,
           ),
           child: const Text('Back'),
