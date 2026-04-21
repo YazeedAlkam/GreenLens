@@ -44,10 +44,7 @@ class _SignInPageState extends State<SignInPage> {
         _passwordController.text.trim(),
       );
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => SectionHeadPage()),
-      );
+      Navigator.pushReplacementNamed(context, "/section_head_dashboard");
     } catch (e) {
       setState(
         () => _errorMessage = e.toString().replaceFirst('Exception: ', ''),
@@ -197,10 +194,7 @@ class _SignInPageState extends State<SignInPage> {
                         minimumSize: Size(0, 0),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SignUp()),
-                      ),
+                      onPressed: () => Navigator.pushNamed(context, "/sign_up"),
                       child: const Text(
                         ' Sign Up',
                         style: TextStyle(

@@ -63,10 +63,7 @@ class _SignUpState extends State<SignUp> {
       );
       // TODO: save _nameController.text & _selectedRole to Firestore here
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => SignInPage()),
-      );
+      Navigator.pushNamed(context, '/');
     } catch (e) {
       setState(() => _errorMessage = e.toString().replaceFirst('Exception: ', ''));
     } finally {
@@ -219,8 +216,9 @@ class _SignUpState extends State<SignUp> {
                           minimumSize: Size(0, 0),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        onPressed: () => Navigator.push(
-                            context, MaterialPageRoute(builder: (_) => SignInPage())),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/');
+                        },
                         child: const Text(' Login',
                             style: TextStyle(color: loginButtonColorInSignUpPage, fontSize: 26)),
                       ),
