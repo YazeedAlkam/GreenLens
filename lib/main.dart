@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SectionHeadDash.dart';
+import 'package:greenlens/SectionHead/ClientInfoPage.dart';
+import 'package:greenlens/SectionHead/SectionHeadDash.dart';
 import 'package:greenlens/SginIn.dart';
+import 'package:greenlens/Test.dart';
 
 /*
 everytime you want to add changes to git hub we use this : 
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: SignInPage(), // start page
+      home: StepperDemo(), // start page
     );
   }
 }
