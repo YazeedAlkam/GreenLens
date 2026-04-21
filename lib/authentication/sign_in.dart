@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SectionHead/SectionHeadDash.dart';
-import 'package:greenlens/authentication/sign_up.dart';
 import '../firebase/auth_service.dart';
 import '../shared_files/background.dart';
 import '../main.dart';
+import 'UserModel.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -44,10 +43,21 @@ class _SignInPageState extends State<SignInPage> {
         _passwordController.text.trim(),
       );
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => SectionHeadPage()),
-      );
+      final user = await UserModel.fetchCurrent();
+      if (!mounted) return;
+      switch (user?.role) {
+        case 'Section Head':
+          Navigator.pushReplacementNamed(context, "/section_head_dashboard");
+        case 'Engineer':
+          Navigator.pushReplacementNamed(context, "/engineer_dashboard");
+        case 'Financial Manager':
+          Navigator.pushReplacementNamed(
+            context,
+            "/financial_manager_dashboard",
+          );
+        case 'CEO':
+          Navigator.pushReplacementNamed(context, "/ceo_dashboard");
+      }
     } catch (e) {
       setState(
         () => _errorMessage = e.toString().replaceFirst('Exception: ', ''),
@@ -96,6 +106,14 @@ class _SignInPageState extends State<SignInPage> {
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      borderSide: BorderSide(
+                        color: textcolor,
+                        width: 2.0,
+                      ),
+                    ),
+                    hoverColor: Colors.transparent,
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
                       borderSide: BorderSide(color: textcolor),
@@ -106,7 +124,7 @@ class _SignInPageState extends State<SignInPage> {
 
                 // ── Password ───────────────────────────────────────
                 TextField(
-                  controller: _passwordController, // <-- added
+                  controller: _passwordController,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -118,6 +136,13 @@ class _SignInPageState extends State<SignInPage> {
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
                       borderSide: BorderSide(color: textcolor),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      borderSide: BorderSide(
+                        color: textcolor,
+                        width: 2.0,
+                      ),
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -134,6 +159,9 @@ class _SignInPageState extends State<SignInPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateColor.transparent,
+                    ),
                     onPressed: () {
                       // TODO: implement forgot password
                     },
@@ -165,7 +193,7 @@ class _SignInPageState extends State<SignInPage> {
                   width: double.infinity,
                   height: 72,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _signIn, // <-- calls _signIn
+                    onPressed: _isLoading ? null : _signIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: signupButtonColor,
                       shape: RoundedRectangleBorder(
@@ -193,14 +221,12 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
+                        overlayColor: Colors.transparent,
                         padding: EdgeInsets.zero,
                         minimumSize: Size(0, 0),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SignUp()),
-                      ),
+                      onPressed: () => Navigator.pushNamed(context, "/sign_up"),
                       child: const Text(
                         ' Sign Up',
                         style: TextStyle(

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/active_projects.dart';
+import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SectionHeadPage extends StatelessWidget {
-  const SectionHeadPage({super.key});
+class EngineerPage extends StatelessWidget {
+  const EngineerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.build(
-        title: 'Dashboard|Section Head',
+        title: 'Dashboard|Engineer',
         subtitle: 'Manage and monitor your audit projects',
       ),
       body: Padding(
@@ -32,117 +32,10 @@ class SectionHeadPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/Add.svg',
-                              height: 40,
-                              width: 40,
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Create New Project',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ), //w500 meduim weight
-                            ),
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      SvgPicture.asset(
-                        'assets/images/arrowright.svg',
-                        height: 40,
-                        width: 40,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              //2nd button --------------->
-              SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                height: 64,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    backgroundColor: dashButtonColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/Profile Add 1.svg',
-                              height: 40,
-                              width: 40,
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Assign Engineer to Project',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      SvgPicture.asset(
-                        'assets/images/arrowright.svg',
-                        height: 40,
-                        width: 40,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              //Third button   --------------->
-              SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                height: 64,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    backgroundColor: dashButtonColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // TODO: Handle button press, navigate to create project page
+                    Navigator.pushNamed(context, "/create_new_project");
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,7 +61,7 @@ class SectionHeadPage extends StatelessWidget {
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
-                              ),
+                              ), //w500 meduim weight
                             ),
                           ],
                         ),
@@ -185,7 +78,7 @@ class SectionHeadPage extends StatelessWidget {
               ),
 
               //Active Projects Section --------------->
-              SizedBox(height: 40),
+              SizedBox(height: 32),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -207,7 +100,7 @@ class SectionHeadPage extends StatelessWidget {
                     children: [
                       Center(
                         child: Text(
-                          'Active Projects',
+                          'Assigned Projects',
                           style: TextStyle(
                             fontSize: 26,
                             color: Colors.black,
@@ -217,17 +110,34 @@ class SectionHeadPage extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       //Projects List --------------->
-                      ActiveProjects(
-                        title: "Al-Quds Mall",
-                        status: "In Progress",
-                      ),
+                      Project(title: "Al-Quds Mall", status: "In Progress"),
                       SizedBox(height: 16),
-                      ActiveProjects(
+                      Project(
                         title: "Royal Hotel",
                         status: "Awaiting Approval",
                       ),
                       SizedBox(height: 16),
-                      ActiveProjects(title: "Zaid Bakery", status: "Draft"),
+                      Project(
+                        title: "Zaid Bakery",
+                        status: "Ready",
+                      ),
+                      SizedBox(height: 16),
+                      Project(
+                        title: "Zaid Bakery",
+                        status: "Draft",
+                      ),
+                      SizedBox(height: 16),
+                      Project(
+                        title: "Zaid Bakery",
+                        status: "Denied",
+                      ),
+                      SizedBox(height: 16),
+                      Project(
+                        title: "Zaid Bakery",
+                        status: "Draft",
+                      ),
+                      SizedBox(height: 16),
+                      Project(title: "Zaid Bakery", status: "Draft"),
                       SizedBox(height: 16),
                       TextButton(
                         style: TextButton.styleFrom(
@@ -236,7 +146,9 @@ class SectionHeadPage extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           overlayColor: Colors.transparent,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          // TODO: Handle button press, navigate to all projects page
+                        },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,

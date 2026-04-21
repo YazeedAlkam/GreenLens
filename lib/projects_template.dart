@@ -24,11 +24,11 @@ Color getStatusColor(String status) {
   }
 }
 
-class ActiveProjects extends StatelessWidget {
+class Project extends StatelessWidget {
   final String title;
   final String status;
 
-  const ActiveProjects({super.key, required this.title, required this.status});
+  const Project({super.key, required this.title, required this.status});
 
   @override
   Widget build(BuildContext context) {

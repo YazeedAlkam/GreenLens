@@ -23,7 +23,7 @@ class CustomAppBar {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 64),
+            style: TextStyle(color: Colors.white, fontSize: 64, fontFamily: "TimesNewRoman"),
           ),
           SizedBox(height: 10),
           Text(
