@@ -5,7 +5,7 @@ import 'package:greenlens/main.dart';
 class CustomAppBar {
   static AppBar build({required String title, required String subtitle}) {
     return AppBar(
-      backgroundColor: PrimaryColor,
+      backgroundColor: primaryColor,
       toolbarHeight: 316,
       centerTitle: true,
       shape: RoundedRectangleBorder(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SectionHeadDash.dart';
-import 'package:greenlens/authentication/SignUp.dart';
+import 'package:greenlens/section_head_dashboard.dart';
+import 'package:greenlens/authentication/sign_up.dart';
 import '../firebase/auth_service.dart';
 import '../shared_files/background.dart';
 import '../main.dart';
@@ -122,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color: textcolor.withOpacity(0.4),
+                        color: textcolor.withValues(alpha: 0.4),
                       ),
                       onPressed: () =>
                           setState(() => _obscureText = !_obscureText),
@@ -140,7 +140,7 @@ class _SignInPageState extends State<SignInPage> {
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(
-                        color: PrimaryColor,
+                        color: primaryColor,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                       ),
@@ -167,7 +167,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _signIn, // <-- calls _signIn
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: SignupButtonColor,
+                      backgroundColor: signupButtonColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -204,7 +204,7 @@ class _SignInPageState extends State<SignInPage> {
                       child: const Text(
                         ' Sign Up',
                         style: TextStyle(
-                          color: LoginButtonColorInSignUpPage,
+                          color: loginButtonColorInSignUpPage,
                           fontSize: 26,
                         ),
                       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:greenlens/shared_files/CustomAppBar.dart';
-import 'package:greenlens/ActiveProjects.dart';
-import 'package:greenlens/CustomAppBar.dart';
+import 'package:greenlens/shared_files/custom_app_bar.dart';
+import 'package:greenlens/active_projects.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,11 +22,12 @@ class SectionHeadPage extends StatelessWidget {
             children: [
               //First Button --------------->
               SizedBox(
-                width: 960,
-                height: 65,
+                width: double.infinity,
+                height: 64,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DashsButtonColor,
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    backgroundColor: dashButtonColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -35,7 +35,7 @@ class SectionHeadPage extends StatelessWidget {
                   onPressed: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         child: Row(
@@ -43,10 +43,13 @@ class SectionHeadPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              'assets/images/add.svg',
-                              height: 26.6,
-                              width: 26.6,
-                              color: Colors.white,
+                              'assets/images/Add.svg',
+                              height: 40,
+                              width: 40,
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             SizedBox(width: 10),
                             Text(
@@ -54,20 +57,17 @@ class SectionHeadPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.normal,
                               ), //w500 meduim weight
                             ),
                           ],
                         ),
                       ),
                       Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 26.6,
-                          width: 26.6,
-                        ),
+                      SvgPicture.asset(
+                        'assets/images/arrowright.svg',
+                        height: 40,
+                        width: 40,
                       ),
                     ],
                   ),
@@ -77,11 +77,12 @@ class SectionHeadPage extends StatelessWidget {
               //2nd button --------------->
               SizedBox(height: 16),
               SizedBox(
-                width: 960,
-                height: 65,
+                width: double.infinity,
+                height: 64,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DashsButtonColor,
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    backgroundColor: dashButtonColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -89,37 +90,39 @@ class SectionHeadPage extends StatelessWidget {
                   onPressed: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              'assets/images/assign.svg',
-                              height: 26.6,
-                              width: 26.6,
+                              'assets/images/Profile Add 1.svg',
+                              height: 40,
+                              width: 40,
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Assign Engineer To Project',
+                              'Assign Engineer to Project',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ), //w500 meduim weight
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
                           ],
                         ),
                       ),
                       Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 26.6,
-                          width: 26.6,
-                        ),
+                      SvgPicture.asset(
+                        'assets/images/arrowright.svg',
+                        height: 40,
+                        width: 40,
                       ),
                     ],
                   ),
@@ -129,11 +132,12 @@ class SectionHeadPage extends StatelessWidget {
               //Third button   --------------->
               SizedBox(height: 16),
               SizedBox(
-                width: 960,
-                height: 65,
+                width: double.infinity,
+                height: 64,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DashsButtonColor,
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    backgroundColor: dashButtonColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -141,16 +145,21 @@ class SectionHeadPage extends StatelessWidget {
                   onPressed: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              'assets/images/reload.svg',
-                              height: 26.6,
-                              width: 26.6,
+                              'assets/images/Rotate Left.svg',
+                              height: 40,
+                              width: 40,
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             SizedBox(width: 10),
                             Text(
@@ -158,20 +167,17 @@ class SectionHeadPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ), //w500 meduim weight
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
                           ],
                         ),
                       ),
                       Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 26.6,
-                          width: 26.6,
-                        ),
+                      SvgPicture.asset(
+                        'assets/images/arrowright.svg',
+                        height: 40,
+                        width: 40,
                       ),
                     ],
                   ),
@@ -181,36 +187,33 @@ class SectionHeadPage extends StatelessWidget {
               //Active Projects Section --------------->
               SizedBox(height: 40),
               Container(
-                width: 960,
-                height: 420,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3), // changes position of shadow
+                      color: Colors.black.withValues(alpha: 0.2),
+                      spreadRadius: 0,
+                      blurRadius: 7.2,
+                      offset: Offset(0, 0), // changes position of shadow
                     ),
                   ],
                 ),
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Active Projects',
-                            style: TextStyle(
-                              fontSize: 26,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      Center(
+                        child: Text(
+                          'Active Projects',
+                          style: TextStyle(
+                            fontSize: 26,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
                           ),
-                        ],
+                        ),
                       ),
                       SizedBox(height: 16),
                       //Projects List --------------->
@@ -218,34 +221,45 @@ class SectionHeadPage extends StatelessWidget {
                         title: "Al-Quds Mall",
                         status: "In Progress",
                       ),
+                      SizedBox(height: 16),
                       ActiveProjects(
                         title: "Royal Hotel",
                         status: "Awaiting Approval",
                       ),
+                      SizedBox(height: 16),
                       ActiveProjects(title: "Zaid Bakery", status: "Draft"),
+                      SizedBox(height: 16),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          overlayColor: Colors.transparent,
+                        ),
                         onPressed: () {},
-                        child: SizedBox(
-                          width: 150,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "View All",
-                                style: TextStyle(
-                                  fontSize: 29.6,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              SvgPicture.asset(
-                                'assets/images/arrowright.svg',
-                                height: 26.6,
-                                width: 26.6,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "View All",
+                              style: TextStyle(
+                                fontSize: 22,
                                 color: Colors.black,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
+                            ),
+                            SvgPicture.asset(
+                              'assets/images/arrowright.svg',
+                              height: 40,
+                              width: 40,
+                              colorFilter: ColorFilter.mode(
+                                Colors.black,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

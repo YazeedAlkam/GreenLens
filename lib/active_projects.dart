@@ -5,22 +5,22 @@ import 'package:greenlens/main.dart';
 Color getStatusColor(String status) {
   switch (status) {
     case 'In Progress':
-      StatusColor = InProgressColor;
-      return StatusColor;
+      statusColor = inProgressColor;
+      return statusColor;
     case 'Awaiting Approval':
-      StatusColor = AwaitingApprovalColor;
-      return StatusColor;
+      statusColor = awaitingApprovalColor;
+      return statusColor;
     case 'Draft':
-      StatusColor = DraftColor;
-      return StatusColor;
+      statusColor = draftColor;
+      return statusColor;
     case 'Denied':
-      StatusColor = DeniedColor;
-      return StatusColor;
+      statusColor = deniedColor;
+      return statusColor;
     case 'Ready':
-      StatusColor = ReadyColor;
-      return StatusColor;
+      statusColor = readyColor;
+      return statusColor;
     default:
-      return DraftColor;
+      return draftColor;
   }
 }
 
@@ -34,24 +34,35 @@ class ActiveProjects extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 100,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
+      height: 70,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              spreadRadius: 0,
+              blurRadius: 7.2,
+              offset: Offset(0, 0),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.zero,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
+          onPressed: () {
+            // TODO: Handle button press
+          },
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Row(
               children: [
                 Text(
@@ -65,7 +76,7 @@ class ActiveProjects extends StatelessWidget {
                 Spacer(),
 
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: getStatusColor(status),
                     borderRadius: BorderRadius.circular(8),
@@ -80,13 +91,11 @@ class ActiveProjects extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(width: 10),
-
                 SvgPicture.asset(
                   'assets/images/arrowright.svg',
-                  height: 26.6,
-                  width: 26.6,
-                  color: Colors.black,
+                  height: 40,
+                  width: 40,
+                  colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
                 ),
               ],
             ),

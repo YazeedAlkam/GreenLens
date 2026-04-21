@@ -75,7 +75,7 @@ class _EllipsePainterTop extends CustomPainter {
         height: 857.83,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );
@@ -88,7 +88,7 @@ class _EllipsePainterTop extends CustomPainter {
         height: 857.83,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );
@@ -101,7 +101,7 @@ class _EllipsePainterTop extends CustomPainter {
         height: 857.83,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );
@@ -147,7 +147,7 @@ class _EllipsePainterBottom extends CustomPainter {
         height: 933.58,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );
@@ -160,7 +160,7 @@ class _EllipsePainterBottom extends CustomPainter {
         height: 798.18,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );
@@ -173,7 +173,7 @@ class _EllipsePainterBottom extends CustomPainter {
         height: 798.18,
       ),
       Paint()
-        ..color = PrimaryColor.withOpacity(opacity)
+        ..color = primaryColor.withValues(alpha: opacity)
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.overlay,
     );

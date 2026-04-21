@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/authentication/SginIn.dart';
+import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/shared_files/background.dart';
 import 'package:greenlens/main.dart';
 
@@ -127,7 +127,7 @@ class _SignUpState extends State<SignUp> {
                       border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
                       suffixIcon: IconButton(
                         icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: textcolor.withOpacity(0.4)),
+                            color: textcolor.withValues(alpha: 0.4)),
                         onPressed: () => setState(() => _obscureText = !_obscureText),
                       ),
                     ),
@@ -144,7 +144,7 @@ class _SignUpState extends State<SignUp> {
                       border: UnderlineInputBorder(borderSide: BorderSide(color: textcolor)),
                       suffixIcon: IconButton(
                         icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: textcolor.withOpacity(0.4)),
+                            color: textcolor.withValues(alpha: 0.4)),
                         onPressed: () => setState(() => _obscureText = !_obscureText),
                       ),
                     ),
@@ -157,25 +157,25 @@ class _SignUpState extends State<SignUp> {
                     child: SizedBox(
                       width: 260,
                       child: DropdownButtonFormField<String>(
-                        value: _selectedRole,
+                        initialValue: _selectedRole,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: EdgeInsets.symmetric(horizontal: 21, vertical: 23),
                           labelText: 'Pick a Role',
                           labelStyle: GoogleFonts.nunito(
-                              color: PrimaryColor, fontSize: 26, fontWeight: FontWeight.bold),
+                              color: primaryColor, fontSize: 26, fontWeight: FontWeight.bold),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: textcolor.withOpacity(0.4)),
+                            borderSide: BorderSide(color: textcolor.withValues(alpha: 0.4)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: PrimaryColor, width: 2),
+                            borderSide: BorderSide(color: primaryColor, width: 2),
                           ),
                         ),
-                        items: Roles.map((role) =>
+                        items: roles.map((role) =>
                             DropdownMenuItem<String>(value: role, child: Text(role))).toList(),
                         onChanged: (value) => setState(() => _selectedRole = value),
                       ),
@@ -198,7 +198,7 @@ class _SignUpState extends State<SignUp> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _signUp, // <-- calls _signUp
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: SignupButtonColor,
+                        backgroundColor: signupButtonColor,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                       ),
                       child: _isLoading
@@ -222,7 +222,7 @@ class _SignUpState extends State<SignUp> {
                         onPressed: () => Navigator.push(
                             context, MaterialPageRoute(builder: (_) => SignInPage())),
                         child: const Text(' Login',
-                            style: TextStyle(color: LoginButtonColorInSignUpPage, fontSize: 26)),
+                            style: TextStyle(color: loginButtonColorInSignUpPage, fontSize: 26)),
                       ),
                     ],
                   ),
