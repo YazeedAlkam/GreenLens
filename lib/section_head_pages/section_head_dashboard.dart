@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/active_projects.dart';
+import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -192,7 +192,7 @@ class SectionHeadPage extends StatelessWidget {
               ),
 
               //Active Projects Section --------------->
-              SizedBox(height: 40),
+              SizedBox(height: 32),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -224,17 +224,17 @@ class SectionHeadPage extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       //Projects List --------------->
-                      ActiveProjects(
+                      Project(
                         title: "Al-Quds Mall",
                         status: "In Progress",
                       ),
                       SizedBox(height: 16),
-                      ActiveProjects(
+                      Project(
                         title: "Royal Hotel",
                         status: "Awaiting Approval",
                       ),
                       SizedBox(height: 16),
-                      ActiveProjects(title: "Zaid Bakery", status: "Draft"),
+                      Project(title: "Zaid Bakery", status: "Draft"),
                       SizedBox(height: 16),
                       TextButton(
                         style: TextButton.styleFrom(
