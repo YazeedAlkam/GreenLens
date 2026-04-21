@@ -14,6 +14,16 @@ everytime you want to add changes to git hub we use this :
 git add .
 git commit -m "describe your change"
 git push
+
+go to githup and then pull req 
+check if conflict happened 
+if no conf merge it 
+then do this : 
+git checkout main
+git pull origin main
+git checkout yazeed
+git merge main
+git push origin yazeed
 */
 
 const Color textcolor = Color(0xFFA8A6A7);
@@ -28,14 +38,14 @@ const Color loginButtonColorInSignUpPage = Color(0xFFD87234);
 const Color draftColor = Color(0xFFBFC0CD);
 const Color deniedColor = Color(0xFFE53935);
 const Color readyColor = Color(0xFF1A7A4A);
+const Color disableColor = Color(0xFFe0e0e0);
 Color statusColor = Color(0xFFFFFFFF);
+const Color addclientbuttoncolor = Color(0xFF2D264B);
 final List<String> roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -53,7 +63,7 @@ class MyApp extends StatelessWidget {
         '/section_head_dashboard': (context) => SectionHeadPage(),
         '/engineer_dashboard': (context) => EngineerPage(),
         '/ceo_dashboard': (context) => CEOPage(),
-        '/create_new_project' : (context) => Clientinfo(),
+        '/create_new_project': (context) => Clientinfo(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page
