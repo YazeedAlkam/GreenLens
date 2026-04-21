@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/section_head_dashboard.dart';
+import 'package:greenlens/SectionHead/SectionHeadDash.dart';
 import 'package:greenlens/authentication/sign_up.dart';
 import '../firebase/auth_service.dart';
 import '../shared_files/background.dart';
