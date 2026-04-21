@@ -5,7 +5,7 @@ import 'package:greenlens/main.dart';
 class CustomAppBar {
   static AppBar build({required String title, required String subtitle}) {
     return AppBar(
-      backgroundColor: PrimaryColor,
+      backgroundColor: primaryColor,
       toolbarHeight: 316,
       centerTitle: true,
       shape: RoundedRectangleBorder(
@@ -19,7 +19,7 @@ class CustomAppBar {
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset('assets/images/logo.svg', height: 100),
+          SvgPicture.asset('assets/images/GreenLensLogo.svg', height: 100),
           Text(
             title,
             textAlign: TextAlign.center,

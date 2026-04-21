@@ -9,7 +9,7 @@ class Clientinfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: PrimaryColor,
+        backgroundColor: primaryColor,
         toolbarHeight: 316,
         centerTitle: true,
         shape: RoundedRectangleBorder(

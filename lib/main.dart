@@ -1,9 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/SectionHead/ClientInfoPage.dart';
-import 'package:greenlens/SectionHead/SectionHeadDash.dart';
-import 'package:greenlens/SginIn.dart';
 import 'package:greenlens/Test.dart';
+import 'package:greenlens/authentication/sign_in.dart';
+import 'firebase/firebase_options.dart';
 
 /*
 everytime you want to add changes to git hub we use this : 
@@ -13,21 +13,27 @@ git push
 */
 
 const Color textcolor = Color(0xFFA8A6A7);
-const Color PrimaryColor = Color(0xFF1A237E);
+const Color primaryColor = Color(0xFF1A237E);
 const Color secondaryColor = Color(0xFFA8A6A7);
 const Color backgroundColor = Color(0xFFFFFCED);
-const Color SignupButtonColor = Color(0xFF222222);
-const Color DashsButtonColor = Color(0xFF393C5A);
-const Color InProgressColor = Color(0xFF8A90CE);
-const Color AwaitingApprovalColor = Color(0xFFEB9D4A);
-const Color LoginButtonColorInSignUpPage = Color(0xFFD87234);
-const Color DraftColor = Color(0xFFBFC0CD);
-const Color DeniedColor = Color(0xFFE53935);
-const Color ReadyColor = Color(0xFF1A7A4A);
-Color StatusColor = Color(0xFFFFFFFF);
-final List<String> Roles = ['Section Head', 'Engineer', 'Financial Manager'];
+const Color signupButtonColor = Color(0xFF222222);
+const Color dashButtonColor = Color(0xFF393C5A);
+const Color inProgressColor = Color(0xFF8A90CE);
+const Color awaitingApprovalColor = Color(0xFFEB9D4A);
+const Color loginButtonColorInSignUpPage = Color(0xFFD87234);
+const Color draftColor = Color(0xFFBFC0CD);
+const Color deniedColor = Color(0xFFE53935);
+const Color readyColor = Color(0xFF1A7A4A);
+Color statusColor = Color(0xFFFFFFFF);
+final List<String> roles = ['Section Head', 'Engineer', 'Financial Manager'];
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: StepperDemo(), // start page
+      home: SignInPage(), // start page
     );
   }
 }
