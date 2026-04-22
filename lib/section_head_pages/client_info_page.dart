@@ -1,8 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/NavBar.dart';
+import 'package:greenlens/section_head_pages/clientcontact.dart';
 
 class Clientinfo extends StatefulWidget {
   const Clientinfo({super.key});
@@ -13,6 +16,15 @@ class Clientinfo extends StatefulWidget {
 
 class _ClientinfoState extends State<Clientinfo> {
   int _currentStep = 0;
+
+  void _next() {
+    if (_currentStep < 4) setState(() => _currentStep++);
+  }
+
+  void _back() {
+    if (_currentStep > 0) setState(() => _currentStep--);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +68,7 @@ class _ClientinfoState extends State<Clientinfo> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 90, right: 40),
+                      //here is how u can call the animated navbar 
                       child: NavigationBarLines(
                         currentStep: _currentStep,
                         onStepTapped: (step) =>
@@ -76,13 +89,22 @@ class _ClientinfoState extends State<Clientinfo> {
           children: [
             Row(
               children: [
-                SizedBox(
-                  width: 75,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: SvgPicture.asset(
-                      'assets/images/aroowofclientinfo.svg',
-                    ),
+                //for this one i dont know if it will work or not xD
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero, // 🔥 remove internal padding
+                    minimumSize: Size.zero, // 🔥 remove default min size
+                    tapTargetSize:
+                        MaterialTapTargetSize.shrinkWrap, // 🔥 shrink tap area
+                    elevation: 0,
+                    backgroundColor: Colors.transparent, // optional
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/images/aroowofclientinfo.svg',
                   ),
                 ),
                 SizedBox(width: 10),
@@ -158,6 +180,7 @@ class _ClientinfoState extends State<Clientinfo> {
                   ),
                   child: SizedBox.expand(
                     // 👈 forces full size
+                    //here in this button it should move to the second contact info form (same form but empty one)
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -191,6 +214,7 @@ class _ClientinfoState extends State<Clientinfo> {
                     border: Border.all(color: Colors.black),
                   ),
                   child: SizedBox.expand(
+                    //here in this button it should be everytime he click it should add another contact info form
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -216,6 +240,63 @@ class _ClientinfoState extends State<Clientinfo> {
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 16),
+            // Client Info Form -------------------->
+            Addclient(),
+            SizedBox(height: 129),
+            //the Buttons connected to the nav bar -------------------->
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: _currentStep > 0 ? _back : null,
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor.withOpacity(0.15),
+                      foregroundColor: primaryColor,
+                      disabledForegroundColor: Colors.grey.withOpacity(0.4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 22,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: const Text('Back'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Save Draft",
+                      style: GoogleFonts.firaSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: _currentStep < 4 ? _next : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 22,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(_currentStep == 4 ? 'Submit' : 'Next Step'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
