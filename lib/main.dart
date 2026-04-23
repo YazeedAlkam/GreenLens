@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         '/project_info_page': (context) => Project_Info_Page(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: Project_Info_Page(), // start page
+      home: SignInPage(), // start page
     );
   }
 }
