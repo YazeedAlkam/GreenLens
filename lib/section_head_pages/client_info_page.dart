@@ -6,6 +6,7 @@ import 'package:greenlens/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/NavBar.dart';
 import 'package:greenlens/section_head_pages/clientcontact.dart';
+import 'package:greenlens/section_head_pages/navbar_title.dart';
 
 class Clientinfo extends StatefulWidget {
   const Clientinfo({super.key});
@@ -36,20 +37,7 @@ class _ClientinfoState extends State<Clientinfo> {
         elevation: 10,
         automaticallyImplyLeading: false,
 
-        title: Padding(
-          padding: const EdgeInsets.only(top: 70),
-          child: Center(
-            child: const Text(
-              "Create New Project",
-              style: TextStyle(
-                fontSize: 65,
-                color: Colors.white,
-                fontFamily: 'TimesNewRoman',
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+        title: Navbar_Title(),
 
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(100),
@@ -68,7 +56,7 @@ class _ClientinfoState extends State<Clientinfo> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 90, right: 40),
-                      //here is how u can call the animated navbar 
+                      //here is how u can call the animated navbar
                       child: NavigationBarLines(
                         currentStep: _currentStep,
                         onStepTapped: (step) =>
