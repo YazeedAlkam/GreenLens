@@ -15,8 +15,8 @@ class AuthService {
   Future<UserCredential?> signUp(
       String email,
       String password,
-      String name,  // <-- added
-      String role,  // <-- added
+      String name,
+      String role,
       ) async {
     try {
       // 1. Create the auth account
@@ -25,12 +25,31 @@ class AuthService {
         password: password,
       );
 
-      // 2. Save extra info to Firestore under /users/{uid}
-      await _firestore.collection('users').doc(credential.user!.uid).set({
-        'name':      name,
-        'email':     email,
-        'role':      role,
-        'createdAt': FieldValue.serverTimestamp(),
+      // 2. Atomically increment the counter and get the new custom ID
+      final counterRef = _firestore.collection('meta').doc('userCounter');
+      final userRef = _firestore.collection('users').doc(credential.user!.uid);
+
+      await _firestore.runTransaction((transaction) async {
+        final counterSnap = await transaction.get(counterRef);
+
+        int newId;
+        if (!counterSnap.exists) {
+          // First ever user — initialize the counter
+          newId = 1;
+          transaction.set(counterRef, {'lastId': 1});
+        } else {
+          newId = (counterSnap.data()!['lastId'] as int) + 1;
+          transaction.update(counterRef, {'lastId': newId});
+        }
+
+        // 3. Save user info with the new custom ID
+        transaction.set(userRef, {
+          'name':      name,
+          'email':     email,
+          'role':      role,
+          'createdAt': FieldValue.serverTimestamp(),
+          'customId':  newId,
+        });
       });
 
       return credential;

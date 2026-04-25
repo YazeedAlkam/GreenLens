@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 
 import '../main.dart';
-import 'nav_bar.dart';
+import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
-import 'navbar_title.dart';
+import 'shared_files/navbar_title.dart';
 
 class CreateProjectFlow extends StatefulWidget {
   const CreateProjectFlow({super.key});
