@@ -89,19 +89,24 @@ class _ClientInfoBodyState extends State<ClientInfoBody> {
               readOnly: true,
               expands: true,
               maxLines: null,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
-                labelText: "52",
-                labelStyle: GoogleFonts.firaSans(
+                hintText: "52",
+                hintStyle: GoogleFonts.firaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
                 filled: true,
                 fillColor: disableColor,
+                hoverColor: disableColor,
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide:
-                      const BorderSide(width: 2, color: Color(0xFF707070)),
+                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -192,10 +197,7 @@ class _ClientInfoBodyState extends State<ClientInfoBody> {
           const SizedBox(height: 16, width: double.infinity),
 
           // ── Contact form ─────────────────────────────────────────────────
-          if (_activeContact == 0)
-            MainClientForum()
-          else
-            OtherContactsForum(),
+          if (_activeContact == 0) MainClientForum() else OtherContactsForum(),
 
           const SizedBox(height: 32),
 
