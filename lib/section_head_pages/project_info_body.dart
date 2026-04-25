@@ -352,7 +352,7 @@ class ProjectInfoBody extends StatelessWidget {
                         padding: EdgeInsets.only(right: 12),
                         child: GestureDetector(
                           onTap: () {
-                            // TODO: implement navigating to Bills Input Page
+                            Navigator.pushNamed(context, '/create_new_project_flow/project_info/add_bills');
                           },
                           child: Transform(
                             alignment: Alignment.center,

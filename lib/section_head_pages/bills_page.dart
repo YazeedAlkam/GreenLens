@@ -12,7 +12,7 @@ class Bills_Page extends StatefulWidget {
 }
 
 class _Bills_PageState extends State<Bills_Page> {
-  int _currentStep = 2;
+  int _currentStep = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -535,7 +535,9 @@ class _Bills_PageState extends State<Bills_Page> {
                       borderRadius: BorderRadius.circular(18),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -543,7 +545,7 @@ class _Bills_PageState extends State<Bills_Page> {
                         'assets/images/Left Arrow.svg',
                         width: 40,
                         height: 40,
-                        color: primaryColor,
+                        colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
                       ),
                       Text('Back',style: TextStyle(color: Colors.black,fontSize: 24),textAlign: TextAlign.center,),
                     ],
