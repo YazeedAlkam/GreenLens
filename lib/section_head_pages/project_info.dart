@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/NavBar.dart';
-import 'package:greenlens/section_head_pages/navbar_title.dart';
+import 'package:greenlens/section_head_pages/shared_files/nav_bar.dart';
+import 'package:greenlens/section_head_pages/shared_files/navbar_title.dart';
 
 class Project_Info_Page extends StatefulWidget {
   const Project_Info_Page({super.key});
@@ -32,7 +32,7 @@ class _Project_Info_PageState extends State<Project_Info_Page> {
         elevation: 10,
         automaticallyImplyLeading: false,
 
-        title: Navbar_Title(),
+        title: NavBarTitle(),
 
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(100),

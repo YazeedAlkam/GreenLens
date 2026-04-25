@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../firebase/auth_service.dart';
 import '../shared_files/background.dart';
 import '../main.dart';
-import 'UserModel.dart';
+import 'user_model.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
