@@ -15,7 +15,7 @@ class Project_Info_Page extends StatefulWidget {
 class _Project_Info_PageState extends State<Project_Info_Page> {
   int _currentStep = 0;
 
-  void _next() {
+  void next() {
     if (_currentStep < 4) setState(() => _currentStep++);
   }
 
@@ -44,7 +44,7 @@ class _Project_Info_PageState extends State<Project_Info_Page> {
                 child: Column(
                   children: [
                     const Text(
-                      "Step 2 of 4",
+                      "Step 2 of 5",
                       style: TextStyle(color: Colors.white, fontSize: 26),
                     ),
                     const SizedBox(height: 12),
@@ -412,7 +412,7 @@ class _Project_Info_PageState extends State<Project_Info_Page> {
                   width: 434,
                   height: 65,
                   child: ElevatedButton(
-                    onPressed: _next,
+                    onPressed: next,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,

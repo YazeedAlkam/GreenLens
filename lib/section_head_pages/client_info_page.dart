@@ -61,7 +61,7 @@ class _ClientinfoState extends State<Clientinfo> {
 
                   children: [
                     const Text(
-                      "Step 1 of 4",
+                      "Step 1 of 5",
                       style: TextStyle(color: Colors.white, fontSize: 26),
                     ),
                     const SizedBox(height: 12),
