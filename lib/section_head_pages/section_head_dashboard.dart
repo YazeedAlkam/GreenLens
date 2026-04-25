@@ -4,9 +4,14 @@ import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SectionHeadPage extends StatelessWidget {
+class SectionHeadPage extends StatefulWidget {
   const SectionHeadPage({super.key});
 
+  @override
+  State<SectionHeadPage> createState() => _SectionHeadPageState();
+}
+
+class _SectionHeadPageState extends State<SectionHeadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

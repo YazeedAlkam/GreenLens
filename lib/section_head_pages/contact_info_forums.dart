@@ -28,22 +28,27 @@ class MainClientForum extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "e.g Mohammed",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
+            SizedBox(
+              height: 65,
+              child: TextField(
+                expands: true,
+                maxLines: null,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: "e.g Mohammed",
+                  hintStyle: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
-                    color: Color(0xFF808080),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -57,22 +62,27 @@ class MainClientForum extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "e.g CEO",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
+            SizedBox(
+              height: 65,
+              child: TextField(
+                expands: true,
+                maxLines: null,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: "e.g CEO",
+                  hintStyle: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
-                    color: Color(0xFF808080),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -102,44 +112,66 @@ class MainClientForum extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "e.g example@example.com",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      expands: true,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: "e.g example@example.com",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF808080),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "e.g +962 79 7786 498",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      expands: true,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: "e.g +962 79 7786 498",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF808080),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -180,22 +212,27 @@ class OtherContactsForum extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "e.g Mohammed",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
+            SizedBox(
+              height: 65,
+              child: TextField(
+                expands: true,
+                maxLines: null,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: "e.g Mohammed",
+                  hintStyle: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
-                    color: Color(0xFF808080),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -209,22 +246,27 @@ class OtherContactsForum extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "e.g CEO",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
+            SizedBox(
+              height: 65,
+              child: TextField(
+                expands: true,
+                maxLines: null,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: "e.g CEO",
+                  hintStyle: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 2,
-                    color: Color(0xFF808080),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -239,7 +281,7 @@ class OtherContactsForum extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width: 336),
+                SizedBox(width: 404),
                 Text(
                   'Phone Number',
                   style: GoogleFonts.firaSans(
@@ -254,44 +296,66 @@ class OtherContactsForum extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "e.g example@example.com",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      expands: true,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: "e.g example@example.com",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF808080),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "e.g +962 79 7786 498",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      expands: true,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: "e.g +962 79 7786 498",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF808080),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: Color(0xFF808080),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
