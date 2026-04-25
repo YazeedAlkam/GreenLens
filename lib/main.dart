@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
-import 'package:greenlens/section_head_pages/client_info_page.dart';
-import 'package:greenlens/section_head_pages/project_info.dart';
+import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
 import 'ceo_pages/ceo_dashboard.dart';
 import 'engineer_pages/engineer_dashboard.dart';
@@ -64,8 +63,7 @@ class MyApp extends StatelessWidget {
         '/section_head_dashboard': (context) => SectionHeadPage(),
         '/engineer_dashboard': (context) => EngineerPage(),
         '/ceo_dashboard': (context) => CEOPage(),
-        '/create_new_project': (context) => Clientinfo(),
-        '/project_info_page': (context) => Project_Info_Page(),
+        '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page
