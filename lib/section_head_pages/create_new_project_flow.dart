@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
-
 import '../main.dart';
+import 'assign_eng_body.dart';
 import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
 import 'shared_files/navbar_title.dart';
@@ -32,7 +32,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     switch (_currentStep) {
       case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      //case 2: return Step3Body(onNext: _next, onBack: _back, currentStep: _currentStep);
+      case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       //case 3: return Step4Body(onNext: _next, onBack: _back, currentStep: _currentStep);
       default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
     }

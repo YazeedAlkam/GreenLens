@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
 import 'package:greenlens/section_head_pages/assign_eng_page.dart';
 import 'package:greenlens/section_head_pages/bills_page.dart';
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
         '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: Bills_Page(), // start page
+      home: SignInPage(), // start page
     );
   }
 }

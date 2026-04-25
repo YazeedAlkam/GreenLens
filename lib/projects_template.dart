@@ -59,7 +59,7 @@ class Project extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // TODO: Handle button press
+            // TODO: Handle button pres
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
