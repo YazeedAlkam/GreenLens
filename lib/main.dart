@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/authentication/sign_up.dart';
 import 'package:greenlens/section_head_pages/assign_eng_page.dart';
+import 'package:greenlens/section_head_pages/bills_page.dart';
 import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
 import 'ceo_pages/ceo_dashboard.dart';
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
         '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: Assign_Eng_Page(), // start page
+      home: Bills_Page(), // start page
     );
   }
 }
