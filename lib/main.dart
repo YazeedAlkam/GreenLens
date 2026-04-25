@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
+import 'package:greenlens/section_head_pages/assign_eng_page.dart';
 import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
 import 'ceo_pages/ceo_dashboard.dart';
@@ -39,6 +39,9 @@ const Color draftColor = Color(0xFFBFC0CD);
 const Color deniedColor = Color(0xFFE53935);
 const Color readyColor = Color(0xFF1A7A4A);
 const Color disableColor = Color(0xFFe0e0e0);
+const Color dividerColor = Color(0xFFA8A6A7);
+const Color addengColor = Color(0xFFe8f5e9);
+const Color removeEngColor = Color(0xFFffe6e6);
 Color statusColor = Color(0xFFFFFFFF);
 const Color addclientbuttoncolor = Color(0xFF2D264B);
 final List<String> roles = ['Section Head', 'Engineer', 'Financial Manager'];
@@ -66,7 +69,7 @@ class MyApp extends StatelessWidget {
         '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: SignInPage(), // start page
+      home: Assign_Eng_Page(), // start page
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/nav_bar.dart';
-import 'package:greenlens/section_head_pages/navbar_title.dart';
+import 'package:greenlens/section_head_pages/shared_files/nav_bar.dart';
+import 'package:greenlens/section_head_pages/shared_files/navbar_title.dart';
 import 'package:greenlens/section_head_pages/client_info_body.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 
