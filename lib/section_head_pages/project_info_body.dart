@@ -8,12 +8,14 @@ class ProjectInfoBody extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final VoidCallback onViewBills;
 
   const ProjectInfoBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.onViewBills
   });
 
   @override
@@ -352,10 +354,7 @@ class ProjectInfoBody extends StatelessWidget {
                         padding: EdgeInsets.only(right: 12),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/create_new_project_flow/project_info/add_bills',
-                            );
+                            onViewBills();
                           },
                           child: Transform(
                             alignment: Alignment.center,

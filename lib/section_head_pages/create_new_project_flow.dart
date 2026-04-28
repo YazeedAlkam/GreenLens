@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 import '../main.dart';
 import 'assign_eng_body.dart';
+import 'bills_body.dart';
 import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
 import 'shared_files/navbar_title.dart';
@@ -15,23 +16,43 @@ class CreateProjectFlow extends StatefulWidget {
 
 class _CreateProjectFlowState extends State<CreateProjectFlow> {
   int _currentStep = 0;
+  bool _showingBills = false;
 
   void _next() {
-    if (_currentStep < 3) setState(() => _currentStep++);
+    if (_currentStep < 4) setState(() => _currentStep++);
   }
 
   void _back() {
+    if (_showingBills) {
+      setState(() => _showingBills = false);
+      return;
+    }
     if (_currentStep > 0) {
       setState(() => _currentStep--);
     } else {
-      Navigator.pop(context); // back to dashboard
+      Navigator.pop(context);
     }
   }
 
+  void _goToBills() {
+    setState(() => _showingBills = true);
+  }
+
+  void _onStepTapped(int step) {
+    setState(() {
+      _currentStep = step;
+      _showingBills = false; // ← exit bills view if user taps a step
+    });
+  }
+
   Widget _buildCurrentStep() {
+    if (_showingBills) {
+      return BillsBody(onBack: _back);
+    }
+
     switch (_currentStep) {
       case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
+      case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
       case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       //case 3: return Step4Body(onNext: _next, onBack: _back, currentStep: _currentStep);
       default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
@@ -53,7 +74,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
             child: Column(
               children: [
                 Text(
-                  "Step ${_currentStep + 1} of 4",
+                  "Step ${_currentStep + 1} of 5",
                   style: const TextStyle(color: Colors.white, fontSize: 26),
                 ),
                 const SizedBox(height: 12),
@@ -61,7 +82,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                   padding: const EdgeInsets.only(left: 90, right: 40),
                   child: NavigationBarLines(
                     currentStep: _currentStep,
-                    onStepTapped: (step) => setState(() => _currentStep = step),
+                    onStepTapped: _onStepTapped,
                   ),
                 ),
               ],
