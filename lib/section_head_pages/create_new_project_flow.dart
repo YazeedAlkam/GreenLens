@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
+import 'package:greenlens/section_head_pages/review_body.dart';
 import '../main.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
-import 'cost_page.dart';
+import 'cost_body.dart';
 import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
 import 'shared_files/navbar_title.dart';
@@ -56,6 +57,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
       case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       case 3: return CostBody(onNext: _next, onBack: _back, currentStep: _currentStep);
+      case 4: return ReviewBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
     }
   }
