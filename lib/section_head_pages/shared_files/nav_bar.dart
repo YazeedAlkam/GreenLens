@@ -91,7 +91,7 @@ class NavigationBarLines extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            width: 150, // 👈 fixed width fixes uneven spacing
+            width: 150,
             child: Text(
               _steps[index],
               textAlign: TextAlign.center,
@@ -122,7 +122,6 @@ class NavigationBarLines extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 28),
       child: Row(
         children: [
-          const SizedBox(width: 8), // 👈 shorten line left side
           Expanded(
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 400),
@@ -135,7 +134,6 @@ class NavigationBarLines extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8), // 👈 shorten line right side
         ],
       ),
     );
