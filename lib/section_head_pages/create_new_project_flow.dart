@@ -3,6 +3,7 @@ import 'package:greenlens/section_head_pages/project_info_body.dart';
 import '../main.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
+import 'cost_page.dart';
 import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
 import 'shared_files/navbar_title.dart';
@@ -54,7 +55,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
       case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      //case 3: return Step4Body(onNext: _next, onBack: _back, currentStep: _currentStep);
+      case 3: return CostBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
     }
   }
@@ -79,7 +80,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                 ),
                 const SizedBox(height: 12),
                 Padding(
-                  padding: const EdgeInsets.only(left: 90, right: 40),
+                  padding: const EdgeInsets.only(left: 90, right: 90),
                   child: NavigationBarLines(
                     currentStep: _currentStep,
                     onStepTapped: _onStepTapped,
