@@ -363,18 +363,30 @@ class ProjectInfoBody extends StatelessWidget {
                               'assets/images/Left Arrow.svg',
                               width: 40,
                               height: 40,
-                              colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                              colorFilter: ColorFilter.mode(
+                                Colors.black,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                      suffixIconConstraints: BoxConstraints(
+                        minWidth: 0,
+                        minHeight: 0,
+                      ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: Color(0xFF808080),
+                        ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: Color(0xFF808080),
+                        ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -525,7 +537,7 @@ class ProjectInfoBody extends StatelessWidget {
             onNext: onNext,
             onBack: onBack,
           ),
-          const SizedBox(height: 60,)
+          const SizedBox(height: 60),
         ],
       ),
     );
