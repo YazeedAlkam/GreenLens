@@ -33,16 +33,15 @@ class NavigationBarLines extends StatelessWidget {
 
   Widget _buildStepper() {
     return Row(
-      children: List.generate(_steps.length, (index) {
-        return Expanded(
-          child: Row(
-            children: [
-              _buildStep(index),
-              if (index < _steps.length - 1)
-                Expanded(child: _buildConnector(index)),
-            ],
-          ),
-        );
+      mainAxisSize: MainAxisSize.max,
+      children: List.generate(_steps.length * 2 - 1, (i) {
+        if (i.isEven) {
+          final index = i ~/ 2;
+          return _buildStep(index); // ❌ no Expanded here
+        } else {
+          final index = i ~/ 2;
+          return Expanded(child: _buildConnector(index)); // ✅ only connectors expand
+        }
       }),
     );
   }
@@ -147,9 +146,7 @@ class NavigationBarLines extends StatelessWidget {
   Widget _buildProgressBar() {
     final progress = (currentStep+1) / (_steps.length);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24), // 👈 controls length
-      child: ClipRRect(
+    return ClipRRect(
         borderRadius: BorderRadius.circular(4),
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: progress),
@@ -165,7 +162,7 @@ class NavigationBarLines extends StatelessWidget {
             );
           },
         ),
-      ),
+
     );
   }
 }

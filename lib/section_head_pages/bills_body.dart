@@ -17,8 +17,18 @@ class _BillsBodyState extends State<BillsBody> {
     final startMonth = DateTime(now.year, now.month - 12);
     final months = <String>[];
     final monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     for (int i = 0; i < 12; i++) {
       final date = DateTime(startMonth.year, startMonth.month + i);
@@ -75,38 +85,87 @@ class _BillsBodyState extends State<BillsBody> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text('Month',
-                              style: TextStyle(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
+                          child: Text(
+                            'Month',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
+                              fontSize: 24,
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text('Energy Consumed (kWh)',
-                              style: TextStyle(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
+                          child: Text(
+                            'Energy Consumed (kWh)',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
+                              fontSize: 24,
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text("Bill's Amount",
-                              style: TextStyle(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
+                          child: Text(
+                            "Bill's Amount",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
+                              fontSize: 24,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    ...months.map((month) => TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(month,
-                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(decoration: const InputDecoration(border: InputBorder.none)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(decoration: const InputDecoration(border: InputBorder.none)),
-                        ),
-                      ],
-                    )),
+                    ...months.map(
+                      (month) => TableRow(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            alignment: Alignment.centerLeft,
+                            height: 68,
+                            child: Text(
+                              month,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            alignment: Alignment.centerLeft,
+                            height: 68,
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,7 +183,9 @@ class _BillsBodyState extends State<BillsBody> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
                 ),
                 onPressed: widget.onBack,
                 child: Row(
@@ -134,9 +195,16 @@ class _BillsBodyState extends State<BillsBody> {
                       'assets/images/Left Arrow.svg',
                       width: 40,
                       height: 40,
-                      colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                        primaryColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                    const Text('Back', style: TextStyle(color: Colors.black, fontSize: 24)),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'Back',
+                      style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
               ),
