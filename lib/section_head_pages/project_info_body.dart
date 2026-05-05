@@ -15,7 +15,7 @@ class ProjectInfoBody extends StatelessWidget {
     required this.onNext,
     required this.onBack,
     required this.currentStep,
-    required this.onViewBills
+    required this.onViewBills,
   });
 
   @override

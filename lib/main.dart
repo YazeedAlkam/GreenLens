@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
+import 'package:greenlens/section_head_pages/allcontact_page.dart';
 import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/review_body.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
@@ -25,6 +26,7 @@ git pull origin main
 git checkout yazeed
 git merge main
 git push origin yazeed
+
 */
 
 const Color textcolor = Color(0xFFA8A6A7);
@@ -71,7 +73,7 @@ class MyApp extends StatelessWidget {
         '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: SignInPage(), // start page
+      home: AllContactPage(), // start page
     );
   }
 }
