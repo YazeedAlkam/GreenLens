@@ -5,7 +5,7 @@ import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
 import 'package:greenlens/section_head_pages/allcontact_page.dart';
 import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
-import 'package:greenlens/section_head_pages/review_page.dart';
+import 'package:greenlens/section_head_pages/review_body.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
 import 'ceo_pages/ceo_dashboard.dart';
 import 'engineer_pages/engineer_dashboard.dart';
