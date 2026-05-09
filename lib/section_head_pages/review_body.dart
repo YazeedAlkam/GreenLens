@@ -9,6 +9,11 @@ class ReviewBody extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
   final VoidCallback onViewAllContacts;
+  final Future<void> Function() onSaveProject;
+  final Map<String, dynamic> clientInfo;
+  final Map<String, dynamic> projectInfo;
+  final List<Map<String, dynamic>> assignedEngineers;
+  final String projectId;
 
   const ReviewBody({
     super.key,
@@ -16,21 +21,36 @@ class ReviewBody extends StatefulWidget {
     required this.onBack,
     required this.currentStep,
     required this.onViewAllContacts,
+    required this.onSaveProject,
+    required this.clientInfo,
+    required this.projectInfo,
+    required this.assignedEngineers,
+    required this.projectId,
   });
 
   @override
   State<ReviewBody> createState() => _ReviewBodyState();
 }
 
-class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMixin{
+class _ReviewBodyState extends State<ReviewBody>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  String _v(String? value) =>
+      (value == null || value.trim().isEmpty) ? 'No Data' : value;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final main = widget.clientInfo['mainContact'] as Map<String, dynamic>? ?? {};
+    final proj = widget.projectInfo;
+    final engs = widget.assignedEngineers;
+
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+        padding: const EdgeInsets.fromLTRB(32, 30, 32, 0),
         child: Column(
           children: [
             // ── Header ───────────────────────────────────────────────────────
@@ -40,7 +60,7 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                   'Review',
                   style: GoogleFonts.firaSans(
                     fontSize: 40,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: primaryColor,
                   ),
                 ),
@@ -60,7 +80,7 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                 ),
               ],
             ),
-            // ── Client Info Table - main client ─────────────────────────────────────────────
+            // ── Client Info Table ─────────────────────────────────────────────
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: tablelinescolor, width: 2),
@@ -71,154 +91,17 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                   inside: BorderSide(color: tablelinescolor, width: 2),
                 ),
                 children: [
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "ID",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "52",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Full Name",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Example .e Example",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Position",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "CEO",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Email",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "example@example.com",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Phone Number",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "123-456-7890",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  _infoRow("ID", _v(widget.projectId.isEmpty ? null : widget.projectId)),
+                  _infoRow("Full Name", _v(main['name'] as String?)),
+                  _infoRow("Client Position", _v(main['position'] as String?)),
+                  _infoRow("Client Email", _v(main['email'] as String?)),
+                  _infoRow("Client Phone Number", _v(main['phone'] as String?)),
                   TableRow(
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextButton(
-                          onPressed: () {
-                            widget.onViewAllContacts();
-                          },
+                          onPressed: widget.onViewAllContacts,
                           style: TextButton.styleFrom(
                             overlayColor: Colors.transparent,
                           ),
@@ -252,9 +135,9 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                 ],
               ),
             ),
-            SizedBox(height: 16),
-            Divider(),
-            //Project Info
+            const SizedBox(height: 16),
+            const Divider(),
+            // ── Project Info ──────────────────────────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -268,7 +151,7 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: tablelinescolor, width: 2),
@@ -279,124 +162,16 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                   inside: BorderSide(color: tablelinescolor, width: 2),
                 ),
                 children: [
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Project Name",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Facility Name...",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Building Type",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Commercial",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Initiation Date",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "6th of June, 2026",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Deadline Date",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "18th of September, 2026",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  _infoRow("Project Name", _v(proj['projectName'] as String?)),
+                  _infoRow("Building Type", _v(proj['buildingType'] as String?)),
+                  _infoRow("Initiation Date", _v(proj['initiationDate'] as String?)),
+                  _infoRow("Deadline Date", _v(proj['deadlineDate'] as String?)),
                 ],
               ),
             ),
-            SizedBox(height: 16),
-            Divider(),
-            //Assign Engs
+            const SizedBox(height: 16),
+            const Divider(),
+            // ── Assigned Engineers ────────────────────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -410,7 +185,7 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: tablelinescolor, width: 2),
@@ -418,9 +193,9 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
               ),
               child: Table(
                 columnWidths: const {
-                  0: FlexColumnWidth(0.19), // first column
-                  1: FlexColumnWidth(2), // second column
-                  2: FlexColumnWidth(1), // third column
+                  0: FlexColumnWidth(0.19),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(1),
                 },
                 border: TableBorder.symmetric(
                   inside: BorderSide(color: tablelinescolor, width: 2),
@@ -428,177 +203,103 @@ class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMi
                 children: [
                   TableRow(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ID',
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Name',
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Contact Info',
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      _engHeader('ID'),
+                      _engHeader('Name'),
+                      _engHeader('Contact Info'),
                     ],
                   ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
+                  if (engs.isEmpty)
+                    TableRow(
+                      children: [
+                        _engCell('—'),
+                        _engCell('No engineers assigned'),
+                        _engCell('—'),
+                      ],
+                    )
+                  else
+                    for (final eng in engs)
+                      TableRow(
+                        children: [
+                          _engCell(_v(eng['id'] as String?)),
+                          _engCell(_v(eng['name'] as String?)),
+                          _engCell(_v(eng['email'] as String?)),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "example@example.com",
-                              style: GoogleFonts.firaSans(fontSize: 24),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "example@example.com",
-                              style: GoogleFonts.firaSans(fontSize: 24),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "example@example.com",
-                              style: GoogleFonts.firaSans(fontSize: 24),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             CreateNewProjectFooter(
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
               mode: FooterMode.review,
+              onSaveProject: widget.onSaveProject,
             ),
-            const SizedBox(height: 6000),
+            const SizedBox(height: 60),
           ],
         ),
+      ),
+    );
+  }
+
+  TableRow _infoRow(String label, String value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                value,
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _engHeader(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            text,
+            style: GoogleFonts.firaSans(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _engCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(text, style: GoogleFonts.firaSans(fontSize: 24)),
+        ],
       ),
     );
   }

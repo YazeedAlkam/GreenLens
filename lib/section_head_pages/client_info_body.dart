@@ -11,34 +11,143 @@ class ClientInfoBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final Future<void> Function() onSaveDraft;
+  final String projectId;
+  final Map<String, dynamic>? initialClientInfo;
 
   const ClientInfoBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.onSaveDraft,
+    this.projectId = '',
+    this.initialClientInfo,
   });
 
   @override
-  State<ClientInfoBody> createState() => _ClientInfoBodyState();
+  ClientInfoBodyState createState() => ClientInfoBodyState();
 }
 
-class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveClientMixin{
+class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  /// Tracks which contact tab is currently active:
-  /// 0 = Client Contact, 1 = Second Contact, 2+ = extra contacts
-  int _activeContact = 0;
 
-  /// Holds IDs for dynamically added extra contact tabs (beyond the first two)
+  int _activeContact = 0;
   final List<int> _extraContacts = [];
   int _nextContactId = 2;
 
-  /// Returns the label for an extra contact tab given its id
-  String _extraContactLabel(int id) => "Contact ${id + 1}";
+  @override
+  void initState() {
+    super.initState();
+    final data = widget.initialClientInfo;
+    if (data == null) return;
+
+    final main = data['mainContact'] as Map<String, dynamic>? ?? {};
+    _mainNameCtrl.text = main['name'] ?? '';
+    _mainPositionCtrl.text = main['position'] ?? '';
+    _mainEmailCtrl.text = main['email'] ?? '';
+    _mainPhoneCtrl.text = main['phone'] ?? '';
+
+    final second = data['secondContact'] as Map<String, dynamic>? ?? {};
+    _secondNameCtrl.text = second['name'] ?? '';
+    _secondPositionCtrl.text = second['position'] ?? '';
+    _secondEmailCtrl.text = second['email'] ?? '';
+    _secondPhoneCtrl.text = second['phone'] ?? '';
+
+    final extras = data['extraContacts'] as List? ?? [];
+    for (final contact in extras) {
+      final c = contact as Map<String, dynamic>;
+      final ctrls = [
+        TextEditingController(text: c['name'] ?? ''),
+        TextEditingController(text: c['position'] ?? ''),
+        TextEditingController(text: c['email'] ?? ''),
+        TextEditingController(text: c['phone'] ?? ''),
+      ];
+      _extraContacts.add(_nextContactId);
+      _extraContactCtrls.add(ctrls);
+      _nextContactId++;
+    }
+  }
+
+  // Controllers for main client contact
+  final _mainNameCtrl = TextEditingController();
+  final _mainPositionCtrl = TextEditingController();
+  final _mainEmailCtrl = TextEditingController();
+  final _mainPhoneCtrl = TextEditingController();
+
+  // Controllers for second contact
+  final _secondNameCtrl = TextEditingController();
+  final _secondPositionCtrl = TextEditingController();
+  final _secondEmailCtrl = TextEditingController();
+  final _secondPhoneCtrl = TextEditingController();
+
+  // Each entry is [nameCtrl, positionCtrl, emailCtrl, phoneCtrl] for an extra contact
+  final List<List<TextEditingController>> _extraContactCtrls = [];
+
+  @override
+  void dispose() {
+    _mainNameCtrl.dispose();
+    _mainPositionCtrl.dispose();
+    _mainEmailCtrl.dispose();
+    _mainPhoneCtrl.dispose();
+    _secondNameCtrl.dispose();
+    _secondPositionCtrl.dispose();
+    _secondEmailCtrl.dispose();
+    _secondPhoneCtrl.dispose();
+    for (final ctrls in _extraContactCtrls) {
+      for (final c in ctrls) {
+        c.dispose();
+      }
+    }
+    super.dispose();
+  }
+
+  Map<String, dynamic> getClientInfo() {
+    return {
+      'mainContact': {
+        'name': _mainNameCtrl.text,
+        'position': _mainPositionCtrl.text,
+        'email': _mainEmailCtrl.text,
+        'phone': _mainPhoneCtrl.text,
+      },
+      'secondContact': {
+        'name': _secondNameCtrl.text,
+        'position': _secondPositionCtrl.text,
+        'email': _secondEmailCtrl.text,
+        'phone': _secondPhoneCtrl.text,
+      },
+      'extraContacts': _extraContactCtrls.map((ctrls) => {
+        'name': ctrls[0].text,
+        'position': ctrls[1].text,
+        'email': ctrls[2].text,
+        'phone': ctrls[3].text,
+      }).toList(),
+    };
+  }
+
+  String _extraContactLabel(int id) => "Contact ${_extraContacts.indexOf(id) + 3}";
+
+  void _deleteCurrentExtraContact() {
+    final idx = _extraContacts.indexOf(_activeContact);
+    if (idx == -1) return;
+    for (final c in _extraContactCtrls[idx]) {
+      c.dispose();
+    }
+    setState(() {
+      _extraContacts.removeAt(idx);
+      _extraContactCtrls.removeAt(idx);
+      if (_extraContacts.isEmpty) {
+        _activeContact = 1;
+      } else {
+        _activeContact = _extraContacts[(idx - 1).clamp(0, _extraContacts.length - 1)];
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(32),
       child: Column(
@@ -96,7 +205,7 @@ class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAlive
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
-                hintText: "52",
+                hintText: widget.projectId.isEmpty ? '...' : widget.projectId,
                 hintStyle: GoogleFonts.firaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -138,7 +247,6 @@ class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAlive
                 ),
                 const SizedBox(width: 18),
 
-                // Dynamically added extra contact tabs
                 ..._extraContacts.map((id) {
                   return Row(
                     children: [
@@ -165,8 +273,10 @@ class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAlive
                   child: SizedBox.expand(
                     child: ElevatedButton(
                       onPressed: () {
+                        final ctrls = List.generate(4, (_) => TextEditingController());
                         setState(() {
                           _extraContacts.add(_nextContactId);
+                          _extraContactCtrls.add(ctrls);
                           _activeContact = _nextContactId;
                           _nextContactId++;
                         });
@@ -209,11 +319,52 @@ class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAlive
                 ? 1
                 : _extraContacts.indexOf(_activeContact) + 2,
             children: [
-              const MainClientForum(),
-              const OtherContactsForum(),
-              ..._extraContacts.map((_) => const OtherContactsForum()),
+              MainClientForum(
+                nameController: _mainNameCtrl,
+                positionController: _mainPositionCtrl,
+                emailController: _mainEmailCtrl,
+                phoneController: _mainPhoneCtrl,
+              ),
+              OtherContactsForum(
+                nameController: _secondNameCtrl,
+                positionController: _secondPositionCtrl,
+                emailController: _secondEmailCtrl,
+                phoneController: _secondPhoneCtrl,
+              ),
+              ..._extraContactCtrls.map((ctrls) => OtherContactsForum(
+                nameController: ctrls[0],
+                positionController: ctrls[1],
+                emailController: ctrls[2],
+                phoneController: ctrls[3],
+              )),
             ],
           ),
+
+          if (_extraContacts.contains(_activeContact)) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 65,
+              child: ElevatedButton(
+                onPressed: _deleteCurrentExtraContact,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: deniedColor,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "Delete Contact",
+                  style: GoogleFonts.firaSans(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
 
           const SizedBox(height: 32),
 
@@ -222,6 +373,7 @@ class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAlive
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
+            onSaveDraft: widget.onSaveDraft,
           ),
         ],
       ),

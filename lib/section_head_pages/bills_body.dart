@@ -1,50 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
+  final void Function(double)? onAverageChanged;
 
-  const BillsBody({super.key, required this.onBack});
+  const BillsBody({super.key, required this.onBack, this.onAverageChanged});
 
   @override
-  State<BillsBody> createState() => _BillsBodyState();
+  State<BillsBody> createState() => BillsBodyState();
 }
 
-class _BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixin{
+class BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  late final List<String> _months;
+  late final List<TextEditingController> _energyCtrls;
+  late final List<TextEditingController> _billCtrls;
+  double _averageMonthlyBill = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _months = _getLast12Months();
+    _energyCtrls = List.generate(12, (_) => TextEditingController());
+    _billCtrls = List.generate(12, (_) => TextEditingController());
+    for (final ctrl in _billCtrls) {
+      ctrl.addListener(_recalculateAverage);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _energyCtrls) c.dispose();
+    for (final c in _billCtrls) c.dispose();
+    super.dispose();
+  }
+
+  void _recalculateAverage() {
+    final values = _billCtrls
+        .map((c) => double.tryParse(c.text) ?? 0)
+        .where((v) => v > 0)
+        .toList();
+    final avg = values.isEmpty ? 0.0 : values.reduce((a, b) => a + b) / values.length;
+    setState(() => _averageMonthlyBill = avg);
+    widget.onAverageChanged?.call(avg);
+  }
+
+  Map<String, dynamic> getBillsData() {
+    return {
+      'bills': List.generate(12, (i) => {
+        'month': _months[i],
+        'energyConsumed': _energyCtrls[i].text,
+        'billAmount': _billCtrls[i].text,
+      }),
+      'averageMonthlyBill': _averageMonthlyBill,
+    };
+  }
 
   List<String> _getLast12Months() {
     final now = DateTime.now();
     final startMonth = DateTime(now.year, now.month - 12);
-    final months = <String>[];
-    final monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
     ];
-    for (int i = 0; i < 12; i++) {
+    return List.generate(12, (i) {
       final date = DateTime(startMonth.year, startMonth.month + i);
-      months.add('${monthNames[date.month - 1]} ${date.year}');
-    }
-    return months;
+      return '${monthNames[date.month - 1]} ${date.year}';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final months = _getLast12Months();
-
+    super.build(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(left: 32, right: 32, top: 30),
@@ -70,12 +103,12 @@ class _BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixi
                 borderRadius: BorderRadius.circular(18),
                 child: Table(
                   border: TableBorder(
-                    top: BorderSide(color: Colors.black, width: 1),
-                    bottom: BorderSide(color: Colors.black, width: 1),
-                    left: BorderSide(color: Colors.black, width: 1),
-                    right: BorderSide(color: Colors.black, width: 1),
-                    horizontalInside: BorderSide(color: Colors.black, width: 1),
-                    verticalInside: BorderSide(color: Colors.black, width: 1),
+                    top: const BorderSide(color: Colors.black, width: 1),
+                    bottom: const BorderSide(color: Colors.black, width: 1),
+                    left: const BorderSide(color: Colors.black, width: 1),
+                    right: const BorderSide(color: Colors.black, width: 1),
+                    horizontalInside: const BorderSide(color: Colors.black, width: 1),
+                    verticalInside: const BorderSide(color: Colors.black, width: 1),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   columnWidths: const {
@@ -89,87 +122,57 @@ class _BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixi
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text(
-                            'Month',
-                            style: GoogleFonts.firaSans(
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor,
-                              fontSize: 24,
-                            ),
-                          ),
+                          child: Text('Month', style: GoogleFonts.firaSans(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text(
-                            'Energy Consumed (kWh)',
-                            style: GoogleFonts.firaSans(
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor,
-                              fontSize: 24,
-                            ),
-                          ),
+                          child: Text('Energy Consumed (kWh)', style: GoogleFonts.firaSans(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text(
-                            "Bill's Amount",
-                            style: GoogleFonts.firaSans(
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor,
-                              fontSize: 24,
-                            ),
-                          ),
+                          child: Text("Bill's Amount", style: GoogleFonts.firaSans(fontWeight: FontWeight.w600, color: primaryColor, fontSize: 24)),
                         ),
                       ],
                     ),
-                    ...months.map(
-                      (month) => TableRow(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            alignment: Alignment.centerLeft,
-                            height: 68,
-                            child: Text(
-                              month,
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                    ...List.generate(12, (i) => TableRow(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          alignment: Alignment.centerLeft,
+                          height: 68,
+                          child: Text(
+                            _months[i],
+                            style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                           ),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            alignment: Alignment.centerLeft,
-                            height: 68,
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                            ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          alignment: Alignment.centerLeft,
+                          height: 68,
+                          child: TextField(
+                            controller: _energyCtrls[i],
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                            minLines: 1,
+                            maxLines: 1,
+                            style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                            decoration: const InputDecoration(border: InputBorder.none),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: _billCtrls[i],
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                            minLines: 1,
+                            maxLines: 1,
+                            style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                            decoration: const InputDecoration(border: InputBorder.none),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      ],
+                    )),
                   ],
                 ),
               ),

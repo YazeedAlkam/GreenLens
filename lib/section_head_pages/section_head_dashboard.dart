@@ -4,6 +4,8 @@ import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:greenlens/firebase/project_service.dart';
+import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
 
 class SectionHeadPage extends StatefulWidget {
   const SectionHeadPage({super.key});
@@ -13,6 +15,15 @@ class SectionHeadPage extends StatefulWidget {
 }
 
 class _SectionHeadPageState extends State<SectionHeadPage> {
+  final ProjectService _projectService = ProjectService();
+  late Future<List<Map<String, dynamic>>> _latestProjectsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _latestProjectsFuture = _projectService.getLatestProjects();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,14 +242,90 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                         ),
                         SizedBox(height: 16),
                         //Projects List --------------->
-                        Project(title: "Al-Quds Mall", status: "In Progress"),
-                        SizedBox(height: 16),
-                        Project(
-                          title: "Royal Hotel",
-                          status: "Awaiting Approval",
+                        FutureBuilder<List<Map<String, dynamic>>>(
+                          future: _latestProjectsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                    child: CircularProgressIndicator()),
+                              );
+                            }
+                            if (snapshot.hasError) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                child: Text(
+                                  'Failed to load projects.',
+                                  style: GoogleFonts.firaSans(
+                                      color: Colors.red),
+                                ),
+                              );
+                            }
+                            final projects = snapshot.data ?? [];
+                            if (projects.isEmpty) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                child: Text(
+                                  'No projects yet.',
+                                  style: GoogleFonts.firaSans(
+                                      fontSize: 14,
+                                      color: Colors.grey),
+                                ),
+                              );
+                            }
+                            return Column(
+                              children: [
+                                for (int i = 0; i < projects.length; i++) ...[
+                                  Builder(builder: (context) {
+                                    final project = projects[i];
+                                    final status =
+                                        project['status'] as String? ??
+                                            'Draft';
+                                    final isDraft =
+                                        status.toLowerCase() == 'draft';
+                                    return Project(
+                                      title: (project['projectInfo']
+                                                  as Map<String, dynamic>?)?[
+                                              'projectName'] ??
+                                          project['customId'] ??
+                                          'Untitled',
+                                      status: status,
+                                      onTap: isDraft
+                                          ? () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      CreateProjectFlow(
+                                                    existingProjectId:
+                                                        project['id']
+                                                            as String,
+                                                  ),
+                                                ),
+                                              ).then((_) {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _latestProjectsFuture =
+                                                        _projectService
+                                                            .getLatestProjects();
+                                                  });
+                                                }
+                                              });
+                                            }
+                                          : null,
+                                    );
+                                  }),
+                                  if (i < projects.length - 1)
+                                    const SizedBox(height: 16),
+                                ],
+                              ],
+                            );
+                          },
                         ),
-                        SizedBox(height: 16),
-                        Project(title: "Zaid Bakery", status: "Draft"),
                         SizedBox(height: 16),
                         TextButton(
                           style: TextButton.styleFrom(

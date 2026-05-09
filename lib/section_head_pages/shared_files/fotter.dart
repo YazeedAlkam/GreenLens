@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+
 enum FooterMode {
   /// Back + Save Draft + Next Step  (steps 0–3)
   normal,
@@ -19,6 +20,8 @@ class CreateNewProjectFooter extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final FooterMode mode;
+  final Future<void> Function()? onSaveDraft;
+  final Future<void> Function()? onSaveProject;
 
   const CreateNewProjectFooter({
     super.key,
@@ -26,13 +29,9 @@ class CreateNewProjectFooter extends StatelessWidget {
     required this.onNext,
     required this.onBack,
     this.mode = FooterMode.normal,
+    this.onSaveDraft,    // ← add
+    this.onSaveProject,  // ← add
   });
-
-  // TODO: implement save draft logic
-  void _saveDraft() {}
-
-  // TODO: implement save project logic
-  void _saveProject() {}
 
   // ── shared button styles ────────────────────────────────────────────────
 
@@ -97,7 +96,7 @@ class CreateNewProjectFooter extends StatelessWidget {
     width: 309,
     height: 65,
     child: ElevatedButton(
-      onPressed: _saveDraft,
+      onPressed: onSaveDraft,
       style: _outlineStyle,
       child: Text(
         "Save Draft",
@@ -150,7 +149,7 @@ class CreateNewProjectFooter extends StatelessWidget {
     width: 760,
     height: 65,
     child: ElevatedButton(
-      onPressed: _saveProject,
+      onPressed: onSaveProject,
       style: _saveStyle,
       child: Text(
         "Save Project",
