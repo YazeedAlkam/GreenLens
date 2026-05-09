@@ -3,26 +3,36 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/more_contacts.dart';
+import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
-class AllContactPage extends StatelessWidget {
-  const AllContactPage({super.key});
+class AllContactPage extends StatefulWidget {
+  final VoidCallback onBack;
+  const AllContactPage({super.key, required this.onBack});
+
+  @override
+  State<AllContactPage> createState() => _AllContactPageState();
+}
+
+class _AllContactPageState extends State<AllContactPage> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      //TODO put the navbar 
       child: Padding(
         padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
         child: Column(
           children: [
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: 70,
                   height: 40,
-                  //TODO : make it back to the the review page
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      widget.onBack();
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       minimumSize: Size.zero,
@@ -215,7 +225,7 @@ class AllContactPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            // secondry client
+            // secondary client
             MoreContacts(
               name: "Ameen Abu tahun",
               position: "Developer",
@@ -230,6 +240,14 @@ class AllContactPage extends StatelessWidget {
               email: "Yazeed.alkam@gmail.com",
               phoneNumber: "0792540149",
             ),
+            SizedBox(height: 16),
+            CreateNewProjectFooter(
+              currentStep: 5,
+              onNext: () {},
+              onBack: widget.onBack,
+              mode: FooterMode.backOnly,
+            ),
+            SizedBox(height: 60),
           ],
         ),
       ),

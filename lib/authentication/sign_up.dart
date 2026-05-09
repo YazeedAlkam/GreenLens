@@ -157,10 +157,7 @@ class _SignUpState extends State<SignUp> {
                     decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(
-                          color: textcolor,
-                          width: 2.0,
-                        ),
+                        borderSide: BorderSide(color: textcolor, width: 2.0),
                       ),
                       hoverColor: Colors.transparent,
                       labelText: 'Password',
@@ -193,10 +190,7 @@ class _SignUpState extends State<SignUp> {
                     decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
-                        borderSide: BorderSide(
-                          color: textcolor,
-                          width: 2.0,
-                        ),
+                        borderSide: BorderSide(color: textcolor, width: 2.0),
                       ),
                       hoverColor: Colors.transparent,
                       labelText: 'Confirm your password',
@@ -232,7 +226,10 @@ class _SignUpState extends State<SignUp> {
                           'assets/images/Down 4.svg',
                           width: 40,
                           height: 40,
-                          colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                            primaryColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         initialValue: _selectedRole,
                         decoration: InputDecoration(
@@ -255,15 +252,24 @@ class _SignUpState extends State<SignUp> {
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: primaryColor, width: 2),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: primaryColor, width: 2), // 👈 was faded
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ), // 👈 was faded
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: primaryColor, width: 2.5),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2.5,
+                            ),
                           ),
                         ),
                         style: GoogleFonts.nunito(
@@ -271,18 +277,24 @@ class _SignUpState extends State<SignUp> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
-                        items: roles.map((role) => DropdownMenuItem<String>(
-                          value: role,
-                          child: Text(
-                            role,
-                            style: GoogleFonts.nunito(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold, // 👈 bold items in dropdown
-                              color: Colors.black,
-                            ),
-                          ),
-                        )).toList(),
-                        onChanged: (value) => setState(() => _selectedRole = value),
+                        items: roles
+                            .map(
+                              (role) => DropdownMenuItem<String>(
+                                value: role,
+                                child: Text(
+                                  role,
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight
+                                        .bold, // 👈 bold items in dropdown
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => _selectedRole = value),
                       ),
                     ),
                   ),

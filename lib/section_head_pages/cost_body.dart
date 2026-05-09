@@ -19,7 +19,10 @@ class CostBody extends StatefulWidget {
   State<CostBody> createState() => _CostBodyState();
 }
 
-class _CostBodyState extends State<CostBody> {
+class _CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -56,7 +59,7 @@ class _CostBodyState extends State<CostBody> {
               readOnly: true,
               expands: true,
               maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "No Data",
                 filled: true,
@@ -93,7 +96,7 @@ class _CostBodyState extends State<CostBody> {
               readOnly: true,
               expands: true,
               maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "5%",
                 filled: true,
@@ -126,7 +129,7 @@ class _CostBodyState extends State<CostBody> {
           SizedBox(
             height: 65,
             child: TextField(
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "e.g 100JD",
                 filled: true,
@@ -159,7 +162,7 @@ class _CostBodyState extends State<CostBody> {
           SizedBox(
             height: 65,
             child: TextField(
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "e.g 30 JOD",
                 filled: true,
@@ -192,7 +195,7 @@ class _CostBodyState extends State<CostBody> {
           SizedBox(
             height: 65,
             child: TextField(
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "e.g 30 JOD",
                 filled: true,
@@ -227,7 +230,7 @@ class _CostBodyState extends State<CostBody> {
             height: 65,
             child: TextField(
               readOnly: true,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "----",
                 filled: true,

@@ -3,25 +3,28 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
-import 'package:greenlens/section_head_pages/shared_files/nav_bar.dart';
-import 'package:greenlens/section_head_pages/shared_files/navbar_title.dart';
 
 class ReviewBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final VoidCallback onViewAllContacts;
+
   const ReviewBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.onViewAllContacts,
   });
 
   @override
   State<ReviewBody> createState() => _ReviewBodyState();
 }
 
-class _ReviewBodyState extends State<ReviewBody> {
+class _ReviewBodyState extends State<ReviewBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                   'Review',
                   style: GoogleFonts.firaSans(
                     fontSize: 40,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                     color: primaryColor,
                   ),
                 ),
@@ -78,7 +81,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                               "ID",
                               style: GoogleFonts.firaSans(
                                 fontSize: 24,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                             ),
@@ -213,14 +216,19 @@ class _ReviewBodyState extends State<ReviewBody> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            widget.onViewAllContacts();
+                          },
+                          style: TextButton.styleFrom(
+                            overlayColor: Colors.transparent,
+                          ),
                           child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   "View All Contacts",
-                                  style: TextStyle(
+                                  style: GoogleFonts.firaSans(
                                     color: Colors.black,
                                     fontSize: 24,
                                   ),
@@ -229,7 +237,10 @@ class _ReviewBodyState extends State<ReviewBody> {
                                   "assets/images/arrowright.svg",
                                   width: 40,
                                   height: 40,
-                                  color: primaryColor,
+                                  colorFilter: ColorFilter.mode(
+                                    primaryColor,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ],
                             ),
@@ -278,7 +289,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                               "Project Name",
                               style: GoogleFonts.firaSans(
                                 fontSize: 24,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                             ),
@@ -425,7 +436,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                             children: [
                               Text(
                                 'ID',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -443,7 +454,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                             children: [
                               Text(
                                 'Name',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -461,7 +472,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                             children: [
                               Text(
                                 'Contact Info',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -479,7 +490,9 @@ class _ReviewBodyState extends State<ReviewBody> {
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [Text("11", style: TextStyle(fontSize: 24))],
+                          children: [
+                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
+                          ],
                         ),
                       ),
                       Padding(
@@ -487,7 +500,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("Mohmmad", style: TextStyle(fontSize: 24)),
+                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
                           ],
                         ),
                       ),
@@ -498,7 +511,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                           children: [
                             Text(
                               "example@example.com",
-                              style: TextStyle(fontSize: 24),
+                              style: GoogleFonts.firaSans(fontSize: 24),
                             ),
                           ],
                         ),
@@ -511,7 +524,9 @@ class _ReviewBodyState extends State<ReviewBody> {
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [Text("11", style: TextStyle(fontSize: 24))],
+                          children: [
+                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
+                          ],
                         ),
                       ),
                       Padding(
@@ -519,7 +534,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("Mohmmad", style: TextStyle(fontSize: 24)),
+                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
                           ],
                         ),
                       ),
@@ -530,7 +545,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                           children: [
                             Text(
                               "example@example.com",
-                              style: TextStyle(fontSize: 24),
+                              style: GoogleFonts.firaSans(fontSize: 24),
                             ),
                           ],
                         ),
@@ -543,7 +558,9 @@ class _ReviewBodyState extends State<ReviewBody> {
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [Text("11", style: TextStyle(fontSize: 24))],
+                          children: [
+                            Text("11", style: GoogleFonts.firaSans(fontSize: 24)),
+                          ],
                         ),
                       ),
                       Padding(
@@ -551,7 +568,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("Mohmmad", style: TextStyle(fontSize: 24)),
+                            Text("Mohmmad", style: GoogleFonts.firaSans(fontSize: 24)),
                           ],
                         ),
                       ),
@@ -562,7 +579,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                           children: [
                             Text(
                               "example@example.com",
-                              style: TextStyle(fontSize: 24),
+                              style: GoogleFonts.firaSans(fontSize: 24),
                             ),
                           ],
                         ),
@@ -577,8 +594,9 @@ class _ReviewBodyState extends State<ReviewBody> {
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
+              mode: FooterMode.review,
             ),
-            const SizedBox(height: 60,)
+            const SizedBox(height: 6000),
           ],
         ),
       ),

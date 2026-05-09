@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
+import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
 class BillsBody extends StatefulWidget {
-  final VoidCallback onBack; // called when user taps Back inside bills
+  final VoidCallback onBack;
 
   const BillsBody({super.key, required this.onBack});
 
@@ -11,7 +12,10 @@ class BillsBody extends StatefulWidget {
   State<BillsBody> createState() => _BillsBodyState();
 }
 
-class _BillsBodyState extends State<BillsBody> {
+class _BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
+
   List<String> _getLast12Months() {
     final now = DateTime.now();
     final startMonth = DateTime(now.year, now.month - 12);
@@ -49,7 +53,7 @@ class _BillsBodyState extends State<BillsBody> {
           children: [
             Text(
               'Bills Input',
-              style: TextStyle(
+              style: GoogleFonts.firaSans(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
@@ -87,7 +91,7 @@ class _BillsBodyState extends State<BillsBody> {
                           padding: const EdgeInsets.all(10),
                           child: Text(
                             'Month',
-                            style: TextStyle(
+                            style: GoogleFonts.firaSans(
                               fontWeight: FontWeight.w600,
                               color: primaryColor,
                               fontSize: 24,
@@ -98,7 +102,7 @@ class _BillsBodyState extends State<BillsBody> {
                           padding: const EdgeInsets.all(10),
                           child: Text(
                             'Energy Consumed (kWh)',
-                            style: TextStyle(
+                            style: GoogleFonts.firaSans(
                               fontWeight: FontWeight.w600,
                               color: primaryColor,
                               fontSize: 24,
@@ -109,7 +113,7 @@ class _BillsBodyState extends State<BillsBody> {
                           padding: const EdgeInsets.all(10),
                           child: Text(
                             "Bill's Amount",
-                            style: TextStyle(
+                            style: GoogleFonts.firaSans(
                               fontWeight: FontWeight.w600,
                               color: primaryColor,
                               fontSize: 24,
@@ -127,7 +131,7 @@ class _BillsBodyState extends State<BillsBody> {
                             height: 68,
                             child: Text(
                               month,
-                              style: const TextStyle(
+                              style: GoogleFonts.firaSans(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -140,7 +144,7 @@ class _BillsBodyState extends State<BillsBody> {
                             child: TextField(
                               minLines: 1,
                               maxLines: 1,
-                              style: TextStyle(
+                              style: GoogleFonts.firaSans(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -154,7 +158,7 @@ class _BillsBodyState extends State<BillsBody> {
                             child: TextField(
                               minLines: 1,
                               maxLines: 1,
-                              style: TextStyle(
+                              style: GoogleFonts.firaSans(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -171,47 +175,11 @@ class _BillsBodyState extends State<BillsBody> {
               ),
             ),
             const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: primaryColor, width: 2),
-              ),
-              width: double.infinity,
-              height: 65,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-                onPressed: widget.onBack,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/Left Arrow.svg',
-                      width: 40,
-                      height: 40,
-                      colorFilter: ColorFilter.mode(
-                        primaryColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Back',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            CreateNewProjectFooter(
+              currentStep: 2,
+              onNext: () {},
+              onBack: widget.onBack,
+              mode: FooterMode.backOnly,
             ),
             const SizedBox(height: 60),
           ],

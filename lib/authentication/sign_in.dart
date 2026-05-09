@@ -108,10 +108,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
-                      borderSide: BorderSide(
-                        color: textcolor,
-                        width: 2.0,
-                      ),
+                      borderSide: BorderSide(color: textcolor, width: 2.0),
                     ),
                     hoverColor: Colors.transparent,
                     border: UnderlineInputBorder(
@@ -139,10 +136,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
-                      borderSide: BorderSide(
-                        color: textcolor,
-                        width: 2.0,
-                      ),
+                      borderSide: BorderSide(color: textcolor, width: 2.0),
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
