@@ -94,12 +94,12 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
           ),
         ),
       ),
-      body: _showingBills
-          ? BillsBody(onBack: _back)
-          : _showingAllContacts
-          ? AllContactPage(onBack: _back)
-          : IndexedStack(
-        index: _currentStep,
+      body: IndexedStack(
+        index: _showingBills
+            ? 5
+            : _showingAllContacts
+            ? 6
+            : _currentStep,
         children: [
           ClientInfoBody(
             onNext: _next,
@@ -128,6 +128,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
             currentStep: _currentStep,
             onViewAllContacts: _goToAllContacts,
           ),
+          BillsBody(onBack: _back),        // index 5
+          AllContactPage(onBack: _back),   // index 6
         ],
       ),
     );
