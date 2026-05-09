@@ -7,32 +7,55 @@ import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
 class AllContactPage extends StatefulWidget {
   final VoidCallback onBack;
-  const AllContactPage({super.key, required this.onBack});
+  final Map<String, dynamic> clientInfo;
+  final String projectId;
+
+  const AllContactPage({
+    super.key,
+    required this.onBack,
+    required this.clientInfo,
+    required this.projectId,
+  });
 
   @override
   State<AllContactPage> createState() => _AllContactPageState();
 }
 
-class _AllContactPageState extends State<AllContactPage> with AutomaticKeepAliveClientMixin{
+class _AllContactPageState extends State<AllContactPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  String _v(String? value) =>
+      (value == null || value.trim().isEmpty) ? 'No Data' : value;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final main =
+        widget.clientInfo['mainContact'] as Map<String, dynamic>? ?? {};
+    final second =
+        widget.clientInfo['secondContact'] as Map<String, dynamic>? ?? {};
+    final extras = (widget.clientInfo['extraContacts'] as List<dynamic>?)
+            ?.cast<Map<String, dynamic>>() ??
+        [];
+
+    final secondName = (second['name'] as String? ?? '').trim();
+    final hasSecond = secondName.isNotEmpty;
+
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+        padding: const EdgeInsets.fromLTRB(32, 30, 32, 0),
         child: Column(
           children: [
             Row(
               children: [
                 SizedBox(
-                  width: 70,
+                  width: 40,
                   height: 40,
                   child: ElevatedButton(
-                    onPressed: () {
-                      widget.onBack();
-                    },
+                    onPressed: widget.onBack,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       minimumSize: Size.zero,
@@ -54,9 +77,9 @@ class _AllContactPageState extends State<AllContactPage> with AutomaticKeepAlive
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Divider(color: dividerColor, height: 2, thickness: 2),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -70,7 +93,7 @@ class _AllContactPageState extends State<AllContactPage> with AutomaticKeepAlive
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: tablelinescolor, width: 2),
@@ -81,176 +104,77 @@ class _AllContactPageState extends State<AllContactPage> with AutomaticKeepAlive
                   inside: BorderSide(color: tablelinescolor, width: 2),
                 ),
                 children: [
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "ID",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "52",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Full Name",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Example .e Example",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Position",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "CEO",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Email",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "example@example.com",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Client Phone Number",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "123-456-7890",
-                              style: GoogleFonts.firaSans(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  _infoRow("ID",
+                      _v(widget.projectId.isEmpty ? null : widget.projectId)),
+                  _infoRow("Full Name", _v(main['name'] as String?)),
+                  _infoRow("Client Position", _v(main['position'] as String?)),
+                  _infoRow("Client Email", _v(main['email'] as String?)),
+                  _infoRow(
+                      "Client Phone Number", _v(main['phone'] as String?)),
                 ],
               ),
             ),
-            SizedBox(height: 16),
-            // secondary client
-            MoreContacts(
-              name: "Ameen Abu tahun",
-              position: "Developer",
-              email: "Ameen01@gmail.com",
-              phoneNumber: "000-000-000",
-            ),
-            SizedBox(height: 16),
-            // Third Contact
-            MoreContacts(
-              name: "Yazeed Alkam",
-              position: "CEO",
-              email: "Yazeed.alkam@gmail.com",
-              phoneNumber: "0792540149",
-            ),
-            SizedBox(height: 16),
+            if (hasSecond) ...[
+              const SizedBox(height: 16),
+              MoreContacts(
+                name: secondName,
+                position: _v(second['position'] as String?),
+                email: _v(second['email'] as String?),
+                phoneNumber: _v(second['phone'] as String?),
+              ),
+            ],
+            for (final extra in extras)
+              if ((extra['name'] as String? ?? '').trim().isNotEmpty) ...[
+                const SizedBox(height: 16),
+                MoreContacts(
+                  name: (extra['name'] as String).trim(),
+                  position: _v(extra['position'] as String?),
+                  email: _v(extra['email'] as String?),
+                  phoneNumber: _v(extra['phone'] as String?),
+                ),
+              ],
+            const SizedBox(height: 16),
             CreateNewProjectFooter(
               currentStep: 5,
               onNext: () {},
               onBack: widget.onBack,
               mode: FooterMode.backOnly,
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
           ],
         ),
       ),
+    );
+  }
+
+  TableRow _infoRow(String label, String value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                value,
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
@@ -10,41 +11,80 @@ class AssignEngBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final Future<void> Function() onSaveDraft;
+  final List<String>? initialAssignedEngineers;
 
   const AssignEngBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.onSaveDraft,
+    this.initialAssignedEngineers,
   });
 
   @override
-  State<AssignEngBody> createState() => _AssignEngBodyState();
+  State<AssignEngBody> createState() => AssignEngBodyState();
 }
 
-class _AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveClientMixin{
+class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveClientMixin{
   @override
   bool get wantKeepAlive => true;
 
-  // Each engineer has: id, name, email, and isAssigned (true = remove, false = add)
-  final List<Map<String, dynamic>> _engineers = [
-    {
-      'id': '05',
-      'name': 'Ahmad',
-      'email': 'Ahmad@gmail.com',
-      'isAssigned': false,
-    },
-    {
-      'id': '11',
-      'name': 'Mohammad',
-      'email': 'Mohammad@gmail.com',
-      'isAssigned': true,
-    },
-    // TODO: replace with real data from backend
-  ];
+  final List<Map<String, dynamic>> _engineers = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEngineers();
+  }
+
+  Future<void> _loadEngineers() async {
+    try {
+      final engineers = await ProjectService().getEngineers();
+      if (mounted) {
+        final preAssigned = widget.initialAssignedEngineers ?? [];
+        setState(() {
+          _engineers.addAll(engineers.map((e) => {
+                ...e,
+                'isAssigned': preAssigned.contains(e['id']),
+              }));
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  List<String> getAssignedEngineers() {
+    return _engineers
+        .where((e) => e['isAssigned'] == true)
+        .map((e) => e['id'] as String)
+        .toList();
+  }
+
+  List<Map<String, dynamic>> getAssignedEngineersInfo() {
+    return _engineers
+        .where((e) => e['isAssigned'] == true)
+        .map((e) => {
+              'id': e['customId'] as String,
+              'name': e['name'] as String,
+              'email': e['email'] as String,
+            })
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.only(left: 32, right: 32, top: 30),
       child: Column(
@@ -62,6 +102,11 @@ class _AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCl
           const SizedBox(height: 16),
           Divider(color: dividerColor),
           const SizedBox(height: 16),
+          if (_isLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (_error != null)
+            Center(child: Text('Error loading engineers: $_error'))
+          else
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -121,7 +166,7 @@ class _AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCl
 
                     return TableRow(
                       children: [
-                        _dataCell(eng['id']),
+                        _dataCell(eng['customId']),
                         _dataCell(eng['name']),
                         _dataCell(eng['email']),
                         Padding(
@@ -176,6 +221,7 @@ class _AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCl
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
+            onSaveDraft: widget.onSaveDraft,
           ),
           const SizedBox(height: 60),
         ],

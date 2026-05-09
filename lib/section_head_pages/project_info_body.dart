@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
@@ -9,6 +10,8 @@ class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
   final VoidCallback onViewBills;
+  final Future<void> Function()? onSaveDraft;
+  final Map<String, dynamic>? initialProjectInfo;
 
   const ProjectInfoBody({
     super.key,
@@ -16,18 +19,85 @@ class ProjectInfoBody extends StatefulWidget {
     required this.onBack,
     required this.currentStep,
     required this.onViewBills,
+    required this.onSaveDraft,
+    this.initialProjectInfo,
   });
 
   @override
-  State<ProjectInfoBody> createState() => _ProjectInfoBodyState();
+  ProjectInfoBodyState createState() => ProjectInfoBodyState();
 }
 
-class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliveClientMixin{
+class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  final _projectNameCtrl = TextEditingController();
+  final _buildingTypeCtrl = TextEditingController();
+  final _floorAreaCtrl = TextEditingController();
+  final _noOfFloorsCtrl = TextEditingController();
+  final _operatingHrsCtrl = TextEditingController();
+  final _daysPerWeekCtrl = TextEditingController();
+  final _initiationDateCtrl = TextEditingController();
+  final _deadlineDateCtrl = TextEditingController();
+  final _salesMarkCtrl = TextEditingController();
+  final _avgMonthlyBillCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final data = widget.initialProjectInfo;
+    if (data == null) return;
+    _projectNameCtrl.text = data['projectName'] ?? '';
+    _buildingTypeCtrl.text = data['buildingType'] ?? '';
+    _floorAreaCtrl.text = data['floorArea'] ?? '';
+    _noOfFloorsCtrl.text = data['noOfFloors'] ?? '';
+    _operatingHrsCtrl.text = data['operatingHrsPerDay'] ?? '';
+    _daysPerWeekCtrl.text = data['daysPerWeek'] ?? '';
+    _initiationDateCtrl.text = data['initiationDate'] ?? '';
+    _deadlineDateCtrl.text = data['deadlineDate'] ?? '';
+    _salesMarkCtrl.text = data['salesMark'] ?? '';
+    final avg = data['averageBill'];
+    if (avg != null) _avgMonthlyBillCtrl.text = avg.toString();
+  }
+
+  @override
+  void dispose() {
+    _projectNameCtrl.dispose();
+    _buildingTypeCtrl.dispose();
+    _floorAreaCtrl.dispose();
+    _noOfFloorsCtrl.dispose();
+    _operatingHrsCtrl.dispose();
+    _daysPerWeekCtrl.dispose();
+    _initiationDateCtrl.dispose();
+    _deadlineDateCtrl.dispose();
+    _salesMarkCtrl.dispose();
+    _avgMonthlyBillCtrl.dispose();
+    super.dispose();
+  }
+
+  void updateAverageBill(double avg) {
+    setState(() {
+      _avgMonthlyBillCtrl.text = avg > 0 ? avg.toStringAsFixed(2) : '';
+    });
+  }
+
+  Map<String, dynamic> getProjectInfo() {
+    return {
+      'projectName': _projectNameCtrl.text,
+      'buildingType': _buildingTypeCtrl.text,
+      'floorArea': _floorAreaCtrl.text,
+      'noOfFloors': _noOfFloorsCtrl.text,
+      'operatingHrsPerDay': _operatingHrsCtrl.text,
+      'daysPerWeek': _daysPerWeekCtrl.text,
+      'initiationDate': _initiationDateCtrl.text,
+      'deadlineDate': _deadlineDateCtrl.text,
+      'salesMark': _salesMarkCtrl.text,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.only(left: 32, right: 32, top: 30),
       child: Column(
@@ -65,6 +135,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
           SizedBox(
             height: 65,
             child: TextField(
+              controller: _projectNameCtrl,
               expands: true,
               maxLines: null,
               style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -119,6 +190,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _buildingTypeCtrl,
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -152,6 +224,9 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _floorAreaCtrl,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -215,6 +290,9 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _noOfFloorsCtrl,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -248,6 +326,9 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _operatingHrsCtrl,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -311,6 +392,9 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _daysPerWeekCtrl,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -344,6 +428,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _avgMonthlyBillCtrl,
                     readOnly: true,
                     expands: true,
                     maxLines: null,
@@ -436,6 +521,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _initiationDateCtrl,
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -469,6 +555,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
                 child: SizedBox(
                   height: 65,
                   child: TextField(
+                    controller: _deadlineDateCtrl,
                     expands: true,
                     maxLines: null,
                     style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
@@ -517,6 +604,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
           const SizedBox(height: 16),
           SizedBox(
             child: TextField(
+              controller: _salesMarkCtrl,
               maxLines: 4,
               style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
@@ -544,6 +632,7 @@ class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAli
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
+            onSaveDraft: widget.onSaveDraft,
           ),
           const SizedBox(height: 60),
         ],
