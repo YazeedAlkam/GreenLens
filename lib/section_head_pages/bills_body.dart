@@ -75,7 +75,7 @@ class _BillsBodyState extends State<BillsBody> {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   columnWidths: const {
-                    0: FlexColumnWidth(0.5),
+                    0: FlexColumnWidth(1),
                     1: FlexColumnWidth(1),
                     2: FlexColumnWidth(1),
                   },
@@ -203,13 +203,17 @@ class _BillsBodyState extends State<BillsBody> {
                     const SizedBox(width: 10),
                     const Text(
                       'Back',
-                      style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 1000),
+            const SizedBox(height: 60),
           ],
         ),
       ),
