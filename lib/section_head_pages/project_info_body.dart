@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
-class ProjectInfoBody extends StatelessWidget {
+class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
@@ -17,6 +17,14 @@ class ProjectInfoBody extends StatelessWidget {
     required this.currentStep,
     required this.onViewBills,
   });
+
+  @override
+  State<ProjectInfoBody> createState() => _ProjectInfoBodyState();
+}
+
+class _ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +67,10 @@ class ProjectInfoBody extends StatelessWidget {
             child: TextField(
               expands: true,
               maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "e.g Commercial",
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.firaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
@@ -113,10 +121,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g Commercial",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -146,10 +154,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 5000",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -209,10 +217,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 4",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -242,10 +250,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 12",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -305,10 +313,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 6",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -339,13 +347,13 @@ class ProjectInfoBody extends StatelessWidget {
                     readOnly: true,
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: disableColor,
                       hoverColor: disableColor,
                       hintText: "No Data",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -354,7 +362,7 @@ class ProjectInfoBody extends StatelessWidget {
                         padding: EdgeInsets.only(right: 12),
                         child: GestureDetector(
                           onTap: () {
-                            onViewBills();
+                            widget.onViewBills();
                           },
                           child: Transform(
                             alignment: Alignment.center,
@@ -430,10 +438,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 6th of June, 2026",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -463,10 +471,10 @@ class ProjectInfoBody extends StatelessWidget {
                   child: TextField(
                     expands: true,
                     maxLines: null,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
                       hintText: "e.g 18th of September, 2026",
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.firaSans(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
@@ -510,10 +518,10 @@ class ProjectInfoBody extends StatelessWidget {
           SizedBox(
             child: TextField(
               maxLines: 4,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: "Short Description about Sales Mark",
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.firaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
@@ -533,9 +541,9 @@ class ProjectInfoBody extends StatelessWidget {
 
           // ── Footer ───────────────────────────────────────────────────────
           CreateNewProjectFooter(
-            currentStep: currentStep,
-            onNext: onNext,
-            onBack: onBack,
+            currentStep: widget.currentStep,
+            onNext: widget.onNext,
+            onBack: widget.onBack,
           ),
           const SizedBox(height: 60),
         ],

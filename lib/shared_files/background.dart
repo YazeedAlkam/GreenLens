@@ -37,7 +37,10 @@ class AuthBackground extends StatelessWidget {
             left: 0,
             right: 0,
             child: Center(
-              child: SvgPicture.asset('assets/images/GreenLensLogo.svg', height: 170),
+              child: SvgPicture.asset(
+                'assets/images/GreenLensLogo.svg',
+                height: 170,
+              ),
             ),
           ),
           child,
@@ -139,10 +142,7 @@ class _EllipsePainterBottom extends CustomPainter {
     // Ellipse 4
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(
-          size.width * 0.5,
-          size.height + 260,
-        ),
+        center: Offset(size.width * 0.5, size.height + 260),
         width: 1655.15,
         height: 933.58,
       ),

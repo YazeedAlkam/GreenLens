@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NavigationBarLines extends StatelessWidget {
   final int currentStep;
@@ -80,8 +81,9 @@ class NavigationBarLines extends StatelessWidget {
                   ? const Icon(Icons.check, color: Colors.white, size: 20)
                   : Text(
                       '${index + 1}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
                         color: isActive
                             ? const Color(0xFF1A237E)
                             : Colors.white,
@@ -97,7 +99,7 @@ class NavigationBarLines extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: GoogleFonts.firaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: isActive
@@ -142,25 +144,22 @@ class NavigationBarLines extends StatelessWidget {
   // ================= PROGRESS =================
 
   Widget _buildProgressBar() {
-    final progress = (currentStep+1) / (_steps.length);
+    final progress = (currentStep + 1) / (_steps.length);
 
     return ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: progress),
-          duration: const Duration(milliseconds: 400),
-          builder: (context, value, _) {
-            return LinearProgressIndicator(
-              value: value,
-              minHeight: 5,
-              backgroundColor: Colors.white.withValues(alpha: 0.15),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF4CAF50),
-              ),
-            );
-          },
-        ),
-
+      borderRadius: BorderRadius.circular(4),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: progress),
+        duration: const Duration(milliseconds: 400),
+        builder: (context, value, _) {
+          return LinearProgressIndicator(
+            value: value,
+            minHeight: 5,
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+          );
+        },
+      ),
     );
   }
 }

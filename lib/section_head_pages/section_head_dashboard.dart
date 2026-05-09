@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
@@ -63,7 +64,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                               SizedBox(width: 10),
                               Text(
                                 'Create New Project',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.normal,
@@ -120,7 +121,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                               SizedBox(width: 10),
                               Text(
                                 'Assign Engineer to Project',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.normal,
@@ -177,7 +178,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                               SizedBox(width: 10),
                               Text(
                                 'Previous Projects',
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.normal,
@@ -221,7 +222,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                         Center(
                           child: Text(
                             'Active Projects',
-                            style: TextStyle(
+                            style: GoogleFonts.firaSans(
                               fontSize: 26,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -230,10 +231,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                         ),
                         SizedBox(height: 16),
                         //Projects List --------------->
-                        Project(
-                          title: "Al-Quds Mall",
-                          status: "In Progress",
-                        ),
+                        Project(title: "Al-Quds Mall", status: "In Progress"),
                         SizedBox(height: 16),
                         Project(
                           title: "Royal Hotel",
@@ -259,7 +257,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                             children: [
                               Text(
                                 "View All",
-                                style: TextStyle(
+                                style: GoogleFonts.firaSans(
                                   fontSize: 22,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600,
@@ -281,7 +279,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 60,)
+                SizedBox(height: 60),
               ],
             ),
           ),

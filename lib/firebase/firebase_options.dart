@@ -72,5 +72,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'greenlens-b5dc4.firebasestorage.app',
     measurementId: 'G-QFFWP7LGH4',
   );
-
 }

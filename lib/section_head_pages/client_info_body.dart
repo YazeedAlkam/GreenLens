@@ -23,7 +23,9 @@ class ClientInfoBody extends StatefulWidget {
   State<ClientInfoBody> createState() => _ClientInfoBodyState();
 }
 
-class _ClientInfoBodyState extends State<ClientInfoBody> {
+class _ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
   /// Tracks which contact tab is currently active:
   /// 0 = Client Contact, 1 = Second Contact, 2+ = extra contacts
   int _activeContact = 0;
@@ -89,7 +91,10 @@ class _ClientInfoBodyState extends State<ClientInfoBody> {
               readOnly: true,
               expands: true,
               maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: InputDecoration(
                 hintText: "52",
                 hintStyle: GoogleFonts.firaSans(
@@ -197,7 +202,18 @@ class _ClientInfoBodyState extends State<ClientInfoBody> {
           const SizedBox(height: 16, width: double.infinity),
 
           // ── Contact form ─────────────────────────────────────────────────
-          if (_activeContact == 0) MainClientForum() else OtherContactsForum(),
+          IndexedStack(
+            index: _activeContact == 0
+                ? 0
+                : _activeContact == 1
+                ? 1
+                : _extraContacts.indexOf(_activeContact) + 2,
+            children: [
+              const MainClientForum(),
+              const OtherContactsForum(),
+              ..._extraContacts.map((_) => const OtherContactsForum()),
+            ],
+          ),
 
           const SizedBox(height: 32),
 

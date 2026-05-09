@@ -24,7 +24,7 @@ class MoreContacts extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              "Second Contacts Info",
+              "$name's Info",
               style: GoogleFonts.firaSans(
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
@@ -44,34 +44,6 @@ class MoreContacts extends StatelessWidget {
               inside: BorderSide(color: tablelinescolor, width: 2),
             ),
             children: [
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Full Name",
-                          style: GoogleFonts.firaSans(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          name,
-                          style: GoogleFonts.firaSans(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
               TableRow(
                 children: [
                   Padding(

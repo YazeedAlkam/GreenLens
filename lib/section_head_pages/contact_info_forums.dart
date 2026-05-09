@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MainClientForum extends StatelessWidget {
+class MainClientForum extends StatefulWidget {
   const MainClientForum({super.key});
+
+  @override
+  State<MainClientForum> createState() => _MainClientForumState();
+}
+
+class _MainClientForumState extends State<MainClientForum> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +41,10 @@ class MainClientForum extends StatelessWidget {
               child: TextField(
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -67,10 +75,10 @@ class MainClientForum extends StatelessWidget {
               child: TextField(
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -117,10 +125,13 @@ class MainClientForum extends StatelessWidget {
                     child: TextField(
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g example@example.com",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
@@ -150,10 +161,13 @@ class MainClientForum extends StatelessWidget {
                     child: TextField(
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g +962 79 7786 498",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
@@ -185,8 +199,16 @@ class MainClientForum extends StatelessWidget {
   }
 }
 
-class OtherContactsForum extends StatelessWidget {
+class OtherContactsForum extends StatefulWidget {
   const OtherContactsForum({super.key});
+
+  @override
+  State<OtherContactsForum> createState() => _OtherContactsForumState();
+}
+
+class _OtherContactsForumState extends State<OtherContactsForum> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -217,10 +239,10 @@ class OtherContactsForum extends StatelessWidget {
               child: TextField(
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -251,10 +273,10 @@ class OtherContactsForum extends StatelessWidget {
               child: TextField(
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -301,10 +323,13 @@ class OtherContactsForum extends StatelessWidget {
                     child: TextField(
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g example@example.com",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
@@ -334,10 +359,13 @@ class OtherContactsForum extends StatelessWidget {
                     child: TextField(
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g +962 79 7786 498",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),

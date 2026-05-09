@@ -13,11 +13,11 @@ class AuthService {
 
   // Sign Up -- now accepts name & role, saves them to Firestore
   Future<UserCredential?> signUp(
-      String email,
-      String password,
-      String name,
-      String role,
-      ) async {
+    String email,
+    String password,
+    String name,
+    String role,
+  ) async {
     try {
       // 1. Create the auth account
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -44,11 +44,11 @@ class AuthService {
 
         // 3. Save user info with the new custom ID
         transaction.set(userRef, {
-          'name':      name,
-          'email':     email,
-          'role':      role,
+          'name': name,
+          'email': email,
+          'role': role,
           'createdAt': FieldValue.serverTimestamp(),
-          'customId':  newId,
+          'customId': newId,
         });
       });
 
@@ -78,12 +78,18 @@ class AuthService {
   // Error handler (unchanged)
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
-      case 'email-already-in-use': return 'This email is already registered.';
-      case 'invalid-email':        return 'Invalid email address.';
-      case 'weak-password':        return 'Password is too weak.';
-      case 'user-not-found':       return 'No user found with this email.';
-      case 'wrong-password':       return 'Incorrect password.';
-      default:                     return e.message ?? 'An error occurred.';
+      case 'email-already-in-use':
+        return 'This email is already registered.';
+      case 'invalid-email':
+        return 'Invalid email address.';
+      case 'weak-password':
+        return 'Password is too weak.';
+      case 'user-not-found':
+        return 'No user found with this email.';
+      case 'wrong-password':
+        return 'Incorrect password.';
+      default:
+        return e.message ?? 'An error occurred.';
     }
   }
 }

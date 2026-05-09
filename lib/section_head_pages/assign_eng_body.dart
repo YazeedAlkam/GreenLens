@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
 
@@ -21,7 +22,10 @@ class AssignEngBody extends StatefulWidget {
   State<AssignEngBody> createState() => _AssignEngBodyState();
 }
 
-class _AssignEngBodyState extends State<AssignEngBody> {
+class _AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
+
   // Each engineer has: id, name, email, and isAssigned (true = remove, false = add)
   final List<Map<String, dynamic>> _engineers = [
     {
@@ -47,9 +51,9 @@ class _AssignEngBodyState extends State<AssignEngBody> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Assign Engineers",
-            style: TextStyle(
+            style: GoogleFonts.firaSans(
               fontSize: 40,
               fontWeight: FontWeight.bold,
               color: primaryColor,
@@ -100,7 +104,7 @@ class _AssignEngBodyState extends State<AssignEngBody> {
                           child: Text(
                             'Add &\nRemove',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: GoogleFonts.firaSans(
                               fontWeight: FontWeight.w600,
                               color: primaryColor,
                               fontSize: 24,
@@ -185,14 +189,13 @@ class _AssignEngBodyState extends State<AssignEngBody> {
       alignment: Alignment.centerLeft,
       height: 88,
       child: Text(
-          text,
-          textAlign: TextAlign.start,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            color: primaryColor,
-            fontSize: 24,
-          ),
-
+        text,
+        textAlign: TextAlign.start,
+        style: GoogleFonts.firaSans(
+          fontWeight: FontWeight.w600,
+          color: primaryColor,
+          fontSize: 24,
+        ),
       ),
     );
   }
@@ -203,10 +206,9 @@ class _AssignEngBodyState extends State<AssignEngBody> {
       alignment: Alignment.centerLeft,
       height: 69,
       child: Text(
-          text,
-          textAlign: TextAlign.start,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-
+        text,
+        textAlign: TextAlign.start,
+        style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
       ),
     );
   }

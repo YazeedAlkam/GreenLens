@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 import 'package:greenlens/section_head_pages/review_body.dart';
 import '../main.dart';
-import 'allcontact_page.dart';
+import 'all_contacts_body.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
 import 'cost_body.dart';
@@ -23,6 +24,14 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
   bool _showingAllContacts = false;
 
   void _next() {
+    if (_showingBills) {
+      setState(() => _showingBills = false);
+      return;
+    }
+    if (_showingAllContacts) {
+      setState(() => _showingAllContacts = false);
+      return;
+    }
     if (_currentStep < 4) setState(() => _currentStep++);
   }
 
@@ -42,37 +51,16 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     }
   }
 
-  void _goToBills() {
-    setState(() => _showingBills = true);
-  }
+  void _goToBills() => setState(() => _showingBills = true);
 
-  void _goToAllContacts() {
-    setState(() => _showingAllContacts = true);
-  }
+  void _goToAllContacts() => setState(() => _showingAllContacts = true);
 
   void _onStepTapped(int step) {
     setState(() {
       _currentStep = step;
-      _showingBills = false; // ← exit bills view if user taps a step
+      _showingBills = false;
+      _showingAllContacts = false;
     });
-  }
-
-  Widget _buildCurrentStep() {
-    if (_showingBills) {
-      return BillsBody(onBack: _back);
-    }
-    if (_showingAllContacts) {
-      return AllContactPage(onBack: _back);
-    }
-
-    switch (_currentStep) {
-      case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
-      case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 3: return CostBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 4: return ReviewBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewAllContacts: _goToAllContacts,);
-      default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-    }
   }
 
   @override
@@ -91,7 +79,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
               children: [
                 Text(
                   "Step ${_currentStep + 1} of 5",
-                  style: const TextStyle(color: Colors.white, fontSize: 26),
+                  style: GoogleFonts.firaSans(color: Colors.white, fontSize: 26),
                 ),
                 const SizedBox(height: 12),
                 Padding(
@@ -106,7 +94,42 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
           ),
         ),
       ),
-      body: _buildCurrentStep(),
+      body: _showingBills
+          ? BillsBody(onBack: _back)
+          : _showingAllContacts
+          ? AllContactPage(onBack: _back)
+          : IndexedStack(
+        index: _currentStep,
+        children: [
+          ClientInfoBody(
+            onNext: _next,
+            onBack: _back,
+            currentStep: _currentStep,
+          ),
+          ProjectInfoBody(
+            onNext: _next,
+            onBack: _back,
+            currentStep: _currentStep,
+            onViewBills: _goToBills,
+          ),
+          AssignEngBody(
+            onNext: _next,
+            onBack: _back,
+            currentStep: _currentStep,
+          ),
+          CostBody(
+            onNext: _next,
+            onBack: _back,
+            currentStep: _currentStep,
+          ),
+          ReviewBody(
+            onNext: _next,
+            onBack: _back,
+            currentStep: _currentStep,
+            onViewAllContacts: _goToAllContacts,
+          ),
+        ],
+      ),
     );
   }
 }
