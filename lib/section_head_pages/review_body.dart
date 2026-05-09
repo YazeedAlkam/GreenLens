@@ -3,25 +3,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
-import 'package:greenlens/section_head_pages/shared_files/nav_bar.dart';
-import 'package:greenlens/section_head_pages/shared_files/navbar_title.dart';
 
-class ReviewBody extends StatefulWidget {
+class ReviewBody extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final VoidCallback onViewAllContacts;
+
   const ReviewBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.onViewAllContacts,
   });
-
-  @override
-  State<ReviewBody> createState() => _ReviewBodyState();
-}
-
-class _ReviewBodyState extends State<ReviewBody> {
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +208,9 @@ class _ReviewBodyState extends State<ReviewBody> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            onViewAllContacts();
+                          },
                           child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -229,7 +226,7 @@ class _ReviewBodyState extends State<ReviewBody> {
                                   "assets/images/arrowright.svg",
                                   width: 40,
                                   height: 40,
-                                  color: primaryColor,
+                                  colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
                                 ),
                               ],
                             ),
@@ -574,9 +571,9 @@ class _ReviewBodyState extends State<ReviewBody> {
             ),
             SizedBox(height: 32),
             CreateNewProjectFooter(
-              currentStep: widget.currentStep,
-              onNext: widget.onNext,
-              onBack: widget.onBack,
+              currentStep: currentStep,
+              onNext: onNext,
+              onBack: onBack,
             ),
             const SizedBox(height: 60,)
           ],

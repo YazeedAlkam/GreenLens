@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 
 class BillsBody extends StatefulWidget {
-  final VoidCallback onBack; // called when user taps Back inside bills
+  final VoidCallback onBack;
 
   const BillsBody({super.key, required this.onBack});
 

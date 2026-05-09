@@ -5,24 +5,26 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/more_contacts.dart';
 
 class AllContactPage extends StatelessWidget {
-  const AllContactPage({super.key});
+  final VoidCallback onBack;
+  const AllContactPage({super.key, required this.onBack});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      //TODO put the navbar 
+      //TODO put the navbar
       child: Padding(
         padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
         child: Column(
           children: [
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: 70,
                   height: 40,
-                  //TODO : make it back to the the review page
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      onBack();
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       minimumSize: Size.zero,
@@ -215,7 +217,7 @@ class AllContactPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            // secondry client
+            // secondary client
             MoreContacts(
               name: "Ameen Abu tahun",
               position: "Developer",

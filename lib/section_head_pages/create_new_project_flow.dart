@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 import 'package:greenlens/section_head_pages/review_body.dart';
 import '../main.dart';
+import 'allcontact_page.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
 import 'cost_body.dart';
@@ -19,6 +20,7 @@ class CreateProjectFlow extends StatefulWidget {
 class _CreateProjectFlowState extends State<CreateProjectFlow> {
   int _currentStep = 0;
   bool _showingBills = false;
+  bool _showingAllContacts = false;
 
   void _next() {
     if (_currentStep < 4) setState(() => _currentStep++);
@@ -27,6 +29,10 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
   void _back() {
     if (_showingBills) {
       setState(() => _showingBills = false);
+      return;
+    }
+    if (_showingAllContacts) {
+      setState(() => _showingAllContacts = false);
       return;
     }
     if (_currentStep > 0) {
@@ -40,6 +46,10 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     setState(() => _showingBills = true);
   }
 
+  void _goToAllContacts() {
+    setState(() => _showingAllContacts = true);
+  }
+
   void _onStepTapped(int step) {
     setState(() {
       _currentStep = step;
@@ -51,13 +61,16 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     if (_showingBills) {
       return BillsBody(onBack: _back);
     }
+    if (_showingAllContacts) {
+      return AllContactPage(onBack: _back);
+    }
 
     switch (_currentStep) {
       case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
       case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       case 3: return CostBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 4: return ReviewBody(onNext: _next, onBack: _back, currentStep: _currentStep);
+      case 4: return ReviewBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewAllContacts: _goToAllContacts,);
       default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
     }
   }

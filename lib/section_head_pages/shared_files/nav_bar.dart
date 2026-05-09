@@ -37,10 +37,10 @@ class NavigationBarLines extends StatelessWidget {
       children: List.generate(_steps.length * 2 - 1, (i) {
         if (i.isEven) {
           final index = i ~/ 2;
-          return _buildStep(index); // ❌ no Expanded here
+          return _buildStep(index);
         } else {
           final index = i ~/ 2;
-          return Expanded(child: _buildConnector(index)); // ✅ only connectors expand
+          return Expanded(child: _buildConnector(index));
         }
       }),
     );
