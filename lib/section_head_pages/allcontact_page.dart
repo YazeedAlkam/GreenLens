@@ -10,6 +10,7 @@ class AllContactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      //TODO put the navbar 
       child: Padding(
         padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
         child: Column(

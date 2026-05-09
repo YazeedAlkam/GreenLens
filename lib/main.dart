@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
         '/create_new_project': (context) => CreateProjectFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: AllContactPage(), // start page
+      home: SignInPage(), // start page
     );
   }
 }
