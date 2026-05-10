@@ -27,8 +27,9 @@ Color getStatusColor(String status) {
 class Project extends StatelessWidget {
   final String title;
   final String status;
+  final VoidCallback? onTap;
 
-  const Project({super.key, required this.title, required this.status});
+  const Project({super.key, required this.title, required this.status, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +59,7 @@ class Project extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () {
-            // TODO: Handle button pres
-          },
+          onPressed: onTap,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Row(

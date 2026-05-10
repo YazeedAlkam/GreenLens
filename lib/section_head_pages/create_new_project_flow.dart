@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/project_info_body.dart';
 import 'package:greenlens/section_head_pages/review_body.dart';
+import '../firebase/project_service.dart';
 import '../main.dart';
+import 'all_contacts_body.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
 import 'cost_body.dart';
@@ -10,23 +13,105 @@ import 'client_info_body.dart';
 import 'shared_files/navbar_title.dart';
 
 class CreateProjectFlow extends StatefulWidget {
-  const CreateProjectFlow({super.key});
+  final String? existingProjectId;
+  const CreateProjectFlow({super.key, this.existingProjectId});
 
   @override
   State<CreateProjectFlow> createState() => _CreateProjectFlowState();
 }
 
 class _CreateProjectFlowState extends State<CreateProjectFlow> {
+  final _projectService = ProjectService();
+  String? _projectId;
+  String _nextProjectId = '';
+  bool _loading = false;
+  Map<String, dynamic>? _initialData;
+
+  final _clientKey = GlobalKey<ClientInfoBodyState>();
+  final _projectKey = GlobalKey<ProjectInfoBodyState>();
+  final _assignKey = GlobalKey<AssignEngBodyState>();
+  final _costKey = GlobalKey<CostBodyState>();
+  final _billsKey = GlobalKey<BillsBodyState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingProjectId != null) {
+      _loading = true;
+      _loadExistingProject();
+    } else {
+      _projectService.getNextProjectId().then((id) {
+        if (mounted) setState(() => _nextProjectId = id);
+      });
+    }
+  }
+
+  Future<void> _loadExistingProject() async {
+    final data =
+        await _projectService.getProjectById(widget.existingProjectId!);
+    if (!mounted) return;
+    setState(() {
+      _projectId = widget.existingProjectId;
+      _nextProjectId = data?['customId'] as String? ?? '';
+      _initialData = data;
+      _loading = false;
+    });
+  }
+
+  Map<String, dynamic> _mergedProjectInfo() {
+    return {
+      ...?_projectKey.currentState?.getProjectInfo(),
+      ...?_billsKey.currentState?.getBillsData(),
+    };
+  }
+
+  Future<void> _saveDraft() async {
+    _projectId = await _projectService.saveProject(
+      existingProjectId: _projectId,
+      status: 'draft',
+      clientInfo: _clientKey.currentState?.getClientInfo() ?? {},
+      projectInfo: _mergedProjectInfo(),
+      assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],
+      costs: _costKey.currentState?.getCosts() ?? {},
+    );
+    if (mounted) Navigator.pop(context);
+  }
+
+  Future<void> _saveProject() async {
+    _projectId = await _projectService.saveProject(
+      existingProjectId: _projectId,
+      status: 'Awaiting Approval',
+      clientInfo: _clientKey.currentState?.getClientInfo() ?? {},
+      projectInfo: _mergedProjectInfo(),
+      assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],
+      costs: _costKey.currentState?.getCosts() ?? {},
+    );
+    Navigator.pop(context);
+  }
+
   int _currentStep = 0;
   bool _showingBills = false;
+  bool _showingAllContacts = false;
 
   void _next() {
+    if (_showingBills) {
+      setState(() => _showingBills = false);
+      return;
+    }
+    if (_showingAllContacts) {
+      setState(() => _showingAllContacts = false);
+      return;
+    }
     if (_currentStep < 4) setState(() => _currentStep++);
   }
 
   void _back() {
     if (_showingBills) {
       setState(() => _showingBills = false);
+      return;
+    }
+    if (_showingAllContacts) {
+      setState(() => _showingAllContacts = false);
       return;
     }
     if (_currentStep > 0) {
@@ -36,30 +121,16 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     }
   }
 
-  void _goToBills() {
-    setState(() => _showingBills = true);
-  }
+  void _goToBills() => setState(() => _showingBills = true);
+
+  void _goToAllContacts() => setState(() => _showingAllContacts = true);
 
   void _onStepTapped(int step) {
     setState(() {
       _currentStep = step;
-      _showingBills = false; // ← exit bills view if user taps a step
+      _showingBills = false;
+      _showingAllContacts = false;
     });
-  }
-
-  Widget _buildCurrentStep() {
-    if (_showingBills) {
-      return BillsBody(onBack: _back);
-    }
-
-    switch (_currentStep) {
-      case 0: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 1: return ProjectInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep, onViewBills: _goToBills,);
-      case 2: return AssignEngBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 3: return CostBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      case 4: return ReviewBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-      default: return ClientInfoBody(onNext: _next, onBack: _back, currentStep: _currentStep);
-    }
   }
 
   @override
@@ -78,7 +149,10 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
               children: [
                 Text(
                   "Step ${_currentStep + 1} of 5",
-                  style: const TextStyle(color: Colors.white, fontSize: 26),
+                  style: GoogleFonts.firaSans(
+                    color: Colors.white,
+                    fontSize: 26,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Padding(
@@ -93,7 +167,87 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
           ),
         ),
       ),
-      body: _buildCurrentStep(),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Builder(
+        builder: (context) {
+          final clientInfo = _clientKey.currentState?.getClientInfo() ?? {};
+          final projectInfo = _projectKey.currentState?.getProjectInfo() ?? {};
+          final assignedEngineers =
+              _assignKey.currentState?.getAssignedEngineersInfo() ?? [];
+
+          return IndexedStack(
+            index: _showingBills
+                ? 5
+                : _showingAllContacts
+                ? 6
+                : _currentStep,
+            children: [
+              ClientInfoBody(
+                key: _clientKey,
+                onNext: _next,
+                onBack: _back,
+                currentStep: _currentStep,
+                onSaveDraft: _saveDraft,
+                projectId: _nextProjectId,
+                initialClientInfo:
+                    _initialData?['clientInfo'] as Map<String, dynamic>?,
+              ),
+              ProjectInfoBody(
+                key: _projectKey,
+                onNext: _next,
+                onBack: _back,
+                currentStep: _currentStep,
+                onViewBills: _goToBills,
+                onSaveDraft: _saveDraft,
+                initialProjectInfo:
+                    _initialData?['projectInfo'] as Map<String, dynamic>?,
+              ),
+              AssignEngBody(
+                key: _assignKey,
+                onNext: _next,
+                onBack: _back,
+                currentStep: _currentStep,
+                onSaveDraft: _saveDraft,
+                initialAssignedEngineers:
+                    (_initialData?['assignedEngineers'] as List?)
+                        ?.cast<String>(),
+              ),
+              CostBody(
+                key: _costKey,
+                onNext: _next,
+                onBack: _back,
+                currentStep: _currentStep,
+                onSaveDraft: _saveDraft,
+                initialCosts:
+                    _initialData?['costs'] as Map<String, dynamic>?,
+              ),
+              ReviewBody(
+                onNext: _next,
+                onBack: _back,
+                currentStep: _currentStep,
+                onViewAllContacts: _goToAllContacts,
+                onSaveProject: _saveProject,
+                clientInfo: clientInfo,
+                projectInfo: projectInfo,
+                assignedEngineers: assignedEngineers,
+                projectId: _nextProjectId,
+              ),
+              BillsBody(
+                key: _billsKey,
+                onBack: _back,
+                onAverageChanged: (avg) =>
+                    _projectKey.currentState?.updateAverageBill(avg),
+              ), // index 5
+              AllContactPage(
+                onBack: _back,
+                clientInfo: clientInfo,
+                projectId: _nextProjectId,
+              ), // index 6
+            ],
+          );
+        },
+      ),
     );
   }
 }

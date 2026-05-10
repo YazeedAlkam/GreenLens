@@ -1,8 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MainClientForum extends StatelessWidget {
-  const MainClientForum({super.key});
+bool _isValidPhone(String value) {
+  final digits = value.replaceAll(RegExp(r'[+\s]'), '');
+  return digits.length >= 7 && digits.length <= 15;
+}
+
+class MainClientForum extends StatefulWidget {
+  final TextEditingController nameController;
+  final TextEditingController positionController;
+  final TextEditingController emailController;
+  final TextEditingController phoneController;
+
+  const MainClientForum({
+    super.key,
+    required this.nameController,
+    required this.positionController,
+    required this.emailController,
+    required this.phoneController,
+  });
+
+  @override
+  State<MainClientForum> createState() => _MainClientForumState();
+}
+
+class _MainClientForumState extends State<MainClientForum> {
+  String? _phoneError;
+
+  void _onPhoneChanged(String value) {
+    if (value.isEmpty) {
+      setState(() => _phoneError = null);
+      return;
+    }
+    setState(() {
+      _phoneError = _isValidPhone(value) ? null : 'Enter a valid phone number (7–15 digits)';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +65,13 @@ class MainClientForum extends StatelessWidget {
             SizedBox(
               height: 65,
               child: TextField(
+                controller: widget.nameController,
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -65,12 +100,13 @@ class MainClientForum extends StatelessWidget {
             SizedBox(
               height: 65,
               child: TextField(
+                controller: widget.positionController,
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -110,17 +146,22 @@ class MainClientForum extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: SizedBox(
                     height: 65,
                     child: TextField(
+                      controller: widget.emailController,
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g example@example.com",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
@@ -145,33 +186,46 @@ class MainClientForum extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  child: SizedBox(
-                    height: 65,
-                    child: TextField(
-                      expands: true,
-                      maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                      decoration: InputDecoration(
-                        hintText: "e.g +962 79 7786 498",
-                        hintStyle: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF808080),
+                  child: TextField(
+                    controller: widget.phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]'))],
+                    onChanged: _onPhoneChanged,
+                    maxLines: 1,
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: "e.g +962 79 7786 498",
+                      hintStyle: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF808080),
+                      ),
+                      errorText: _phoneError,
+                      errorStyle: GoogleFonts.firaSans(fontSize: 16),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2,
-                            color: Color(0xFF808080),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2,
-                            color: Color(0xFF808080),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2, color: Colors.red),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2, color: Colors.red),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -185,8 +239,36 @@ class MainClientForum extends StatelessWidget {
   }
 }
 
-class OtherContactsForum extends StatelessWidget {
-  const OtherContactsForum({super.key});
+class OtherContactsForum extends StatefulWidget {
+  final TextEditingController nameController;
+  final TextEditingController positionController;
+  final TextEditingController emailController;
+  final TextEditingController phoneController;
+
+  const OtherContactsForum({
+    super.key,
+    required this.nameController,
+    required this.positionController,
+    required this.emailController,
+    required this.phoneController,
+  });
+
+  @override
+  State<OtherContactsForum> createState() => _OtherContactsForumState();
+}
+
+class _OtherContactsForumState extends State<OtherContactsForum> {
+  String? _phoneError;
+
+  void _onPhoneChanged(String value) {
+    if (value.isEmpty) {
+      setState(() => _phoneError = null);
+      return;
+    }
+    setState(() {
+      _phoneError = _isValidPhone(value) ? null : 'Enter a valid phone number (7–15 digits)';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,12 +297,13 @@ class OtherContactsForum extends StatelessWidget {
             SizedBox(
               height: 65,
               child: TextField(
+                controller: widget.nameController,
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -249,12 +332,13 @@ class OtherContactsForum extends StatelessWidget {
             SizedBox(
               height: 65,
               child: TextField(
+                controller: widget.positionController,
                 expands: true,
                 maxLines: null,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
@@ -294,17 +378,22 @@ class OtherContactsForum extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: SizedBox(
                     height: 65,
                     child: TextField(
+                      controller: widget.emailController,
                       expands: true,
                       maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: "e.g example@example.com",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
@@ -329,33 +418,46 @@ class OtherContactsForum extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  child: SizedBox(
-                    height: 65,
-                    child: TextField(
-                      expands: true,
-                      maxLines: null,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                      decoration: InputDecoration(
-                        hintText: "e.g +962 79 7786 498",
-                        hintStyle: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF808080),
+                  child: TextField(
+                    controller: widget.phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]'))],
+                    onChanged: _onPhoneChanged,
+                    maxLines: 1,
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: "e.g +962 79 7786 498",
+                      hintStyle: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF808080),
+                      ),
+                      errorText: _phoneError,
+                      errorStyle: GoogleFonts.firaSans(fontSize: 16),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2,
-                            color: Color(0xFF808080),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2,
-                            color: Color(0xFF808080),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2, color: Colors.red),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2, color: Colors.red),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
