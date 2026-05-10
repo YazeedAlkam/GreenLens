@@ -1,55 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class NavigationBarLinesEng extends StatelessWidget {
+class AssignEngNavBar extends StatelessWidget {
   final int currentStep;
   final ValueChanged<int>? onStepTapped;
 
-  const NavigationBarLinesEng({
+  const AssignEngNavBar({
     super.key,
     required this.currentStep,
     this.onStepTapped,
   });
 
-  final List<String> _steps = const [
-    'Building',
-    'Lighting',
-    'AC',
-    'Equipment',
-    'Production',
-    'Review',
-  ];
+  final List<String> _steps = const ['Select Project', 'Select Engineer'];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildStepper(),
-        const SizedBox(height: 12),
-        _buildProgressBar(),
-      ],
+    return SizedBox(
+      width: 450,
+      child: Column(
+        children: [
+          _buildStepper(),
+          const SizedBox(height: 12),
+          _buildProgressBar(),
+        ],
+      ),
     );
   }
-
-  // ================= STEPPER =================
 
   Widget _buildStepper() {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: List.generate(_steps.length * 2 - 1, (i) {
         if (i.isEven) {
-          final index = i ~/ 2;
-          return _buildStep(index); // ❌ no Expanded here
+          return _buildStep(i ~/ 2);
         } else {
-          final index = i ~/ 2;
-          return Expanded(
-            child: _buildConnector(index),
-          ); // ✅ only connectors expand
+          return Expanded(child: _buildConnector(i ~/ 2));
         }
       }),
     );
   }
-
-  // ================= STEP =================
 
   Widget _buildStep(int index) {
     final isActive = index == currentStep;
@@ -83,8 +72,9 @@ class NavigationBarLinesEng extends StatelessWidget {
                   ? const Icon(Icons.check, color: Colors.white, size: 20)
                   : Text(
                       '${index + 1}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
                         color: isActive
                             ? const Color(0xFF1A237E)
                             : Colors.white,
@@ -94,13 +84,13 @@ class NavigationBarLinesEng extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            width: 100,
+            width: 150,
             child: Text(
               _steps[index],
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: GoogleFonts.firaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: isActive
@@ -116,36 +106,26 @@ class NavigationBarLinesEng extends StatelessWidget {
     );
   }
 
-  // ================= CONNECTOR =================
-
   Widget _buildConnector(int index) {
     final isCompleted = index < currentStep;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 28),
-      child: Row(
-        children: [
-          Expanded(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              height: 2,
-              decoration: BoxDecoration(
-                color: isCompleted
-                    ? Colors.white.withValues(alpha: 0.7)
-                    : Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-        ],
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        height: 2,
+        decoration: BoxDecoration(
+          color: isCompleted
+              ? Colors.white.withValues(alpha: 0.7)
+              : Colors.white.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(2),
+        ),
       ),
     );
   }
 
-  // ================= PROGRESS =================
-
   Widget _buildProgressBar() {
-    final progress = (currentStep + 1) / (_steps.length);
+    final progress = (currentStep + 1) / _steps.length;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),

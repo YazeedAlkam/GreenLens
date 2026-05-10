@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/main.dart';
 
 bool _isValidPhone(String value) {
   final digits = value.replaceAll(RegExp(r'[+\s]'), '');
@@ -12,6 +13,7 @@ class MainClientForum extends StatefulWidget {
   final TextEditingController positionController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
+  final bool readOnly;
 
   const MainClientForum({
     super.key,
@@ -19,6 +21,7 @@ class MainClientForum extends StatefulWidget {
     required this.positionController,
     required this.emailController,
     required this.phoneController,
+    this.readOnly = false,
   });
 
   @override
@@ -34,7 +37,9 @@ class _MainClientForumState extends State<MainClientForum> {
       return;
     }
     setState(() {
-      _phoneError = _isValidPhone(value) ? null : 'Enter a valid phone number (7–15 digits)';
+      _phoneError = _isValidPhone(value)
+          ? null
+          : 'Enter a valid phone number (7–15 digits)';
     });
   }
 
@@ -66,9 +71,13 @@ class _MainClientForumState extends State<MainClientForum> {
               height: 65,
               child: TextField(
                 controller: widget.nameController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
                   hintStyle: GoogleFonts.firaSans(
@@ -76,6 +85,8 @@ class _MainClientForumState extends State<MainClientForum> {
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
+                  filled: widget.readOnly,
+                  fillColor: disableColor,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                     borderRadius: BorderRadius.circular(12),
@@ -101,9 +112,13 @@ class _MainClientForumState extends State<MainClientForum> {
               height: 65,
               child: TextField(
                 controller: widget.positionController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
                   hintStyle: GoogleFonts.firaSans(
@@ -111,6 +126,8 @@ class _MainClientForumState extends State<MainClientForum> {
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
+                  filled: widget.readOnly,
+                  fillColor: disableColor,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                     borderRadius: BorderRadius.circular(12),
@@ -153,6 +170,7 @@ class _MainClientForumState extends State<MainClientForum> {
                     height: 65,
                     child: TextField(
                       controller: widget.emailController,
+                      readOnly: widget.readOnly,
                       expands: true,
                       maxLines: null,
                       style: GoogleFonts.firaSans(
@@ -166,6 +184,8 @@ class _MainClientForumState extends State<MainClientForum> {
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
+                        filled: widget.readOnly,
+                        fillColor: disableColor,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             width: 2,
@@ -188,9 +208,12 @@ class _MainClientForumState extends State<MainClientForum> {
                 Expanded(
                   child: TextField(
                     controller: widget.phoneController,
+                    readOnly: widget.readOnly,
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]'))],
-                    onChanged: _onPhoneChanged,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]')),
+                    ],
+                    onChanged: widget.readOnly ? null : _onPhoneChanged,
                     maxLines: 1,
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
@@ -203,19 +226,25 @@ class _MainClientForumState extends State<MainClientForum> {
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
-                      errorText: _phoneError,
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
+                      errorText: widget.readOnly ? null : _phoneError,
                       errorStyle: GoogleFonts.firaSans(fontSize: 16),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
-                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
+                          color: _phoneError != null
+                              ? Colors.red
+                              : Color(0xFF808080),
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
-                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
+                          color: _phoneError != null
+                              ? Colors.red
+                              : Color(0xFF808080),
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -244,6 +273,7 @@ class OtherContactsForum extends StatefulWidget {
   final TextEditingController positionController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
+  final bool readOnly;
 
   const OtherContactsForum({
     super.key,
@@ -251,6 +281,7 @@ class OtherContactsForum extends StatefulWidget {
     required this.positionController,
     required this.emailController,
     required this.phoneController,
+    this.readOnly = false,
   });
 
   @override
@@ -266,7 +297,9 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
       return;
     }
     setState(() {
-      _phoneError = _isValidPhone(value) ? null : 'Enter a valid phone number (7–15 digits)';
+      _phoneError = _isValidPhone(value)
+          ? null
+          : 'Enter a valid phone number (7–15 digits)';
     });
   }
 
@@ -298,9 +331,13 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
               height: 65,
               child: TextField(
                 controller: widget.nameController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: InputDecoration(
                   hintText: "e.g Mohammed",
                   hintStyle: GoogleFonts.firaSans(
@@ -308,6 +345,8 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
+                  filled: widget.readOnly,
+                  fillColor: disableColor,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                     borderRadius: BorderRadius.circular(12),
@@ -333,9 +372,13 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
               height: 65,
               child: TextField(
                 controller: widget.positionController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: InputDecoration(
                   hintText: "e.g CEO",
                   hintStyle: GoogleFonts.firaSans(
@@ -343,6 +386,8 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF808080),
                   ),
+                  filled: widget.readOnly,
+                  fillColor: disableColor,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                     borderRadius: BorderRadius.circular(12),
@@ -385,6 +430,7 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                     height: 65,
                     child: TextField(
                       controller: widget.emailController,
+                      readOnly: widget.readOnly,
                       expands: true,
                       maxLines: null,
                       style: GoogleFonts.firaSans(
@@ -398,6 +444,8 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF808080),
                         ),
+                        filled: widget.readOnly,
+                        fillColor: disableColor,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             width: 2,
@@ -420,9 +468,12 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                 Expanded(
                   child: TextField(
                     controller: widget.phoneController,
+                    readOnly: widget.readOnly,
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]'))],
-                    onChanged: _onPhoneChanged,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s]')),
+                    ],
+                    onChanged: widget.readOnly ? null : _onPhoneChanged,
                     maxLines: 1,
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
@@ -435,19 +486,25 @@ class _OtherContactsForumState extends State<OtherContactsForum> {
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
-                      errorText: _phoneError,
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
+                      errorText: widget.readOnly ? null : _phoneError,
                       errorStyle: GoogleFonts.firaSans(fontSize: 16),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
-                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
+                          color: _phoneError != null
+                              ? Colors.red
+                              : Color(0xFF808080),
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
-                          color: _phoneError != null ? Colors.red : Color(0xFF808080),
+                          color: _phoneError != null
+                              ? Colors.red
+                              : Color(0xFF808080),
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),

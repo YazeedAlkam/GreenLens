@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-class NavBarTitle extends StatelessWidget {
-  final String title;
-  const NavBarTitle({super.key, this.title = 'Create New Project'});
+class AssignEngNavBarTitle extends StatelessWidget {
+  const AssignEngNavBarTitle({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 70, bottom: 30),
       child: Center(
-        child: Text(
-          title,
+        child: const Text(
+          "Assign Engineers",
           overflow: TextOverflow.visible,
           softWrap: false,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 65,
             color: Colors.white,
             fontFamily: 'TimesNewRoman',

@@ -55,7 +55,7 @@ Total : 95 files,  7369 codes, 486 comments, 622 blanks, all 8477 lines
 | [lib/firebase/auth\_service.dart](/lib/firebase/auth_service.dart) | Dart | 67 | 10 | 12 | 89 |
 | [lib/firebase/firebase\_options.dart](/lib/firebase/firebase_options.dart) | Dart | 59 | 12 | 5 | 76 |
 | [lib/main.dart](/lib/main.dart) | Dart | 56 | 20 | 6 | 82 |
-| [lib/projects\_template.dart](/lib/projects_template.dart) | Dart | 100 | 1 | 7 | 108 |
+| [lib/projects\_template.dart](/lib/shared_files/projects_template.dart) | Dart | 100 | 1 | 7 | 108 |
 | [lib/section\_head\_pages/allcontact\_page.dart](/lib/section_head_pages/allcontact_page.dart) | Dart | 232 | 4 | 3 | 239 |
 | [lib/section\_head\_pages/assign\_eng\_body.dart](/lib/section_head_pages/create_new_project/assign_eng_body.dart) | Dart | 197 | 3 | 14 | 214 |
 | [lib/section\_head\_pages/bills\_body.dart](/lib/section_head_pages/create_new_project/bills_body.dart) | Dart | 216 | 0 | 7 | 223 |
@@ -67,7 +67,7 @@ Total : 95 files,  7369 codes, 486 comments, 622 blanks, all 8477 lines
 | [lib/section\_head\_pages/project\_info\_body.dart](/lib/section_head_pages/create_new_project/project_info_body.dart) | Dart | 531 | 8 | 7 | 546 |
 | [lib/section\_head\_pages/review\_body.dart](/lib/section_head_pages/create_new_project/review_body.dart) | Dart | 579 | 4 | 5 | 588 |
 | [lib/section\_head\_pages/section\_head\_dashboard.dart](/lib/section_head_pages/section_head_dashboard.dart) | Dart | 277 | 9 | 7 | 293 |
-| [lib/section\_head\_pages/shared\_files/fotter.dart](/lib/section_head_pages/create_new_project/shared_files/fotter.dart) | Dart | 128 | 4 | 9 | 141 |
+| [lib/section\_head\_pages/shared\_files/fotter.dart](/lib/shared_files/fotter.dart) | Dart | 128 | 4 | 9 | 141 |
 | [lib/section\_head\_pages/shared\_files/nav\_bar.dart](/lib/section_head_pages/create_new_project/shared_files/nav_bar.dart) | Dart | 146 | 4 | 17 | 167 |
 | [lib/section\_head\_pages/shared\_files/navbar\_title.dart](/lib/section_head_pages/create_new_project/shared_files/navbar_title.dart) | Dart | 24 | 0 | 3 | 27 |
 | [lib/shared\_files/background.dart](/lib/shared_files/background.dart) | Dart | 154 | 9 | 22 | 185 |

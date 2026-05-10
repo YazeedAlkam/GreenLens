@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/more_contacts.dart';
-import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class AllContactPage extends StatefulWidget {
   final VoidCallback onBack;
@@ -37,7 +37,8 @@ class _AllContactPageState extends State<AllContactPage>
         widget.clientInfo['mainContact'] as Map<String, dynamic>? ?? {};
     final second =
         widget.clientInfo['secondContact'] as Map<String, dynamic>? ?? {};
-    final extras = (widget.clientInfo['extraContacts'] as List<dynamic>?)
+    final extras =
+        (widget.clientInfo['extraContacts'] as List<dynamic>?)
             ?.cast<Map<String, dynamic>>() ??
         [];
 
@@ -104,13 +105,14 @@ class _AllContactPageState extends State<AllContactPage>
                   inside: BorderSide(color: tablelinescolor, width: 2),
                 ),
                 children: [
-                  _infoRow("ID",
-                      _v(widget.projectId.isEmpty ? null : widget.projectId)),
+                  _infoRow(
+                    "ID",
+                    _v(widget.projectId.isEmpty ? null : widget.projectId),
+                  ),
                   _infoRow("Full Name", _v(main['name'] as String?)),
                   _infoRow("Client Position", _v(main['position'] as String?)),
                   _infoRow("Client Email", _v(main['email'] as String?)),
-                  _infoRow(
-                      "Client Phone Number", _v(main['phone'] as String?)),
+                  _infoRow("Client Phone Number", _v(main['phone'] as String?)),
                 ],
               ),
             ),

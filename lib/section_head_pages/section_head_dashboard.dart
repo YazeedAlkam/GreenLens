@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/projects_template.dart';
+import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
+import 'package:greenlens/section_head_pages/active_projects/active_projects_page.dart';
+import 'package:greenlens/section_head_pages/previous_projects/previous_projects_page.dart';
 
 class SectionHeadPage extends StatefulWidget {
   const SectionHeadPage({super.key});
@@ -51,11 +53,13 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/create_new_project").then((_) {
+                      Navigator.pushNamed(context, "/create_new_project").then((
+                        _,
+                      ) {
                         if (mounted) {
                           setState(() {
-                            _latestProjectsFuture =
-                                _projectService.getLatestProjects();
+                            _latestProjectsFuture = _projectService
+                                .getLatestProjects();
                           });
                         }
                       });
@@ -115,7 +119,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Handle button press, navigate to assign engineer page
+                      Navigator.pushNamed(context, '/assign_engineers');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -172,7 +176,12 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Handle button press, navigate to previous projects page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PreviousProjectsPage(),
+                        ),
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -256,75 +265,89 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                               return const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16),
                                 child: Center(
-                                    child: CircularProgressIndicator()),
+                                  child: CircularProgressIndicator(),
+                                ),
                               );
                             }
                             if (snapshot.hasError) {
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 child: Text(
                                   'Failed to load projects.',
                                   style: GoogleFonts.firaSans(
-                                      color: Colors.red),
+                                    color: Colors.red,
+                                  ),
                                 ),
                               );
                             }
-                            final projects = snapshot.data ?? [];
+                            final projects = (snapshot.data ?? [])
+                                .where((p) =>
+                                    (p['status'] as String? ?? '').toLowerCase() !=
+                                    'completed')
+                                .toList();
                             if (projects.isEmpty) {
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 child: Text(
                                   'No projects yet.',
                                   style: GoogleFonts.firaSans(
-                                      fontSize: 14,
-                                      color: Colors.grey),
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               );
                             }
                             return Column(
                               children: [
                                 for (int i = 0; i < projects.length; i++) ...[
-                                  Builder(builder: (context) {
-                                    final project = projects[i];
-                                    final status =
-                                        project['status'] as String? ??
-                                            'Draft';
-                                    final isDraft =
-                                        status.toLowerCase() == 'draft';
-                                    return Project(
-                                      title: (project['projectInfo']
-                                                  as Map<String, dynamic>?)?[
-                                              'projectName'] ??
-                                          project['customId'] ??
-                                          'Untitled',
-                                      status: status,
-                                      onTap: isDraft
-                                          ? () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      CreateProjectFlow(
-                                                    existingProjectId:
-                                                        project['id']
-                                                            as String,
+                                  Builder(
+                                    builder: (context) {
+                                      final project = projects[i];
+                                      final status =
+                                          project['status'] as String? ??
+                                          'Draft';
+                                      final isDraft =
+                                          status.toLowerCase() == 'draft';
+                                      return Project(
+                                        title:
+                                            (project['projectInfo']
+                                                as Map<
+                                                  String,
+                                                  dynamic
+                                                >?)?['projectName'] ??
+                                            project['customId'] ??
+                                            'Untitled',
+                                        status: status,
+                                        onTap: isDraft
+                                            ? () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        CreateProjectFlow(
+                                                          existingProjectId:
+                                                              project['id']
+                                                                  as String,
+                                                        ),
                                                   ),
-                                                ),
-                                              ).then((_) {
-                                                if (mounted) {
-                                                  setState(() {
-                                                    _latestProjectsFuture =
-                                                        _projectService
-                                                            .getLatestProjects();
-                                                  });
-                                                }
-                                              });
-                                            }
-                                          : () {},
-                                    );
-                                  }),
+                                                ).then((_) {
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      _latestProjectsFuture =
+                                                          _projectService
+                                                              .getLatestProjects();
+                                                    });
+                                                  }
+                                                });
+                                              }
+                                            : () {},
+                                      );
+                                    },
+                                  ),
                                   if (i < projects.length - 1)
                                     const SizedBox(height: 16),
                                 ],
@@ -341,7 +364,19 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                             overlayColor: Colors.transparent,
                           ),
                           onPressed: () {
-                            // TODO: Handle button press, navigate to all projects page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ActiveProjectsPage(),
+                              ),
+                            ).then((_) {
+                              if (mounted) {
+                                setState(() {
+                                  _latestProjectsFuture =
+                                      _projectService.getLatestProjects();
+                                });
+                              }
+                            });
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,

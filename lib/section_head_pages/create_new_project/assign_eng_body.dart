@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class AssignEngBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -11,6 +11,7 @@ class AssignEngBody extends StatefulWidget {
   final int currentStep;
   final Future<void> Function() onSaveDraft;
   final List<String>? initialAssignedEngineers;
+  final bool readOnly;
 
   const AssignEngBody({
     super.key,
@@ -19,13 +20,15 @@ class AssignEngBody extends StatefulWidget {
     required this.currentStep,
     required this.onSaveDraft,
     this.initialAssignedEngineers,
+    this.readOnly = false,
   });
 
   @override
   State<AssignEngBody> createState() => AssignEngBodyState();
 }
 
-class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveClientMixin{
+class AssignEngBodyState extends State<AssignEngBody>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -45,10 +48,11 @@ class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCli
       if (mounted) {
         final preAssigned = widget.initialAssignedEngineers ?? [];
         setState(() {
-          _engineers.addAll(engineers.map((e) => {
-                ...e,
-                'isAssigned': preAssigned.contains(e['id']),
-              }));
+          _engineers.addAll(
+            engineers.map(
+              (e) => {...e, 'isAssigned': preAssigned.contains(e['id'])},
+            ),
+          );
           _isLoading = false;
         });
       }
@@ -72,11 +76,14 @@ class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCli
   List<Map<String, dynamic>> getAssignedEngineersInfo() {
     return _engineers
         .where((e) => e['isAssigned'] == true)
-        .map((e) => {
-              'id': e['customId'] as String,
-              'name': e['name'] as String,
-              'email': e['email'] as String,
-            })
+        .map(
+          (e) => {
+            'id': e['customId'] as String,
+            'name': e['name'] as String,
+            'email': e['email'] as String,
+            'rate': e['rate'],
+          },
+        )
         .toList();
   }
 
@@ -90,7 +97,7 @@ class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCli
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Assign Engineers",
+            widget.readOnly ? "Assigned Engineers" : "Assign Engineers",
             style: GoogleFonts.firaSans(
               fontSize: 40,
               fontWeight: FontWeight.bold,
@@ -105,113 +112,148 @@ class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCli
           else if (_error != null)
             Center(child: Text('Error loading engineers: $_error'))
           else
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: Table(
-                border: TableBorder(
-                  top: const BorderSide(color: Colors.black, width: 2),
-                  bottom: const BorderSide(color: Colors.black, width: 2),
-                  left: const BorderSide(color: Colors.black, width: 2),
-                  right: const BorderSide(color: Colors.black, width: 2),
-                  horizontalInside: const BorderSide(
-                    color: Colors.black,
-                    width: 2,
-                  ),
-                  verticalInside: const BorderSide(
-                    color: Colors.black,
-                    width: 2,
-                  ),
+            Builder(builder: (context) {
+              final displayed = widget.readOnly
+                  ? _engineers.where((e) => e['isAssigned'] == true).toList()
+                  : _engineers;
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
                 ),
-                columnWidths: const {
-                  0: FlexColumnWidth(0.25),
-                  1: FlexColumnWidth(1),
-                  2: FlexColumnWidth(1),
-                  3: FlexColumnWidth(0.35),
-                },
-                children: [
-                  TableRow(
-                    decoration: const BoxDecoration(color: Colors.white),
-                    children: [
-                      _headerCell('ID'),
-                      _headerCell('Name'),
-                      _headerCell('Email'),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Center(
-                          child: Text(
-                            'Add &\nRemove',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.firaSans(
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor,
-                              fontSize: 24,
-                            ),
-                          ),
-                        ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Table(
+                    border: TableBorder(
+                      top: const BorderSide(color: Colors.black, width: 2),
+                      bottom: const BorderSide(color: Colors.black, width: 2),
+                      left: const BorderSide(color: Colors.black, width: 2),
+                      right: const BorderSide(color: Colors.black, width: 2),
+                      horizontalInside: const BorderSide(
+                        color: Colors.black,
+                        width: 2,
                       ),
+                      verticalInside: const BorderSide(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    columnWidths: widget.readOnly
+                        ? const {
+                            0: FlexColumnWidth(0.25),
+                            1: FlexColumnWidth(1),
+                            2: FlexColumnWidth(1),
+                          }
+                        : const {
+                            0: FlexColumnWidth(0.25),
+                            1: FlexColumnWidth(1),
+                            2: FlexColumnWidth(1),
+                            3: FlexColumnWidth(0.35),
+                          },
+                    children: [
+                      TableRow(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        children: [
+                          _headerCell('ID'),
+                          _headerCell('Name'),
+                          _headerCell('Email'),
+                          if (!widget.readOnly)
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Center(
+                                child: Text(
+                                  'Add &\nRemove',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.firaSans(
+                                    fontWeight: FontWeight.w600,
+                                    color: primaryColor,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (widget.readOnly && displayed.isEmpty)
+                        TableRow(
+                          children: [
+                            _dataCell('—'),
+                            _dataCell('No engineers assigned'),
+                            _dataCell('—'),
+                          ],
+                        )
+                      else
+                        ...displayed.asMap().entries.map((entry) {
+                          final eng = entry.value;
+                          final bool isAssigned = eng['isAssigned'] as bool;
+                          final globalIndex = _engineers.indexOf(eng);
+
+                          return TableRow(
+                            children: [
+                              _dataCell(eng['customId']),
+                              _dataCell(eng['name']),
+                              _dataCell(eng['email']),
+                              if (!widget.readOnly)
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Container(
+                                    height: 49,
+                                    width: 109.23,
+                                    decoration: BoxDecoration(
+                                      color: isAssigned
+                                          ? removeEngColor
+                                          : addengColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _engineers[globalIndex][
+                                              'isAssigned'] = !isAssigned;
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: isAssigned
+                                            ? removeEngColor
+                                            : addengColor,
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size.zero,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        elevation: 0,
+                                      ),
+                                      child: SvgPicture.asset(
+                                        isAssigned
+                                            ? 'assets/images/Minus.svg'
+                                            : 'assets/images/Add.svg',
+                                        colorFilter: isAssigned
+                                            ? ColorFilter.mode(
+                                                deniedColor,
+                                                BlendMode.srcIn,
+                                              )
+                                            : ColorFilter.mode(
+                                                primaryColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                        width: 27,
+                                        height: 27,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        }),
                     ],
                   ),
-                  ..._engineers.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final eng = entry.value;
-                    final bool isAssigned = eng['isAssigned'] as bool;
-
-                    return TableRow(
-                      children: [
-                        _dataCell(eng['customId']),
-                        _dataCell(eng['name']),
-                        _dataCell(eng['email']),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Container(
-                            height: 49,
-                            width: 109.23,
-                            decoration: BoxDecoration(
-                              color: isAssigned ? removeEngColor : addengColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _engineers[index]['isAssigned'] = !isAssigned;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: isAssigned
-                                    ? removeEngColor
-                                    : addengColor,
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: SvgPicture.asset(
-                                isAssigned
-                                    ? 'assets/images/Minus.svg'
-                                    : 'assets/images/Add.svg',
-                                color: isAssigned ? deniedColor : primaryColor,
-                                width: 27,
-                                height: 27,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              ),
-            ),
-          ),
+                ),
+              );
+            }),
 
           const SizedBox(height: 32),
 
@@ -220,6 +262,7 @@ class AssignEngBodyState extends State<AssignEngBody> with AutomaticKeepAliveCli
             onNext: widget.onNext,
             onBack: widget.onBack,
             onSaveDraft: widget.onSaveDraft,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.normal,
           ),
           const SizedBox(height: 60),
         ],

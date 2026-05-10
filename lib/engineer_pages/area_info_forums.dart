@@ -20,21 +20,21 @@ class MainAreaForums extends StatelessWidget {
   });
 
   InputDecoration _fieldDecoration(String hint) => InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.firaSans(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF808080),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      );
+    hintText: hint,
+    hintStyle: GoogleFonts.firaSans(
+      fontSize: 24,
+      fontWeight: FontWeight.w600,
+      color: const Color(0xFF808080),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
+      borderRadius: BorderRadius.circular(12),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,10 @@ class MainAreaForums extends StatelessWidget {
                 controller: lightingTypeController,
                 expands: true,
                 maxLines: null,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: _fieldDecoration('e.g Fluorescent'),
               ),
             ),
@@ -104,7 +107,10 @@ class MainAreaForums extends StatelessWidget {
                       expands: true,
                       maxLines: null,
                       keyboardType: TextInputType.number,
-                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: _fieldDecoration('e.g 36'),
                     ),
                   ),
@@ -118,7 +124,10 @@ class MainAreaForums extends StatelessWidget {
                       expands: true,
                       maxLines: null,
                       keyboardType: TextInputType.number,
-                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: _fieldDecoration('e.g 120'),
                     ),
                   ),
@@ -142,7 +151,10 @@ class MainAreaForums extends StatelessWidget {
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.number,
-                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                style: GoogleFonts.firaSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: _fieldDecoration('e.g 1200'),
               ),
             ),
@@ -180,7 +192,10 @@ class MainAreaForums extends StatelessWidget {
                       readOnly: true,
                       expands: true,
                       maxLines: null,
-                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: _fieldDecoration('----'),
                     ),
                   ),
@@ -194,7 +209,10 @@ class MainAreaForums extends StatelessWidget {
                       readOnly: true,
                       expands: true,
                       maxLines: null,
-                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: _fieldDecoration('----'),
                     ),
                   ),

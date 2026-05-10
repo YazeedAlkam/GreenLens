@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/create_new_project/contact_info_forums.dart';
-import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class ClientInfoBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -14,6 +14,7 @@ class ClientInfoBody extends StatefulWidget {
   final Future<void> Function() onSaveDraft;
   final String projectId;
   final Map<String, dynamic>? initialClientInfo;
+  final bool readOnly;
 
   const ClientInfoBody({
     super.key,
@@ -23,13 +24,15 @@ class ClientInfoBody extends StatefulWidget {
     required this.onSaveDraft,
     this.projectId = '',
     this.initialClientInfo,
+    this.readOnly = false,
   });
 
   @override
   ClientInfoBodyState createState() => ClientInfoBodyState();
 }
 
-class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveClientMixin {
+class ClientInfoBodyState extends State<ClientInfoBody>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -117,16 +120,21 @@ class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveC
         'email': _secondEmailCtrl.text,
         'phone': _secondPhoneCtrl.text,
       },
-      'extraContacts': _extraContactCtrls.map((ctrls) => {
-        'name': ctrls[0].text,
-        'position': ctrls[1].text,
-        'email': ctrls[2].text,
-        'phone': ctrls[3].text,
-      }).toList(),
+      'extraContacts': _extraContactCtrls
+          .map(
+            (ctrls) => {
+              'name': ctrls[0].text,
+              'position': ctrls[1].text,
+              'email': ctrls[2].text,
+              'phone': ctrls[3].text,
+            },
+          )
+          .toList(),
     };
   }
 
-  String _extraContactLabel(int id) => "Contact ${_extraContacts.indexOf(id) + 3}";
+  String _extraContactLabel(int id) =>
+      "Contact ${_extraContacts.indexOf(id) + 3}";
 
   void _deleteCurrentExtraContact() {
     final idx = _extraContacts.indexOf(_activeContact);
@@ -140,7 +148,8 @@ class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveC
       if (_extraContacts.isEmpty) {
         _activeContact = 1;
       } else {
-        _activeContact = _extraContacts[(idx - 1).clamp(0, _extraContacts.length - 1)];
+        _activeContact =
+            _extraContacts[(idx - 1).clamp(0, _extraContacts.length - 1)];
       }
     });
   }
@@ -261,50 +270,53 @@ class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveC
                   );
                 }),
 
-                // "+" button
-                Container(
-                  width: 78,
-                  height: 78,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                  child: SizedBox.expand(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final ctrls = List.generate(4, (_) => TextEditingController());
-                        setState(() {
-                          _extraContacts.add(_nextContactId);
-                          _extraContactCtrls.add(ctrls);
-                          _activeContact = _nextContactId;
-                          _nextContactId++;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          side: const BorderSide(
-                            width: 0,
-                            color: Colors.transparent,
+                if (!widget.readOnly)
+                  Container(
+                    width: 78,
+                    height: 78,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: SizedBox.expand(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final ctrls = List.generate(
+                            4,
+                            (_) => TextEditingController(),
+                          );
+                          setState(() {
+                            _extraContacts.add(_nextContactId);
+                            _extraContactCtrls.add(ctrls);
+                            _activeContact = _nextContactId;
+                            _nextContactId++;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            side: const BorderSide(
+                              width: 0,
+                              color: Colors.transparent,
+                            ),
                           ),
                         ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/images/add.svg',
-                        width: 51,
-                        height: 51,
-                        colorFilter: ColorFilter.mode(
-                          addclientbuttoncolor,
-                          BlendMode.srcIn,
+                        child: SvgPicture.asset(
+                          'assets/images/add.svg',
+                          width: 51,
+                          height: 51,
+                          colorFilter: ColorFilter.mode(
+                            addclientbuttoncolor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -324,23 +336,28 @@ class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveC
                 positionController: _mainPositionCtrl,
                 emailController: _mainEmailCtrl,
                 phoneController: _mainPhoneCtrl,
+                readOnly: widget.readOnly,
               ),
               OtherContactsForum(
                 nameController: _secondNameCtrl,
                 positionController: _secondPositionCtrl,
                 emailController: _secondEmailCtrl,
                 phoneController: _secondPhoneCtrl,
+                readOnly: widget.readOnly,
               ),
-              ..._extraContactCtrls.map((ctrls) => OtherContactsForum(
-                nameController: ctrls[0],
-                positionController: ctrls[1],
-                emailController: ctrls[2],
-                phoneController: ctrls[3],
-              )),
+              ..._extraContactCtrls.map(
+                (ctrls) => OtherContactsForum(
+                  nameController: ctrls[0],
+                  positionController: ctrls[1],
+                  emailController: ctrls[2],
+                  phoneController: ctrls[3],
+                  readOnly: widget.readOnly,
+                ),
+              ),
             ],
           ),
 
-          if (_extraContacts.contains(_activeContact)) ...[
+          if (!widget.readOnly && _extraContacts.contains(_activeContact)) ...[
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -374,6 +391,7 @@ class ClientInfoBodyState extends State<ClientInfoBody> with AutomaticKeepAliveC
             onNext: widget.onNext,
             onBack: widget.onBack,
             onSaveDraft: widget.onSaveDraft,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.normal,
           ),
         ],
       ),

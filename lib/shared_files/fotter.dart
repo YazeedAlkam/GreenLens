@@ -3,16 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
-
 enum FooterMode {
   /// Back + Save Draft + Next Step  (steps 0–3)
   normal,
-
   /// Back + Save Project            (step 4 – Review)
   review,
-
   /// Back only                      (Bills / All Contacts sub-pages)
   backOnly,
+  /// Back + Next only               (read-only view mode)
+  viewOnly,
+  /// Back + Done                    (read-only review/last step)
+  done,
 }
 
 class CreateNewProjectFooter extends StatelessWidget {
@@ -29,8 +30,8 @@ class CreateNewProjectFooter extends StatelessWidget {
     required this.onNext,
     required this.onBack,
     this.mode = FooterMode.normal,
-    this.onSaveDraft,    // ← add
-    this.onSaveProject,  // ← add
+    this.onSaveDraft, // ← add
+    this.onSaveProject, // ← add
   });
 
   // ── shared button styles ────────────────────────────────────────────────
@@ -110,7 +111,7 @@ class CreateNewProjectFooter extends StatelessWidget {
   );
 
   Widget _nextStepButton() => SizedBox(
-    width: 434,
+    width: double.infinity,
     height: 65,
     child: ElevatedButton(
       onPressed: onNext,
@@ -141,6 +142,23 @@ class CreateNewProjectFooter extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    ),
+  );
+
+  Widget _doneButton() => SizedBox(
+    width: double.infinity,
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onNext,
+      style: _primaryStyle,
+      child: Text(
+        "Done",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
       ),
     ),
   );
@@ -192,7 +210,29 @@ class CreateNewProjectFooter extends StatelessWidget {
             const SizedBox(width: 17),
             _saveDraftButton(),
             const SizedBox(width: 17),
-            _nextStepButton(),
+            Expanded(child: _nextStepButton()),
+          ],
+        );
+
+      // ── View Only: Back + Next (no save) ───────────────────────────────
+      case FooterMode.viewOnly:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButton()),
+            const SizedBox(width: 17),
+            Expanded(child: _nextStepButton()),
+          ],
+        );
+
+      // ── Done: Back + Done ──────────────────────────────────────────────
+      case FooterMode.done:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButton()),
+            const SizedBox(width: 17),
+            Expanded(child: _doneButton()),
           ],
         );
     }

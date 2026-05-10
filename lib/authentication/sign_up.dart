@@ -294,10 +294,7 @@ class _SignUpState extends State<SignUp> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
-                        items: [
-                          ...roles,
-                          if (!_ceoExists) 'CEO',
-                        ]
+                        items: [...roles, if (!_ceoExists) 'CEO']
                             .map(
                               (role) => DropdownMenuItem<String>(
                                 value: role,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/engineer_pages/Area_info_forums.dart';
+import 'package:greenlens/engineer_pages/area_info_forums.dart';
 import 'package:greenlens/main.dart';
 
-import '../section_head_pages/create_new_project/shared_files/fotter.dart';
+import '../shared_files/fotter.dart';
 
 class LightingBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -155,8 +155,10 @@ class _LightingBodyState extends State<LightingBody>
                   child: SizedBox.expand(
                     child: ElevatedButton(
                       onPressed: () {
-                        final ctrls =
-                            List.generate(6, (_) => TextEditingController());
+                        final ctrls = List.generate(
+                          6,
+                          (_) => TextEditingController(),
+                        );
                         setState(() {
                           _extraAreas.add(_nextAreaId);
                           _extraAreaCtrls.add(ctrls);
@@ -196,9 +198,7 @@ class _LightingBodyState extends State<LightingBody>
 
           // ── Area form ────────────────────────────────────────────────────
           IndexedStack(
-            index: _activeArea == 0
-                ? 0
-                : _extraAreas.indexOf(_activeArea) + 1,
+            index: _activeArea == 0 ? 0 : _extraAreas.indexOf(_activeArea) + 1,
             children: [
               MainAreaForums(
                 lightingTypeController: _area1LightingType,

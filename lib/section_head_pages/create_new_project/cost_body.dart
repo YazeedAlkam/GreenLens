@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class CostBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -10,6 +10,8 @@ class CostBody extends StatefulWidget {
   final int currentStep;
   final Future<void> Function() onSaveDraft;
   final Map<String, dynamic>? initialCosts;
+  final double? engineerCost;
+  final bool readOnly;
 
   const CostBody({
     super.key,
@@ -18,6 +20,8 @@ class CostBody extends StatefulWidget {
     required this.currentStep,
     required this.onSaveDraft,
     this.initialCosts,
+    this.engineerCost,
+    this.readOnly = false,
   });
 
   @override
@@ -31,22 +35,72 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
   final _transportationCtrl = TextEditingController();
   final _machineryCtrl = TextEditingController();
   final _otherCtrl = TextEditingController();
+  final _engineerCostCtrl = TextEditingController();
+  final _totalCostCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     final data = widget.initialCosts;
-    if (data == null) return;
-    _transportationCtrl.text = data['transportationCost'] ?? '';
-    _machineryCtrl.text = data['machineryOperatingCost'] ?? '';
-    _otherCtrl.text = data['otherCosts'] ?? '';
+    if (data != null) {
+      _transportationCtrl.text = data['transportationCost'] ?? '';
+      _machineryCtrl.text = data['machineryOperatingCost'] ?? '';
+      _otherCtrl.text = data['otherCosts'] ?? '';
+    }
+    _transportationCtrl.addListener(_recompute);
+    _machineryCtrl.addListener(_recompute);
+    _otherCtrl.addListener(_recompute);
+    _syncEngineerCost();
+    _recompute();
+  }
+
+  @override
+  void didUpdateWidget(CostBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.engineerCost != widget.engineerCost) {
+      _syncEngineerCost();
+      _recompute();
+    }
+  }
+
+  void _syncEngineerCost() {
+    final e = widget.engineerCost;
+    _engineerCostCtrl.text = e == null
+        ? ''
+        : (e == e.truncateToDouble()
+            ? e.toInt().toString()
+            : e.toStringAsFixed(2));
+  }
+
+  void _recompute() {
+    final t = double.tryParse(_transportationCtrl.text) ?? 0;
+    final m = double.tryParse(_machineryCtrl.text) ?? 0;
+    final o = double.tryParse(_otherCtrl.text) ?? 0;
+    final e = widget.engineerCost ?? 0;
+    final hasData = _transportationCtrl.text.isNotEmpty ||
+        _machineryCtrl.text.isNotEmpty ||
+        _otherCtrl.text.isNotEmpty ||
+        widget.engineerCost != null;
+    if (!hasData) {
+      _totalCostCtrl.text = '';
+      return;
+    }
+    final total = t + m + o + e;
+    _totalCostCtrl.text = total == total.truncateToDouble()
+        ? total.toInt().toString()
+        : total.toStringAsFixed(2);
   }
 
   @override
   void dispose() {
+    _transportationCtrl.removeListener(_recompute);
+    _machineryCtrl.removeListener(_recompute);
+    _otherCtrl.removeListener(_recompute);
     _transportationCtrl.dispose();
     _machineryCtrl.dispose();
     _otherCtrl.dispose();
+    _engineerCostCtrl.dispose();
+    _totalCostCtrl.dispose();
     super.dispose();
   }
 
@@ -92,10 +146,14 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
           SizedBox(
             height: 65,
             child: TextField(
+              controller: _engineerCostCtrl,
               readOnly: true,
               expands: true,
               maxLines: null,
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "No Data",
                 filled: true,
@@ -130,7 +188,10 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
               readOnly: true,
               expands: true,
               maxLines: null,
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "5%",
                 filled: true,
@@ -163,14 +224,22 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             height: 65,
             child: TextField(
               controller: _transportationCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              readOnly: widget.readOnly,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+              ],
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "e.g 100JD",
                 filled: true,
-                fillColor: Colors.white,
-                hoverColor: Colors.white,
+                fillColor: widget.readOnly ? disableColor : Colors.white,
+                hoverColor: widget.readOnly ? disableColor : Colors.white,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                   borderRadius: BorderRadius.circular(16),
@@ -198,14 +267,22 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             height: 65,
             child: TextField(
               controller: _machineryCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              readOnly: widget.readOnly,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+              ],
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "e.g 30 JOD",
                 filled: true,
-                fillColor: Colors.white,
-                hoverColor: Colors.white,
+                fillColor: widget.readOnly ? disableColor : Colors.white,
+                hoverColor: widget.readOnly ? disableColor : Colors.white,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                   borderRadius: BorderRadius.circular(16),
@@ -233,14 +310,22 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             height: 65,
             child: TextField(
               controller: _otherCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              readOnly: widget.readOnly,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+              ],
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "e.g 30 JOD",
                 filled: true,
-                fillColor: Colors.white,
-                hoverColor: Colors.white,
+                fillColor: widget.readOnly ? disableColor : Colors.white,
+                hoverColor: widget.readOnly ? disableColor : Colors.white,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                   borderRadius: BorderRadius.circular(16),
@@ -253,7 +338,6 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             ),
           ),
           const SizedBox(height: 10, width: double.infinity),
-          //TODO: make it auto calculated by the app
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -268,8 +352,12 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
           SizedBox(
             height: 65,
             child: TextField(
+              controller: _totalCostCtrl,
               readOnly: true,
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "----",
                 filled: true,
@@ -292,6 +380,7 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             onNext: widget.onNext,
             onBack: widget.onBack,
             onSaveDraft: widget.onSaveDraft,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.normal,
           ),
           const SizedBox(height: 60),
         ],

@@ -283,7 +283,10 @@ class _ProjectPageState extends State<ProjectPage> {
                                             "assets/images/arrowright.svg",
                                             width: 40,
                                             height: 40,
-                                            colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                                            colorFilter: ColorFilter.mode(
+                                              primaryColor,
+                                              BlendMode.srcIn,
+                                            ),
                                           ),
                                         ],
                                       ),

@@ -29,7 +29,12 @@ class Project extends StatelessWidget {
   final String status;
   final VoidCallback? onTap;
 
-  const Project({super.key, required this.title, required this.status, this.onTap});
+  const Project({
+    super.key,
+    required this.title,
+    required this.status,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +94,6 @@ class Project extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SvgPicture.asset(
                   'assets/images/arrowright.svg',
                   height: 40,
