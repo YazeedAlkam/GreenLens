@@ -1,11 +1,9 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
+import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
 
 class AssignEngBody extends StatefulWidget {
   final VoidCallback onNext;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
+
+import '../section_head_pages/create_new_project/shared_files/fotter.dart';
 
 class BuildingBody extends StatefulWidget {
   final VoidCallback onNext;
