@@ -1,0 +1,185 @@
+Date : 2026-05-09 16:26:30
+Directory : c:\Users\yazee\OneDrive\Desktop\GP2\greenlens
+Total : 95 files,  7369 codes, 486 comments, 622 blanks, all 8477 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Dart       |         31 |      5,426 |        201 |        264 |      5,891 |
+| C++        |         16 |        549 |        131 |        189 |        869 |
+| XML        |         21 |        523 |         53 |         23 |        599 |
+| CMake      |          8 |        466 |          0 |         92 |        558 |
+| JSON       |          6 |        278 |          0 |          4 |        282 |
+| Swift      |          6 |         59 |          7 |         21 |         87 |
+| YAML       |          2 |         37 |         79 |         19 |        135 |
+| HTML       |          1 |         19 |         15 |          5 |         39 |
+| Properties |          2 |          8 |          0 |          2 |         10 |
+| Markdown   |          2 |          4 |          0 |          3 |          7 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                        | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                           |         95 |      7,369 |        486 |        622 |      8,477 |
+| . (Files)                                                                                                   |          4 |         39 |         79 |         20 |        138 |
+| android                                                                                                     |         10 |        103 |         51 |         11 |        165 |
+| android (Files)                                                                                             |          1 |          3 |          0 |          1 |          4 |
+| android\app                                                                                                 |          8 |         95 |         51 |          9 |        155 |
+| android\app (Files)                                                                                         |          1 |         29 |          0 |          0 |         29 |
+| android\app\src                                                                                             |          7 |         66 |         51 |          9 |        126 |
+| android\app\src\debug                                                                                       |          1 |          3 |          4 |          1 |          8 |
+| android\app\src\main                                                                                        |          5 |         60 |         43 |          7 |        110 |
+| android\app\src\main (Files)                                                                                |          1 |         34 |         11 |          1 |         46 |
+| android\app\src\main\res                                                                                    |          4 |         26 |         32 |          6 |         64 |
+| android\app\src\main\res\drawable                                                                           |          1 |          4 |          7 |          2 |         13 |
+| android\app\src\main\res\drawable-v21                                                                       |          1 |          4 |          7 |          2 |         13 |
+| android\app\src\main\res\values                                                                             |          1 |          9 |          9 |          1 |         19 |
+| android\app\src\main\res\values-night                                                                       |          1 |          9 |          9 |          1 |         19 |
+| android\app\src\profile                                                                                     |          1 |          3 |          4 |          1 |          8 |
+| android\gradle                                                                                              |          1 |          5 |          0 |          1 |          6 |
+| android\gradle\wrapper                                                                                      |          1 |          5 |          0 |          1 |          6 |
+| assets                                                                                                      |         11 |         53 |          0 |         11 |         64 |
+| assets\images                                                                                               |         11 |         53 |          0 |         11 |         64 |
+| ios                                                                                                         |          8 |        229 |          4 |         13 |        246 |
+| ios\Runner                                                                                                  |          7 |        222 |          2 |          9 |        233 |
+| ios\Runner (Files)                                                                                          |          2 |         13 |          0 |          3 |         16 |
+| ios\RunnerTests                                                                                             |          1 |          7 |          2 |          4 |         13 |
+| ios\Runner\Assets.xcassets                                                                                  |          3 |        148 |          0 |          4 |        152 |
+| ios\Runner\Assets.xcassets\AppIcon.appiconset                                                               |          1 |        122 |          0 |          1 |        123 |
+| ios\Runner\Assets.xcassets\LaunchImage.imageset                                                             |          2 |         26 |          0 |          3 |         29 |
+| ios\Runner\Base.lproj                                                                                       |          2 |         61 |          2 |          2 |         65 |
+| lib                                                                                                         |         30 |      5,412 |        191 |        257 |      5,860 |
+| lib (Files)                                                                                                 |          3 |        156 |         49 |         13 |        218 |
+| lib\authentication                                                                                          |          3 |        599 |         21 |         45 |        665 |
+| lib\ceo_pages                                                                                               |          1 |        164 |          6 |          4 |        174 |
+| lib\engineer_pages                                                                                          |          5 |        747 |         29 |         37 |        813 |
+| lib\engineer_pages (Files)                                                                                  |          3 |        576 |         25 |         17 |        618 |
+| lib\engineer_pages\shared_files                                                                             |          2 |        171 |          4 |         20 |        195 |
+| lib\firebase                                                                                                |          2 |        126 |         22 |         17 |        165 |
+| lib\section_head_pages                                                                                      |         14 |      3,429 |         55 |        117 |      3,601 |
+| lib\section_head_pages (Files)                                                                              |         11 |      3,131 |         47 |         88 |      3,266 |
+| lib\section_head_pages\shared_files                                                                         |          3 |        298 |          8 |         29 |        335 |
+| lib\shared_files                                                                                            |          2 |        191 |          9 |         24 |        224 |
+| linux                                                                                                       |          9 |        326 |         37 |         92 |        455 |
+| linux (Files)                                                                                               |          1 |        104 |          0 |         25 |        129 |
+| linux\flutter                                                                                               |          4 |        106 |          9 |         27 |        142 |
+| linux\runner                                                                                                |          4 |        116 |         28 |         40 |        184 |
+| macos                                                                                                       |          6 |        451 |          5 |         17 |        473 |
+| macos\Flutter                                                                                               |          1 |         10 |          3 |          4 |         17 |
+| macos\Runner                                                                                                |          4 |        434 |          0 |          9 |        443 |
+| macos\Runner (Files)                                                                                        |          2 |         23 |          0 |          7 |         30 |
+| macos\RunnerTests                                                                                           |          1 |          7 |          2 |          4 |         13 |
+| macos\Runner\Assets.xcassets                                                                                |          1 |         68 |          0 |          1 |         69 |
+| macos\Runner\Assets.xcassets\AppIcon.appiconset                                                             |          1 |         68 |          0 |          1 |         69 |
+| macos\Runner\Base.lproj                                                                                     |          1 |        343 |          0 |          1 |        344 |
+| test                                                                                                        |          1 |         14 |         10 |          7 |         31 |
+| web                                                                                                         |          2 |         54 |         15 |          6 |         75 |
+| windows                                                                                                     |         14 |        688 |         94 |        188 |        970 |
+| windows (Files)                                                                                             |          1 |         89 |          0 |         20 |        109 |
+| windows\flutter                                                                                             |          4 |        137 |          9 |         29 |        175 |
+| windows\runner                                                                                              |          9 |        462 |         85 |        139 |        686 |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                    | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\README.md                                                     | Markdown   |          1 |          0 |          1 |          2 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\analysis_options.yaml                                         | YAML       |          3 |         22 |          4 |         29 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\google-services.json                              | JSON       |         29 |          0 |          0 |         29 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\debug\AndroidManifest.xml                     | XML        |          3 |          4 |          1 |          8 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\main\AndroidManifest.xml                      | XML        |         34 |         11 |          1 |         46 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\main\res\drawable-v21\launch_background.xml   | XML        |          4 |          7 |          2 |         13 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\main\res\drawable\launch_background.xml       | XML        |          4 |          7 |          2 |         13 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\main\res\values-night\styles.xml              | XML        |          9 |          9 |          1 |         19 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\main\res\values\styles.xml                    | XML        |          9 |          9 |          1 |         19 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\app\src\profile\AndroidManifest.xml                   | XML        |          3 |          4 |          1 |          8 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\gradle.properties                                     | Properties |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\android\gradle\wrapper\gradle-wrapper.properties              | Properties |          5 |          0 |          1 |          6 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Add.svg                                         | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Down 4.svg                                      | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\GenrateChart.svg                                | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\GreenLensLogo.svg                               | XML        |         23 |          0 |          1 |         24 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Left Arrow.svg                                  | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Minus.svg                                       | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Opertaional.svg                                 | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Profile Add 1.svg                               | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Rotate Left.svg                                 | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\Tick.svg                                        | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\assets\images\arrowright.svg                                  | XML        |          3 |          0 |          1 |          4 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\firebase.json                                                 | JSON       |          1 |          0 |          0 |          1 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\RunnerTests\RunnerTests.swift                             | Swift      |          7 |          2 |          4 |         13 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\AppDelegate.swift                                  | Swift      |         12 |          0 |          2 |         14 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json   | JSON       |        122 |          0 |          1 |        123 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Assets.xcassets\LaunchImage.imageset\Contents.json | JSON       |         23 |          0 |          1 |         24 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Assets.xcassets\LaunchImage.imageset\README.md     | Markdown   |          3 |          0 |          2 |          5 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Base.lproj\LaunchScreen.storyboard                 | XML        |         36 |          1 |          1 |         38 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Base.lproj\Main.storyboard                         | XML        |         25 |          1 |          1 |         27 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\ios\Runner\Runner-Bridging-Header.h                           | C++        |          1 |          0 |          1 |          2 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\authentication\sign_in.dart                               | Dart       |        224 |          7 |         17 |        248 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\authentication\sign_up.dart                               | Dart       |        333 |         11 |         21 |        365 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\authentication\user_model.dart                            | Dart       |         42 |          3 |          7 |         52 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\ceo_pages\ceo_dashboard.dart                              | Dart       |        164 |          6 |          4 |        174 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\engineer_pages\building_page.dart                         | Dart       |         99 |         14 |          8 |        121 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\engineer_pages\engineer_dashboard.dart                    | Dart       |        179 |          5 |          4 |        188 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\engineer_pages\project_page.dart                          | Dart       |        298 |          6 |          5 |        309 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\engineer_pages\shared_files\navbar_eng.dart               | Dart       |        147 |          4 |         17 |        168 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\engineer_pages\shared_files\navbar_eng_title.dart         | Dart       |         24 |          0 |          3 |         27 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\firebase\auth_service.dart                                | Dart       |         67 |         10 |         12 |         89 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\firebase\firebase_options.dart                            | Dart       |         59 |         12 |          5 |         76 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\main.dart                                                 | Dart       |         56 |         20 |          6 |         82 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\projects_template.dart                                    | Dart       |        100 |          1 |          7 |        108 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\allcontact_page.dart                   | Dart       |        232 |          4 |          3 |        239 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\assign_eng_body.dart                   | Dart       |        197 |          3 |         14 |        214 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\bills_body.dart                        | Dart       |        216 |          0 |          7 |        223 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\client_info_body.dart                  | Dart       |        235 |         12 |         21 |        268 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\contact_info_forums.dart               | Dart       |        366 |          0 |          5 |        371 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\cost_body.dart                         | Dart       |        247 |          7 |          5 |        259 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\create_new_project_flow.dart           | Dart       |         89 |          0 |         10 |         99 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\more_contacts.dart                     | Dart       |        162 |          0 |          4 |        166 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\project_info_body.dart                 | Dart       |        531 |          8 |          7 |        546 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\review_body.dart                       | Dart       |        579 |          4 |          5 |        588 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\section_head_dashboard.dart            | Dart       |        277 |          9 |          7 |        293 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\shared_files\fotter.dart               | Dart       |        128 |          4 |          9 |        141 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\shared_files\nav_bar.dart              | Dart       |        146 |          4 |         17 |        167 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\section_head_pages\shared_files\navbar_title.dart         | Dart       |         24 |          0 |          3 |         27 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\shared_files\background.dart                              | Dart       |        154 |          9 |         22 |        185 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\shared_files\custom_app_bar.dart                          | Dart       |         37 |          0 |          2 |         39 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\lib\test.dart                                                 | Dart       |          0 |         28 |          0 |         28 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\CMakeLists.txt                                          | CMake      |        104 |          0 |         25 |        129 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\flutter\CMakeLists.txt                                  | CMake      |         79 |          0 |         10 |         89 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\flutter\generated_plugin_registrant.cc                  | C++        |          3 |          4 |          5 |         12 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\flutter\generated_plugin_registrant.h                   | C++        |          5 |          5 |          6 |         16 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\flutter\generated_plugins.cmake                         | CMake      |         19 |          0 |          6 |         25 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\runner\CMakeLists.txt                                   | CMake      |         21 |          0 |          6 |         27 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\runner\main.cc                                          | C++        |          5 |          0 |          2 |          7 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\runner\my_application.cc                                | C++        |         83 |         21 |         27 |        131 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\linux\runner\my_application.h                                 | C++        |          7 |          7 |          5 |         19 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\Flutter\GeneratedPluginRegistrant.swift                 | Swift      |         10 |          3 |          4 |         17 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\RunnerTests\RunnerTests.swift                           | Swift      |          7 |          2 |          4 |         13 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\Runner\AppDelegate.swift                                | Swift      |         11 |          0 |          3 |         14 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json | JSON       |         68 |          0 |          1 |         69 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\Runner\Base.lproj\MainMenu.xib                          | XML        |        343 |          0 |          1 |        344 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\macos\Runner\MainFlutterWindow.swift                          | Swift      |         12 |          0 |          4 |         16 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\pubspec.yaml                                                  | YAML       |         34 |         57 |         15 |        106 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\test\widget_test.dart                                         | Dart       |         14 |         10 |          7 |         31 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\web\index.html                                                | HTML       |         19 |         15 |          5 |         39 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\web\manifest.json                                             | JSON       |         35 |          0 |          1 |         36 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\CMakeLists.txt                                        | CMake      |         89 |          0 |         20 |        109 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\flutter\CMakeLists.txt                                | CMake      |         98 |          0 |         12 |        110 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\flutter\generated_plugin_registrant.cc                | C++        |         12 |          4 |          5 |         21 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\flutter\generated_plugin_registrant.h                 | C++        |          5 |          5 |          6 |         16 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\flutter\generated_plugins.cmake                       | CMake      |         22 |          0 |          6 |         28 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\CMakeLists.txt                                 | CMake      |         34 |          0 |          7 |         41 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\flutter_window.cpp                             | C++        |         49 |          7 |         16 |         72 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\flutter_window.h                               | C++        |         20 |          5 |          9 |         34 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\main.cpp                                       | C++        |         30 |          4 |         10 |         44 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\resource.h                                     | C++        |          9 |          6 |          2 |         17 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\utils.cpp                                      | C++        |         54 |          2 |         10 |         66 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\utils.h                                        | C++        |          8 |          6 |          6 |         20 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\win32_window.cpp                               | C++        |        210 |         24 |         55 |        289 |
+| c:\Users\yazee\OneDrive\Desktop\GP2\greenlens\windows\runner\win32_window.h                                 | C++        |         48 |         31 |         24 |        103 |
+| Total                                                                                                       |            |      7,369 |        486 |        622 |      8,477 |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
