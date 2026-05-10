@@ -1,28 +1,23 @@
-/*...engineers.map(
-                          (engineer) => TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  engineer.id,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  engineer.name,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  engineer.email,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        */
+
+/*Text(
+    text,
+    style: GoogleFonts.firaSans(
+      fontSize: 24,
+      fontWeight: FontWeight.w500, //meduim
+      color: Colors.black87,
+    ),
+  );
+
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyMedium,
+                children: [
+                  TextSpan(
+                    text: ""
+                  ),
+                  TextSpan(
+
+                  )
+                ]
+              )
+              ),*/
