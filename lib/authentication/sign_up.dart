@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,8 +26,24 @@ class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
   String? _errorMessage;
   String? _selectedRole;
+  bool _ceoExists = true; // assume true until check completes
 
   final _authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkCeoExists();
+  }
+
+  Future<void> _checkCeoExists() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('role', isEqualTo: 'CEO')
+        .limit(1)
+        .get();
+    if (mounted) setState(() => _ceoExists = snapshot.docs.isNotEmpty);
+  }
 
   @override
   void dispose() {
@@ -277,7 +294,10 @@ class _SignUpState extends State<SignUp> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
-                        items: roles
+                        items: [
+                          ...roles,
+                          if (!_ceoExists) 'CEO',
+                        ]
                             .map(
                               (role) => DropdownMenuItem<String>(
                                 value: role,
@@ -285,8 +305,7 @@ class _SignUpState extends State<SignUp> {
                                   role,
                                   style: GoogleFonts.nunito(
                                     fontSize: 24,
-                                    fontWeight: FontWeight
-                                        .bold, // 👈 bold items in dropdown
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
                                 ),

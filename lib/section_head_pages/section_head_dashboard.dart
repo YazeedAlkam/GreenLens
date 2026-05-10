@@ -51,8 +51,14 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Handle button press, navigate to create project page
-                      Navigator.pushNamed(context, "/create_new_project");
+                      Navigator.pushNamed(context, "/create_new_project").then((_) {
+                        if (mounted) {
+                          setState(() {
+                            _latestProjectsFuture =
+                                _projectService.getLatestProjects();
+                          });
+                        }
+                      });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -316,7 +322,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                                 }
                                               });
                                             }
-                                          : null,
+                                          : () {},
                                     );
                                   }),
                                   if (i < projects.length - 1)
