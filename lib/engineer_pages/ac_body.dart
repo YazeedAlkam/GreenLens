@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
+import '../shared_files/fotter.dart';
 import 'shared_files/ac_forum_state.dart';
 import 'shared_files/group_forum.dart';
 

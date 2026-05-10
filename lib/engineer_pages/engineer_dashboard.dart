@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/projects_template.dart';
+import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

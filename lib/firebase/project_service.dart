@@ -39,7 +39,9 @@ class ProjectService {
     // CREATE — first save, generate ID atomically
     late String newDocId;
 
-    final newRef = _firestore.collection('projects').doc(); // auto-generate doc ID
+    final newRef = _firestore
+        .collection('projects')
+        .doc(); // auto-generate doc ID
 
     await _firestore.runTransaction((tx) async {
       final counterSnap = await tx.get(counterRef);
@@ -77,6 +79,7 @@ class ProjectService {
         'customId': data['customId']?.toString() ?? '',
         'name': data['name'] ?? '',
         'email': data['email'] ?? '',
+        'rate': data['rate'],
         'isAssigned': false,
       };
     }).toList();
@@ -85,10 +88,13 @@ class ProjectService {
   /// Returns the next project ID that will be assigned (e.g. "P-0003").
   /// Does NOT consume the counter — only reads it.
   Future<String> getNextProjectId() async {
-    final counterSnap =
-        await _firestore.collection('meta').doc('projectCounter').get();
-    final lastId =
-        counterSnap.exists ? (counterSnap.data()!['lastId'] as int) : 0;
+    final counterSnap = await _firestore
+        .collection('meta')
+        .doc('projectCounter')
+        .get();
+    final lastId = counterSnap.exists
+        ? (counterSnap.data()!['lastId'] as int)
+        : 0;
     return 'P-${(lastId + 1).toString().padLeft(4, '0')}';
   }
 
@@ -107,5 +113,52 @@ class ProjectService {
         .limit(4)
         .get();
     return snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+  }
+
+  /// Returns all projects ordered by createdAt desc.
+  Future<List<Map<String, dynamic>>> getAllProjects() async {
+    final snap = await _firestore
+        .collection('projects')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+  }
+
+  /// Returns all non-completed projects ordered by createdAt desc.
+  Future<List<Map<String, dynamic>>> getActiveProjects() async {
+    final snap = await _firestore
+        .collection('projects')
+        .orderBy('createdAt', descending: true)
+        .get();
+    final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    return docs
+        .where((p) => (p['status'] as String? ?? '').toLowerCase() != 'completed')
+        .toList();
+  }
+
+  /// Returns all completed projects ordered by updatedAt desc.
+  Future<List<Map<String, dynamic>>> getPreviousProjects() async {
+    final snap = await _firestore
+        .collection('projects')
+        .where('status', isEqualTo: 'Completed')
+        .get();
+    final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    docs.sort((a, b) {
+      final aTime = (a['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      final bTime = (b['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      return bTime.compareTo(aTime);
+    });
+    return docs;
+  }
+
+  /// Updates only the assignedEngineers field of an existing project.
+  Future<void> updateAssignedEngineers(
+    String projectId,
+    List<String> engineerIds,
+  ) async {
+    await _firestore.collection('projects').doc(projectId).update({
+      'assignedEngineers': engineerIds,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
   }
 }

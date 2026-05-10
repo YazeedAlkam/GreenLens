@@ -8,12 +8,6 @@ class CustomAppBar {
       backgroundColor: primaryColor,
       toolbarHeight: 316,
       centerTitle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
       elevation: 10,
       shadowColor: Colors.black,
       title: Column(

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -12,6 +12,7 @@ class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onViewBills;
   final Future<void> Function()? onSaveDraft;
   final Map<String, dynamic>? initialProjectInfo;
+  final bool readOnly;
 
   const ProjectInfoBody({
     super.key,
@@ -21,13 +22,15 @@ class ProjectInfoBody extends StatefulWidget {
     required this.onViewBills,
     required this.onSaveDraft,
     this.initialProjectInfo,
+    this.readOnly = false,
   });
 
   @override
   State<ProjectInfoBody> createState() => ProjectInfoBodyState();
 }
 
-class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliveClientMixin {
+class ProjectInfoBodyState extends State<ProjectInfoBody>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -151,9 +154,13 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
             height: 65,
             child: TextField(
               controller: _projectNameCtrl,
+              readOnly: widget.readOnly,
               expands: true,
               maxLines: null,
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "e.g Commercial",
                 hintStyle: GoogleFonts.firaSans(
@@ -161,6 +168,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
                 ),
+                filled: widget.readOnly,
+                fillColor: disableColor,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                   borderRadius: BorderRadius.circular(12),
@@ -207,9 +216,13 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   height: 65,
                   child: TextField(
                     controller: _buildingTypeCtrl,
+                    readOnly: widget.readOnly,
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       hintText: "e.g Commercial",
                       hintStyle: GoogleFonts.firaSans(
@@ -217,6 +230,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -241,11 +256,19 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   height: 65,
                   child: TextField(
                     controller: _floorAreaCtrl,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                    readOnly: widget.readOnly,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                    ],
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       hintText: "e.g 5000",
                       hintStyle: GoogleFonts.firaSans(
@@ -253,6 +276,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -308,11 +333,15 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   height: 65,
                   child: TextField(
                     controller: _noOfFloorsCtrl,
+                    readOnly: widget.readOnly,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       hintText: "e.g 4",
                       hintStyle: GoogleFonts.firaSans(
@@ -320,6 +349,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -344,11 +375,19 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   height: 65,
                   child: TextField(
                     controller: _operatingHrsCtrl,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                    readOnly: widget.readOnly,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                    ],
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       hintText: "e.g 12",
                       hintStyle: GoogleFonts.firaSans(
@@ -356,6 +395,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -411,11 +452,15 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   height: 65,
                   child: TextField(
                     controller: _daysPerWeekCtrl,
+                    readOnly: widget.readOnly,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       hintText: "e.g 6",
                       hintStyle: GoogleFonts.firaSans(
@@ -423,6 +468,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -450,7 +497,10 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                     readOnly: true,
                     expands: true,
                     maxLines: null,
-                    style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.firaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: disableColor,
@@ -461,7 +511,7 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
-                      suffixIcon: Padding(
+                      suffixIcon: widget.readOnly ? null : Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: GestureDetector(
                           onTap: () {
@@ -548,6 +598,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -565,7 +617,7 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                     ),
                     controller: _initiationDateCtrl,
                     readOnly: true,
-                    onTap: () => _pickDate(_initiationDateCtrl),
+                    onTap: widget.readOnly ? null : () => _pickDate(_initiationDateCtrl),
                   ),
                 ),
               ),
@@ -582,6 +634,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      filled: widget.readOnly,
+                      fillColor: disableColor,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 2,
@@ -599,7 +653,7 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                     ),
                     controller: _deadlineDateCtrl,
                     readOnly: true,
-                    onTap: () => _pickDate(_deadlineDateCtrl),
+                    onTap: widget.readOnly ? null : () => _pickDate(_deadlineDateCtrl),
                   ),
                 ),
               ),
@@ -624,8 +678,12 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
           SizedBox(
             child: TextField(
               controller: _salesMarkCtrl,
+              readOnly: widget.readOnly,
               maxLines: 4,
-              style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: "Short Description about Sales Mark",
                 hintStyle: GoogleFonts.firaSans(
@@ -633,6 +691,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
                 ),
+                filled: widget.readOnly,
+                fillColor: disableColor,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
                   borderRadius: BorderRadius.circular(12),
@@ -652,6 +712,7 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
             onNext: widget.onNext,
             onBack: widget.onBack,
             onSaveDraft: widget.onSaveDraft,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.normal,
           ),
           const SizedBox(height: 60),
         ],
