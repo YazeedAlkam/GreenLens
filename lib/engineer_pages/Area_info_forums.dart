@@ -2,7 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainAreaForums extends StatelessWidget {
-  const MainAreaForums({super.key});
+  final TextEditingController lightingTypeController;
+  final TextEditingController ratedPowerController;
+  final TextEditingController numLightsController;
+  final TextEditingController yearlyHoursController;
+  final TextEditingController totalPowerController;
+  final TextEditingController annualController;
+
+  const MainAreaForums({
+    super.key,
+    required this.lightingTypeController,
+    required this.ratedPowerController,
+    required this.numLightsController,
+    required this.yearlyHoursController,
+    required this.totalPowerController,
+    required this.annualController,
+  });
+
+  InputDecoration _fieldDecoration(String hint) => InputDecoration(
+        hintText: hint,
+        hintStyle: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF808080),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -14,48 +46,34 @@ class MainAreaForums extends StatelessWidget {
         border: Border.all(color: Colors.black, width: 2),
       ),
       alignment: Alignment.centerLeft,
-      child: Column(
-        children: [
-          //Row -1- Lighting Type
-          Text(
-            'Lighting Type',
-            style: GoogleFonts.firaSans(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-          SizedBox(height: 16),
-          SizedBox(
-            height: 65,
-            child: TextField(
-              expands: true,
-              maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-              decoration: InputDecoration(
-                hintText: "e.g Fluorecent",
-                hintStyle: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500, //meduim w500
-                  color: Color(0xFF808080),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Lighting Type',
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
               ),
             ),
-          ),
-          SizedBox(height: 16),
-          //Row -2- Rated Power(W) , NO of lights
-          Row(
-            children: [
-              Expanded(
-                child: Text(
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 65,
+              child: TextField(
+                controller: lightingTypeController,
+                expands: true,
+                maxLines: null,
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: _fieldDecoration('e.g Fluorescent'),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                Text(
                   'Rated Power (W)',
                   style: GoogleFonts.firaSans(
                     fontSize: 24,
@@ -63,129 +81,75 @@ class MainAreaForums extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  'No of lights',
+                const SizedBox(width: 336),
+                Text(
+                  'No. of Lights',
                   style: GoogleFonts.firaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          //textfields for the Row -2-
-          Row(
-            children: [
-              SizedBox(
-                height: 65,
-                child: TextField(
-                  expands: true,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(
-                    hintText: "e.g 36",
-                    hintStyle: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500, //meduim w500
-                      color: Color(0xFF808080),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      controller: ratedPowerController,
+                      expands: true,
+                      maxLines: null,
+                      keyboardType: TextInputType.number,
+                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: _fieldDecoration('e.g 36'),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              SizedBox(
-                height: 65,
-                child: TextField(
-                  expands: true,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(
-                    hintText: "e.g 120",
-                    hintStyle: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500, //meduim w500
-                      color: Color(0xFF808080),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      controller: numLightsController,
+                      expands: true,
+                      maxLines: null,
+                      keyboardType: TextInputType.number,
+                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: _fieldDecoration('e.g 120'),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          //Row -3- -------------->
-          Text(
-            'Yearly operating hours',
-            style: GoogleFonts.firaSans(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
+              ],
             ),
-          ),
-          SizedBox(height: 16),
-          SizedBox(
-            height: 65,
-            child: TextField(
-              expands: true,
-              maxLines: null,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-              decoration: InputDecoration(
-                hintText: "e.g 1200",
-                hintStyle: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500, //meduim w500
-                  color: Color(0xFF808080),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Color(0xFF808080)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            const SizedBox(height: 30),
+            Text(
+              'Yearly Operating Hours',
+              style: GoogleFonts.firaSans(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
               ),
             ),
-          ),
-          SizedBox(height: 16),
-
-          //Row -4- ------------------------->
-          Row(
-            children: [
-              Expanded(
-                child: Text(
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 65,
+              child: TextField(
+                controller: yearlyHoursController,
+                expands: true,
+                maxLines: null,
+                keyboardType: TextInputType.number,
+                style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: _fieldDecoration('e.g 1200'),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                Text(
                   'Total Power (kW)',
                   style: GoogleFonts.firaSans(
                     fontSize: 24,
@@ -193,10 +157,8 @@ class MainAreaForums extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: Text(
+                const SizedBox(width: 336),
+                Text(
                   'Annual (kW/yr)',
                   style: GoogleFonts.firaSans(
                     fontSize: 24,
@@ -204,82 +166,44 @@ class MainAreaForums extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          //textfields for the Row -4-
-          Row(
-            children: [
-              SizedBox(
-                height: 65,
-                child: TextField(
-                  readOnly: true,
-                  expands: true,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(
-                    hintText: "----",
-                    hintStyle: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500, //meduim w500
-                      color: Color(0xFF808080),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      controller: totalPowerController,
+                      readOnly: true,
+                      expands: true,
+                      maxLines: null,
+                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: _fieldDecoration('----'),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              SizedBox(
-                height: 65,
-                child: TextField(
-                  readOnly: true,
-                  expands: true,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(
-                    hintText: "----",
-                    hintStyle: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500, //meduim w500
-                      color: Color(0xFF808080),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color(0xFF808080),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: SizedBox(
+                    height: 65,
+                    child: TextField(
+                      controller: annualController,
+                      readOnly: true,
+                      expands: true,
+                      maxLines: null,
+                      style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
+                      decoration: _fieldDecoration('----'),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
