@@ -24,33 +24,7 @@ class ProjectInfoBody extends StatefulWidget {
   });
 
   @override
-  State<ProjectInfoBody> createState() => _ProjectInfoBodyState();
-}
-
-class _ProjectInfoBodyState extends State<ProjectInfoBody> {
-  @override
-  Widget build(BuildContext context) {
-    final TextEditingController iniatdatecontroller = TextEditingController();
-    late final TextEditingController deadlinedatecontroller =
-        TextEditingController();
-
-    Future<void> pickDate(TextEditingController controller) async {
-      DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2100),
-      );
-
-      if (pickedDate != null) {
-        setState(() {
-          controller.text =
-              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-        });
-      }
-    }
-
-  ProjectInfoBodyState createState() => ProjectInfoBodyState();
+  State<ProjectInfoBody> createState() => ProjectInfoBodyState();
 }
 
 class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliveClientMixin {
@@ -99,6 +73,21 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
     _salesMarkCtrl.dispose();
     _avgMonthlyBillCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickDate(TextEditingController controller) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        controller.text =
+            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      });
+    }
   }
 
   void updateAverageBill(double avg) {
@@ -574,9 +563,9 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    controller: iniatdatecontroller,
+                    controller: _initiationDateCtrl,
                     readOnly: true,
-                    onTap: () => pickDate(iniatdatecontroller),
+                    onTap: () => _pickDate(_initiationDateCtrl),
                   ),
                 ),
               ),
@@ -608,9 +597,9 @@ class ProjectInfoBodyState extends State<ProjectInfoBody> with AutomaticKeepAliv
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    controller: deadlinedatecontroller,
+                    controller: _deadlineDateCtrl,
                     readOnly: true,
-                    onTap: () => pickDate(deadlinedatecontroller),
+                    onTap: () => _pickDate(_deadlineDateCtrl),
                   ),
                 ),
               ),
