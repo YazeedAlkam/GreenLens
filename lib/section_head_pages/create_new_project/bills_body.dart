@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/shared_files/fotter.dart';
+import 'package:greenlens/section_head_pages/create_new_project/shared_files/fotter.dart';
 
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
@@ -36,8 +36,12 @@ class BillsBodyState extends State<BillsBody> with AutomaticKeepAliveClientMixin
 
   @override
   void dispose() {
-    for (final c in _energyCtrls) c.dispose();
-    for (final c in _billCtrls) c.dispose();
+    for (final c in _energyCtrls) {
+      c.dispose();
+    }
+    for (final c in _billCtrls) {
+      c.dispose();
+    }
     super.dispose();
   }
 
