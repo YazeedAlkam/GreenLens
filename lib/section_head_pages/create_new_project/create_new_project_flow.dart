@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/section_head_pages/project_info_body.dart';
-import 'package:greenlens/section_head_pages/review_body.dart';
-import '../firebase/project_service.dart';
-import '../main.dart';
+import 'package:greenlens/section_head_pages/create_new_project/project_info_body.dart';
+import 'package:greenlens/section_head_pages/create_new_project/review_body.dart';
+import 'package:greenlens/section_head_pages/create_new_project/shared_files/nav_bar.dart';
+import 'package:greenlens/section_head_pages/create_new_project/shared_files/navbar_title.dart';
+import '../../firebase/project_service.dart';
+import '../../main.dart';
 import 'all_contacts_body.dart';
 import 'assign_eng_body.dart';
 import 'bills_body.dart';
 import 'cost_body.dart';
-import 'shared_files/nav_bar.dart';
 import 'client_info_body.dart';
-import 'shared_files/navbar_title.dart';
 
 class CreateProjectFlow extends StatefulWidget {
   final String? existingProjectId;
@@ -86,7 +86,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],
       costs: _costKey.currentState?.getCosts() ?? {},
     );
-    Navigator.pop(context);
+    if (mounted) Navigator.pop(context);
   }
 
   int _currentStep = 0;

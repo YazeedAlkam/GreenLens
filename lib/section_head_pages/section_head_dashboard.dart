@@ -5,7 +5,7 @@ import 'package:greenlens/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:greenlens/firebase/project_service.dart';
-import 'package:greenlens/section_head_pages/create_new_project_flow.dart';
+import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 
 class SectionHeadPage extends StatefulWidget {
   const SectionHeadPage({super.key});
