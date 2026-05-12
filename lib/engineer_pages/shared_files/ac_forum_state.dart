@@ -67,6 +67,28 @@ class GroupFormState {
     return (tp * hours).toStringAsFixed(2);
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'acType': activeType,
+      'invertor': activeInvertor,
+      'noOfUnits': noOfUnits.text,
+      'capacity': capacity.text,
+      'yearlyHours': yearlyHours.text,
+      'ratedPower': ratedPower.text,
+      'notes': notes.text,
+      'noOfPackages': noOfPackages.text,
+      'packageCapacity': packageCapacity.text,
+      'packageHours': packageHours.text,
+      'packagePower': packagePower.text,
+      'packageNotes': packageNotes.text,
+      'chillerCapacity': chillerCapacity.text,
+      'chillerPower': chillerPower.text,
+      'chillerHours': chillerHours.text,
+      'ahuCount': ahuCount.text,
+      'centralNotes': centralNotes.text,
+    };
+  }
+
   void dispose() {
     for (final c in [
       noOfUnits, capacity, yearlyHours, ratedPower, notes,

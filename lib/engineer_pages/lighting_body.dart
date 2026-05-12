@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/engineer_pages/area_info_forums.dart';
+import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
 import '../shared_files/fotter.dart';
@@ -10,12 +11,14 @@ class LightingBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final String projectId;
 
   const LightingBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.projectId,
   });
 
   @override
@@ -57,6 +60,35 @@ class _LightingBodyState extends State<LightingBody>
       }
     }
     super.dispose();
+  }
+
+  Map<String, String> _areaCtrlsToMap(List<TextEditingController> ctrls) => {
+    'lightingType': ctrls[0].text,
+    'ratedPower': ctrls[1].text,
+    'numLights': ctrls[2].text,
+    'yearlyHours': ctrls[3].text,
+    'totalPower': ctrls[4].text,
+    'annual': ctrls[5].text,
+  };
+
+  Future<void> _save() async {
+    final areas = [
+      {
+        'lightingType': _area1LightingType.text,
+        'ratedPower': _area1RatedPower.text,
+        'numLights': _area1NumLights.text,
+        'yearlyHours': _area1YearlyHours.text,
+        'totalPower': _area1TotalPower.text,
+        'annual': _area1Annual.text,
+      },
+      ..._extraAreaCtrls.map(_areaCtrlsToMap),
+    ];
+    await ProjectService().saveAuditSection(widget.projectId, 'lighting', areas);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Saved successfully')),
+      );
+    }
   }
 
   String _extraAreaLabel(int id) => "Area ${_extraAreas.indexOf(id) + 2}";
@@ -254,6 +286,8 @@ class _LightingBodyState extends State<LightingBody>
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
+            mode: FooterMode.auditNormal,
+            onSaveDraft: _save,
           ),
         ],
       ),

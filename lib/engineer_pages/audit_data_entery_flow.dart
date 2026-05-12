@@ -6,10 +6,12 @@ import 'package:greenlens/engineer_pages/lighting_body.dart';
 import 'package:greenlens/engineer_pages/machines_body.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng_title.dart';
+import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
 class Audit_Entery_Flow extends StatefulWidget {
-  const Audit_Entery_Flow({super.key});
+  final String projectId;
+  const Audit_Entery_Flow({super.key, required this.projectId});
 
   @override
   State<Audit_Entery_Flow> createState() => _Audit_Entery_FlowState();
@@ -17,6 +19,22 @@ class Audit_Entery_Flow extends StatefulWidget {
 
 class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
   int _currentStep = 0;
+  Map<String, dynamic>? _projectInfo;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProject();
+  }
+
+  Future<void> _fetchProject() async {
+    final data = await ProjectService().getProjectById(widget.projectId);
+    setState(() {
+      _projectInfo = data?['projectInfo'] as Map<String, dynamic>?;
+      _loading = false;
+    });
+  }
 
   void _next() {
     if (_currentStep < 5) setState(() => _currentStep++);
@@ -44,15 +62,23 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
           onNext: _next,
           onBack: _back,
           currentStep: _currentStep,
+          projectId: widget.projectId,
+          projectInfo: _projectInfo,
         );
       case 1:
         return LightingBody(
           onNext: _next,
           onBack: _back,
           currentStep: _currentStep,
+          projectId: widget.projectId,
         );
       case 2:
-        return AcBody(onNext: _next, onBack: _back, currentStep: _currentStep);
+        return AcBody(
+          onNext: _next,
+          onBack: _back,
+          currentStep: _currentStep,
+          projectId: widget.projectId,
+        );
       case 3:
         return ElectricalEquipmentBody(
           onNext: _next,
@@ -66,6 +92,8 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
           onNext: _next,
           onBack: _back,
           currentStep: _currentStep,
+          projectId: widget.projectId,
+          projectInfo: _projectInfo,
         );
     }
   }
@@ -101,7 +129,9 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
           ),
         ),
       ),
-      body: _buildCurrentStep(),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildCurrentStep(),
     );
   }
 }

@@ -109,7 +109,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
   Future<void> _saveDraft() async {
     _projectId = await _projectService.saveProject(
       existingProjectId: _projectId,
-      status: 'draft',
+      status: 'Draft',
       clientInfo: _clientKey.currentState?.getClientInfo() ?? {},
       projectInfo: _mergedProjectInfo(),
       assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],

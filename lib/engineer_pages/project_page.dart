@@ -3,9 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
+import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
+import 'package:greenlens/shared_files/fotter.dart';
 
 class ProjectPage extends StatefulWidget {
-  const ProjectPage({super.key});
+  final String projectName;
+  final String projectId;
+  const ProjectPage({super.key, required this.projectName, required this.projectId});
 
   @override
   State<ProjectPage> createState() => _ProjectPageState();
@@ -16,8 +20,8 @@ class _ProjectPageState extends State<ProjectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.build(
-        title: 'Al-Quds Mall Energy Audit',
-        subtitle: 'Manage The Project',
+        title: '${widget.projectName} Energy Audit',
+        subtitle: 'Manage and audit your project',
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -38,7 +42,7 @@ class _ProjectPageState extends State<ProjectPage> {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Handle button press, navigate to create project page
+                      // TODO: Handle button press, create and save a pdf to the downloads folder on the device
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -94,7 +98,12 @@ class _ProjectPageState extends State<ProjectPage> {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Handle button press, navigate to assign engineer page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Audit_Entery_Flow(projectId: widget.projectId),
+                        ),
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -117,63 +126,6 @@ class _ProjectPageState extends State<ProjectPage> {
                               SizedBox(width: 10),
                               Text(
                                 'Operational Audit Data',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 40,
-                          width: 40,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                //Third button   --------------->
-                SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 64,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      backgroundColor: dashButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {
-                      // TODO: Handle button press, navigate to previous projects page
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/Tick.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Save Project and Audit Data',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
@@ -300,6 +252,13 @@ class _ProjectPageState extends State<ProjectPage> {
                       ],
                     ),
                   ),
+                ),
+                SizedBox(height: 16),
+                CreateNewProjectFooter(
+                  currentStep: 0,
+                  mode: FooterMode.backOnly,
+                  onBack: () => Navigator.pop(context),
+                  onNext: () {},
                 ),
               ],
             ),

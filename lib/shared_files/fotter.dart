@@ -14,6 +14,8 @@ enum FooterMode {
   viewOnly,
   /// Back + Done                    (read-only review/last step)
   done,
+  /// Back + Save + Next Step        (audit data entry steps)
+  auditNormal,
 }
 
 class CreateNewProjectFooter extends StatelessWidget {
@@ -101,6 +103,23 @@ class CreateNewProjectFooter extends StatelessWidget {
       style: _outlineStyle,
       child: Text(
         "Save Draft",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
+      ),
+    ),
+  );
+
+  Widget _saveButton() => SizedBox(
+    width: 309,
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onSaveDraft,
+      style: _outlineStyle,
+      child: Text(
+        "Save",
         style: GoogleFonts.firaSans(
           fontSize: 24,
           fontWeight: FontWeight.w500,
@@ -209,6 +228,19 @@ class CreateNewProjectFooter extends StatelessWidget {
             Expanded(child: _backButton()),
             const SizedBox(width: 17),
             _saveDraftButton(),
+            const SizedBox(width: 17),
+            Expanded(child: _nextStepButton()),
+          ],
+        );
+
+      // ── Audit Normal: Back + Save + Next Step ─────────────────────────
+      case FooterMode.auditNormal:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButton()),
+            const SizedBox(width: 17),
+            _saveButton(),
             const SizedBox(width: 17),
             Expanded(child: _nextStepButton()),
           ],

@@ -511,6 +511,12 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF808080),
                       ),
+                      suffixText: 'JOD',
+                      suffixStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF808080),
+                      ),
                       suffixIcon: widget.readOnly ? null : Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: GestureDetector(

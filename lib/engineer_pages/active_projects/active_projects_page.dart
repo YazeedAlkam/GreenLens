@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/engineer_pages/project_page.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/fotter.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
-class ActiveProjectsPage extends StatefulWidget {
-  const ActiveProjectsPage({super.key});
+class EngineerActiveProjectsPage extends StatefulWidget {
+  const EngineerActiveProjectsPage({super.key});
 
   @override
-  State<ActiveProjectsPage> createState() => _ActiveProjectsPageState();
+  State<EngineerActiveProjectsPage> createState() =>
+      _EngineerActiveProjectsPageState();
 }
 
-class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
+class _EngineerActiveProjectsPageState
+    extends State<EngineerActiveProjectsPage> {
   late Future<List<Map<String, dynamic>>> _projectsFuture;
 
   @override
   void initState() {
     super.initState();
-    _projectsFuture = ProjectService().getActiveProjects();
+    _projectsFuture = ProjectService().getEngineerActiveProjects();
   }
 
   @override
@@ -65,7 +67,7 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Select Project',
+                          'Assigned Projects',
                           style: GoogleFonts.firaSans(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -123,7 +125,7 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                   vertical: 16,
                                 ),
                                 child: Text(
-                                  'No active projects.',
+                                  'No active projects assigned.',
                                   style: GoogleFonts.firaSans(
                                     fontSize: 14,
                                     color: Colors.grey,
@@ -134,48 +136,27 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                             return Column(
                               children: [
                                 for (int i = 0; i < projects.length; i++) ...[
-                                  Builder(
-                                    builder: (context) {
-                                      final project = projects[i];
-                                      final status =
-                                          project['status'] as String? ??
-                                          'Draft';
-                                      final isDraftOrDenied =
-                                          status == 'Draft' ||
-                                          status == 'Denied';
-                                      return Project(
-                                        title: (project['projectInfo']
-                                                    as Map<String, dynamic>?)?[
-                                                'projectName'] ??
-                                            project['customId'] ??
-                                            'Untitled',
-                                        status: status,
-                                        onTap: isDraftOrDenied
-                                            ? () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        CreateProjectFlow(
-                                                      existingProjectId:
-                                                          project['id']
-                                                              as String,
-                                                    ),
-                                                  ),
-                                                ).then((_) {
-                                                  if (mounted) {
-                                                    setState(() {
-                                                      _projectsFuture =
-                                                          ProjectService()
-                                                              .getActiveProjects();
-                                                    });
-                                                  }
-                                                });
-                                              }
-                                            : () {},
-                                      );
-                                    },
-                                  ),
+                                  Builder(builder: (context) {
+                                    final name = (projects[i]['projectInfo']
+                                            as Map<String, dynamic>?)?[
+                                        'projectName'] as String? ??
+                                        'Unnamed Project';
+                                    final status = projects[i]['status'] as String? ?? 'Draft';
+                                    final id = projects[i]['id'] as String? ?? '';
+                                    final isNavigable = status == 'Ready' || status == 'In Progress';
+                                    return Project(
+                                      title: name,
+                                      status: status,
+                                      onTap: isNavigable
+                                          ? () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => ProjectPage(projectName: name, projectId: id),
+                                                ),
+                                              )
+                                          : null,
+                                    );
+                                  }),
                                   if (i < projects.length - 1)
                                     const SizedBox(height: 16),
                                 ],

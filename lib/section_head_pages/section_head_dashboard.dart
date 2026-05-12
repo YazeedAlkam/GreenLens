@@ -286,6 +286,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                 .where((p) =>
                                     (p['status'] as String? ?? '').toLowerCase() !=
                                     'completed')
+                                .take(4)
                                 .toList();
                             if (projects.isEmpty) {
                               return Padding(
@@ -310,8 +311,9 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                       final status =
                                           project['status'] as String? ??
                                           'Draft';
-                                      final isDraft =
-                                          status.toLowerCase() == 'draft';
+                                      final isDraftOrDenied =
+                                          status == 'Draft' ||
+                                          status == 'Denied';
                                       return Project(
                                         title:
                                             (project['projectInfo']
@@ -322,7 +324,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                             project['customId'] ??
                                             'Untitled',
                                         status: status,
-                                        onTap: isDraft
+                                        onTap: isDraftOrDenied
                                             ? () {
                                                 Navigator.push(
                                                   context,
