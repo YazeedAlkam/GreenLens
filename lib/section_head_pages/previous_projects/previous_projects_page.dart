@@ -204,6 +204,7 @@ class _PreviousProjectsPageState extends State<PreviousProjectsPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 16,)
                   ],
                 ),
               ),
