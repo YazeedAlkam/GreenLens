@@ -58,6 +58,8 @@ class Project extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.zero,
             backgroundColor: Colors.white,
+            disabledBackgroundColor: Colors.white,
+            disabledForegroundColor: Colors.black,
             elevation: 0,
             shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(

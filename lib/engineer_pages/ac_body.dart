@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import '../shared_files/fotter.dart';
 import 'shared_files/ac_forum_state.dart';
@@ -10,11 +11,13 @@ class AcBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
+  final String projectId;
   const AcBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
+    required this.projectId,
   });
 
   @override
@@ -28,6 +31,16 @@ class _AcBodyState extends State<AcBody> {
 
   // One _GroupFormState per group — index 0 = Area 1, rest = extra groups
   final List<GroupFormState> _groupStates = [GroupFormState()];
+
+  Future<void> _save() async {
+    final groups = _groupStates.map((s) => s.toMap()).toList();
+    await ProjectService().saveAuditSection(widget.projectId, 'ac', groups);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Saved successfully')),
+      );
+    }
+  }
 
   String _extraGroupLabel(int id) => "Group ${_extraGroup.indexOf(id) + 2}";
 
@@ -166,6 +179,8 @@ class _AcBodyState extends State<AcBody> {
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
+              mode: FooterMode.auditNormal,
+              onSaveDraft: _save,
             ),
             SizedBox(height: 10000),
           ],

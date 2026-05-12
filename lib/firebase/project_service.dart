@@ -5,7 +5,7 @@ class ProjectService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Saves or updates a project. Returns the document ID.
-  /// [status] is either 'draft' or 'active'
+  /// [status] is either 'Draft' or 'active'
   Future<String> saveProject({
     String? existingProjectId, // null = first save
     required String status,
@@ -105,12 +105,12 @@ class ProjectService {
     return {'id': doc.id, ...doc.data()!};
   }
 
-  /// Returns the 4 most recently created projects, ordered by createdAt desc.
+  /// Returns recently created projects, ordered by createdAt desc.
   Future<List<Map<String, dynamic>>> getLatestProjects() async {
     final snap = await _firestore
         .collection('projects')
-        .orderBy('createdAt', descending: true)
-        .limit(4)
+        .orderBy('updatedAt', descending: true)
+        .limit(10)
         .get();
     return snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
   }
@@ -124,11 +124,11 @@ class ProjectService {
     return snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
   }
 
-  /// Returns all non-completed projects ordered by createdAt desc.
+  /// Returns all non-completed projects ordered by updatedAt desc.
   Future<List<Map<String, dynamic>>> getActiveProjects() async {
     final snap = await _firestore
         .collection('projects')
-        .orderBy('createdAt', descending: true)
+        .orderBy('updatedAt', descending: true)
         .get();
     final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     return docs
@@ -149,6 +149,57 @@ class ProjectService {
       return bTime.compareTo(aTime);
     });
     return docs;
+  }
+
+  /// Returns up to 4 active (non-completed) projects where the signed-in engineer is assigned.
+  Future<List<Map<String, dynamic>>> getEngineerActiveProjects() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snap = await _firestore
+        .collection('projects')
+        .where('assignedEngineers', arrayContains: uid)
+        .get();
+    final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    docs.sort((a, b) {
+      final aTime = (a['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      final bTime = (b['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      return bTime.compareTo(aTime);
+    });
+    return docs
+        .where((p) {
+          final s = p['status'] as String? ?? '';
+          return s == 'In Progress' || s == 'Ready';
+        })
+        .take(4)
+        .toList();
+  }
+
+  /// Returns all completed projects where the signed-in engineer is assigned.
+  Future<List<Map<String, dynamic>>> getEngineerPreviousProjects() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snap = await _firestore
+        .collection('projects')
+        .where('status', isEqualTo: 'Completed')
+        .where('assignedEngineers', arrayContains: uid)
+        .get();
+    final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    docs.sort((a, b) {
+      final aTime = (a['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      final bTime = (b['updatedAt'] as Timestamp?)?.millisecondsSinceEpoch ?? 0;
+      return bTime.compareTo(aTime);
+    });
+    return docs;
+  }
+
+  /// Saves audit data for a specific section (building, lighting, ac, etc.).
+  Future<void> saveAuditSection(
+    String projectId,
+    String section,
+    dynamic data,
+  ) async {
+    await _firestore.collection('projects').doc(projectId).update({
+      'auditData.$section': data,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
   }
 
   /// Updates only the assignedEngineers field of an existing project.
