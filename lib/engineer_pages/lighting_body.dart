@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/engineer_pages/area_info_forums.dart';
-import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
 import '../shared_files/fotter.dart';
@@ -11,21 +10,23 @@ class LightingBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
-  final String projectId;
+  final List<dynamic>? auditLightingData;
+  final Future<void> Function()? onSaveDraft;
 
   const LightingBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
-    required this.projectId,
+    this.auditLightingData,
+    this.onSaveDraft,
   });
 
   @override
-  State<LightingBody> createState() => _LightingBodyState();
+  State<LightingBody> createState() => LightingBodyState();
 }
 
-class _LightingBodyState extends State<LightingBody>
+class LightingBodyState extends State<LightingBody>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -45,6 +46,36 @@ class _LightingBodyState extends State<LightingBody>
   // Controllers for dynamically added extra areas
   // Each entry is [lightingType, ratedPower, numLights, yearlyHours, totalPower, annual]
   final List<List<TextEditingController>> _extraAreaCtrls = [];
+
+  void _populateArea(List<TextEditingController> ctrls, Map<String, dynamic> area) {
+    ctrls[0].text = area['lightingType']?.toString() ?? '';
+    ctrls[1].text = area['ratedPower']?.toString() ?? '';
+    ctrls[2].text = area['numLights']?.toString() ?? '';
+    ctrls[3].text = area['yearlyHours']?.toString() ?? '';
+    ctrls[4].text = area['totalPower']?.toString() ?? '';
+    ctrls[5].text = area['annual']?.toString() ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final saved = widget.auditLightingData;
+    if (saved == null || saved.isEmpty) return;
+
+    final first = saved[0] as Map<String, dynamic>;
+    _populateArea([
+      _area1LightingType, _area1RatedPower, _area1NumLights,
+      _area1YearlyHours, _area1TotalPower, _area1Annual,
+    ], first);
+
+    for (int i = 1; i < saved.length; i++) {
+      final ctrls = List.generate(6, (_) => TextEditingController());
+      _populateArea(ctrls, saved[i] as Map<String, dynamic>);
+      _extraAreas.add(_nextAreaId);
+      _extraAreaCtrls.add(ctrls);
+      _nextAreaId++;
+    }
+  }
 
   @override
   void dispose() {
@@ -71,25 +102,17 @@ class _LightingBodyState extends State<LightingBody>
     'annual': ctrls[5].text,
   };
 
-  Future<void> _save() async {
-    final areas = [
-      {
-        'lightingType': _area1LightingType.text,
-        'ratedPower': _area1RatedPower.text,
-        'numLights': _area1NumLights.text,
-        'yearlyHours': _area1YearlyHours.text,
-        'totalPower': _area1TotalPower.text,
-        'annual': _area1Annual.text,
-      },
-      ..._extraAreaCtrls.map(_areaCtrlsToMap),
-    ];
-    await ProjectService().saveAuditSection(widget.projectId, 'lighting', areas);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saved successfully')),
-      );
-    }
-  }
+  List<Map<String, String>> getLightingData() => [
+    {
+      'lightingType': _area1LightingType.text,
+      'ratedPower': _area1RatedPower.text,
+      'numLights': _area1NumLights.text,
+      'yearlyHours': _area1YearlyHours.text,
+      'totalPower': _area1TotalPower.text,
+      'annual': _area1Annual.text,
+    },
+    ..._extraAreaCtrls.map(_areaCtrlsToMap),
+  ];
 
   String _extraAreaLabel(int id) => "Area ${_extraAreas.indexOf(id) + 2}";
 
@@ -287,7 +310,7 @@ class _LightingBodyState extends State<LightingBody>
             onNext: widget.onNext,
             onBack: widget.onBack,
             mode: FooterMode.auditNormal,
-            onSaveDraft: _save,
+            onSaveDraft: widget.onSaveDraft,
           ),
         ],
       ),

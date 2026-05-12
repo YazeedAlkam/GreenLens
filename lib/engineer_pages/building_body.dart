@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
 import '../shared_files/fotter.dart';
@@ -11,21 +10,23 @@ class BuildingBody extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
   final Map<String, dynamic>? projectInfo;
-  final String projectId;
+  final Map<String, dynamic>? auditBuildingData;
+  final Future<void> Function()? onSaveDraft;
   const BuildingBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
-    required this.projectId,
     this.projectInfo,
+    this.auditBuildingData,
+    this.onSaveDraft,
   });
 
   @override
-  State<BuildingBody> createState() => _BuildingBodyState();
+  State<BuildingBody> createState() => BuildingBodyState();
 }
 
-class _BuildingBodyState extends State<BuildingBody> {
+class BuildingBodyState extends State<BuildingBody> {
   final TextEditingController visitdatecontroller = TextEditingController();
   final TextEditingController salesMarkController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
@@ -69,6 +70,12 @@ class _BuildingBodyState extends State<BuildingBody> {
     _initiationDateCtrl.text = info['initiationDate']?.toString() ?? '';
     _deadlineDateCtrl.text = info['deadlineDate']?.toString() ?? '';
     salesMarkController.text = info['salesMark']?.toString() ?? '';
+
+    final audit = widget.auditBuildingData;
+    if (audit != null) {
+      visitdatecontroller.text = audit['visitDate']?.toString() ?? '';
+      notesController.text = audit['notes']?.toString() ?? '';
+    }
   }
 
   @override
@@ -88,18 +95,12 @@ class _BuildingBodyState extends State<BuildingBody> {
     super.dispose();
   }
 
-  Future<void> _save() async {
-    await ProjectService().saveAuditSection(widget.projectId, 'building', {
-      'visitDate': visitdatecontroller.text,
-      'salesMark': salesMarkController.text,
-      'notes': notesController.text,
-    });
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saved successfully')),
-      );
-    }
-  }
+  Map<String, dynamic> getBuildingAuditData() => {
+    'visitDate': visitdatecontroller.text,
+    'notes': notesController.text,
+  };
+
+  String getSalesMark() => salesMarkController.text;
 
   Future<void> pickDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -479,7 +480,7 @@ class _BuildingBodyState extends State<BuildingBody> {
             onNext: widget.onNext,
             onBack: widget.onBack,
             mode: FooterMode.auditNormal,
-            onSaveDraft: _save,
+            onSaveDraft: widget.onSaveDraft,
           ),
           const SizedBox(height: 6000),
         ],

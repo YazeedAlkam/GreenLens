@@ -44,6 +44,27 @@ class EquipmentItem {
     return totalPower * hours;
   }
 
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'isCompressedAir': isCompressedAir,
+    'name': nameController.text,
+    'compressedAirType': compressedAirTypeController.text,
+    'ratedPower': ratedPowerController.text,
+    'quantity': quantityController.text,
+    'yearlyHours': yearlyHoursController.text,
+  };
+
+  static EquipmentItem fromMap(Map<String, dynamic> map) {
+    final item = EquipmentItem(id: (map['id'] as int?) ?? 1);
+    item.isCompressedAir = (map['isCompressedAir'] as bool?) ?? false;
+    item.nameController.text = map['name']?.toString() ?? '';
+    item.compressedAirTypeController.text = map['compressedAirType']?.toString() ?? '';
+    item.ratedPowerController.text = map['ratedPower']?.toString() ?? '';
+    item.quantityController.text = map['quantity']?.toString() ?? '';
+    item.yearlyHoursController.text = map['yearlyHours']?.toString() ?? '';
+    return item;
+  }
+
   void dispose() {
     nameController.dispose();
     compressedAirTypeController.dispose();
@@ -61,6 +82,8 @@ class ElectricalEquipmentBody extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
   final bool readOnly;
+  final List<dynamic>? auditEquipmentData;
+  final Future<void> Function()? onSaveDraft;
 
   const ElectricalEquipmentBody({
     super.key,
@@ -68,16 +91,33 @@ class ElectricalEquipmentBody extends StatefulWidget {
     required this.onBack,
     required this.currentStep,
     this.readOnly = false,
+    this.auditEquipmentData,
+    this.onSaveDraft,
   });
 
   @override
   State<ElectricalEquipmentBody> createState() =>
-      _ElectricalEquipmentBodyState();
+      ElectricalEquipmentBodyState();
 }
 
-class _ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
+class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
   final List<EquipmentItem> _items = [EquipmentItem(id: 1)];
   int _activeIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final saved = widget.auditEquipmentData;
+    if (saved == null || saved.isEmpty) return;
+    _items.clear();
+    for (final map in saved) {
+      _items.add(EquipmentItem.fromMap(map as Map<String, dynamic>));
+    }
+    _reassignIds();
+  }
+
+  List<Map<String, dynamic>> getEquipmentData() =>
+      _items.map((i) => i.toMap()).toList();
 
   // ← Reassigns IDs 1,2,3... based on current list positions
   void _reassignIds() {
@@ -177,6 +217,8 @@ class _ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
+              mode: FooterMode.auditNormal,
+              onSaveDraft: widget.onSaveDraft,
             ),
             const SizedBox(height: 10000),
           ],

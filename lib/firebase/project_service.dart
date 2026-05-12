@@ -202,6 +202,17 @@ class ProjectService {
     });
   }
 
+  /// Updates arbitrary dot-notation fields on a project in one write.
+  Future<void> updateFields(
+    String projectId,
+    Map<String, dynamic> fields,
+  ) async {
+    await _firestore.collection('projects').doc(projectId).update({
+      ...fields,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
   /// Updates only the assignedEngineers field of an existing project.
   Future<void> updateAssignedEngineers(
     String projectId,
