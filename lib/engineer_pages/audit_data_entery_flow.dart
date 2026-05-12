@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:greenlens/engineer_pages/Equipment_Body.dart';
 import 'package:greenlens/engineer_pages/ac_body.dart';
 import 'package:greenlens/engineer_pages/building_body.dart';
 import 'package:greenlens/engineer_pages/lighting_body.dart';
+import 'package:greenlens/engineer_pages/machines_body.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng_title.dart';
 import 'package:greenlens/firebase/project_service.dart';
@@ -35,7 +37,7 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
   }
 
   void _next() {
-    if (_currentStep < 4) setState(() => _currentStep++);
+    if (_currentStep < 5) setState(() => _currentStep++);
   }
 
   void _back() {
@@ -77,6 +79,14 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
           currentStep: _currentStep,
           projectId: widget.projectId,
         );
+      case 3:
+        return ElectricalEquipmentBody(
+          onNext: _next,
+          onBack: _back,
+          currentStep: _currentStep,
+        );
+      case 4:
+        return MachinesBody(onNext: _next, onBack: _back, currentStep: _currentStep);
       default:
         return BuildingBody(
           onNext: _next,
