@@ -42,6 +42,27 @@ class MachineItem {
     return totalPower * hours;
   }
 
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'isCompressedAir': isCompressedAir,
+    'name': nameController.text,
+    'compressedAirType': compressedAirTypeController.text,
+    'ratedPower': ratedPowerController.text,
+    'quantity': quantityController.text,
+    'yearlyHours': yearlyHoursController.text,
+  };
+
+  static MachineItem fromMap(Map<String, dynamic> map) {
+    final item = MachineItem(id: (map['id'] as int?) ?? 1);
+    item.isCompressedAir = (map['isCompressedAir'] as bool?) ?? false;
+    item.nameController.text = map['name']?.toString() ?? '';
+    item.compressedAirTypeController.text = map['compressedAirType']?.toString() ?? '';
+    item.ratedPowerController.text = map['ratedPower']?.toString() ?? '';
+    item.quantityController.text = map['quantity']?.toString() ?? '';
+    item.yearlyHoursController.text = map['yearlyHours']?.toString() ?? '';
+    return item;
+  }
+
   void dispose() {
     nameController.dispose();
     compressedAirTypeController.dispose();
@@ -59,6 +80,8 @@ class MachinesBody extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
   final bool readOnly;
+  final List<dynamic>? auditMachinesData;
+  final Future<void> Function()? onSaveDraft;
 
   const MachinesBody({
     super.key,
@@ -66,15 +89,32 @@ class MachinesBody extends StatefulWidget {
     required this.onBack,
     required this.currentStep,
     this.readOnly = false,
+    this.auditMachinesData,
+    this.onSaveDraft,
   });
 
   @override
-  State<MachinesBody> createState() => _MachinesBodyState();
+  State<MachinesBody> createState() => MachinesBodyState();
 }
 
-class _MachinesBodyState extends State<MachinesBody> {
+class MachinesBodyState extends State<MachinesBody> {
   final List<MachineItem> _items = [MachineItem(id: 1)];
   int _activeIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final saved = widget.auditMachinesData;
+    if (saved == null || saved.isEmpty) return;
+    _items.clear();
+    for (final map in saved) {
+      _items.add(MachineItem.fromMap(map as Map<String, dynamic>));
+    }
+    _reassignIds();
+  }
+
+  List<Map<String, dynamic>> getMachinesData() =>
+      _items.map((i) => i.toMap()).toList();
 
   // ← Reassigns IDs 1,2,3... based on current list positions
   void _reassignIds() {
@@ -174,6 +214,8 @@ class _MachinesBodyState extends State<MachinesBody> {
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
+              mode: FooterMode.auditNormal,
+              onSaveDraft: widget.onSaveDraft,
             ),
             const SizedBox(height: 10000),
           ],

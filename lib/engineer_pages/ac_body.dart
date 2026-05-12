@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import '../shared_files/fotter.dart';
 import 'shared_files/ac_forum_state.dart';
@@ -11,20 +10,22 @@ class AcBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final int currentStep;
-  final String projectId;
+  final List<dynamic>? auditAcData;
+  final Future<void> Function()? onSaveDraft;
   const AcBody({
     super.key,
     required this.onNext,
     required this.onBack,
     required this.currentStep,
-    required this.projectId,
+    this.auditAcData,
+    this.onSaveDraft,
   });
 
   @override
-  State<AcBody> createState() => _AcBodyState();
+  State<AcBody> createState() => AcBodyState();
 }
 
-class _AcBodyState extends State<AcBody> {
+class AcBodyState extends State<AcBody> {
   int _activeGroup = 0;
   final List<int> _extraGroup = [];
   int _nextGroupId = 1;
@@ -32,15 +33,24 @@ class _AcBodyState extends State<AcBody> {
   // One _GroupFormState per group — index 0 = Area 1, rest = extra groups
   final List<GroupFormState> _groupStates = [GroupFormState()];
 
-  Future<void> _save() async {
-    final groups = _groupStates.map((s) => s.toMap()).toList();
-    await ProjectService().saveAuditSection(widget.projectId, 'ac', groups);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saved successfully')),
-      );
+  @override
+  void initState() {
+    super.initState();
+    final saved = widget.auditAcData;
+    if (saved == null || saved.isEmpty) return;
+
+    _groupStates[0].fromMap(saved[0] as Map<String, dynamic>);
+
+    for (int i = 1; i < saved.length; i++) {
+      final state = GroupFormState()..fromMap(saved[i] as Map<String, dynamic>);
+      _groupStates.add(state);
+      _extraGroup.add(_nextGroupId);
+      _nextGroupId++;
     }
   }
+
+  List<Map<String, dynamic>> getAcData() =>
+      _groupStates.map((s) => s.toMap()).toList();
 
   String _extraGroupLabel(int id) => "Group ${_extraGroup.indexOf(id) + 2}";
 
@@ -180,7 +190,7 @@ class _AcBodyState extends State<AcBody> {
               onNext: widget.onNext,
               onBack: widget.onBack,
               mode: FooterMode.auditNormal,
-              onSaveDraft: _save,
+              onSaveDraft: widget.onSaveDraft,
             ),
             SizedBox(height: 10000),
           ],

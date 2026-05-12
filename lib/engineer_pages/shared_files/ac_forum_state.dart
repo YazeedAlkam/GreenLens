@@ -67,6 +67,26 @@ class GroupFormState {
     return (tp * hours).toStringAsFixed(2);
   }
 
+  void fromMap(Map<String, dynamic> map) {
+    activeType = (map['acType'] as int?) ?? 0;
+    activeInvertor = (map['invertor'] as int?) ?? 0;
+    noOfUnits.text = map['noOfUnits']?.toString() ?? '';
+    capacity.text = map['capacity']?.toString() ?? '';
+    yearlyHours.text = map['yearlyHours']?.toString() ?? '';
+    ratedPower.text = map['ratedPower']?.toString() ?? '';
+    notes.text = map['notes']?.toString() ?? '';
+    noOfPackages.text = map['noOfPackages']?.toString() ?? '';
+    packageCapacity.text = map['packageCapacity']?.toString() ?? '';
+    packageHours.text = map['packageHours']?.toString() ?? '';
+    packagePower.text = map['packagePower']?.toString() ?? '';
+    packageNotes.text = map['packageNotes']?.toString() ?? '';
+    chillerCapacity.text = map['chillerCapacity']?.toString() ?? '';
+    chillerPower.text = map['chillerPower']?.toString() ?? '';
+    chillerHours.text = map['chillerHours']?.toString() ?? '';
+    ahuCount.text = map['ahuCount']?.toString() ?? '';
+    centralNotes.text = map['centralNotes']?.toString() ?? '';
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'acType': activeType,
