@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/authentication/sign_up.dart';
 import 'package:greenlens/section_head_pages/assign_engineers/assign_engineers_flow.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
@@ -73,7 +72,7 @@ class MyApp extends StatelessWidget {
         '/assign_engineers': (context) => AssignEngineersFlow()
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
-      home: SignInPage(), // start page
+      home: SignUp(), // start page
     );
   }
 }
