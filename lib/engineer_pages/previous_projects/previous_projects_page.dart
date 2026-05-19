@@ -6,7 +6,7 @@ import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 String _formatDate(dynamic timestamp) {
   if (timestamp == null) return 'N/A';
@@ -214,7 +214,7 @@ class _EngineerPreviousProjectsPageState
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-            child: CreateNewProjectFooter(
+            child: Footer(
               currentStep: 0,
               onNext: () {},
               onBack: () => Navigator.pop(context),

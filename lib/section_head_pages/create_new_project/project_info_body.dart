@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -713,7 +713,7 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
           const SizedBox(height: 32),
 
           // ── Footer ───────────────────────────────────────────────────────
-          CreateNewProjectFooter(
+          Footer(
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,

@@ -67,7 +67,7 @@ Total : 95 files,  7369 codes, 486 comments, 622 blanks, all 8477 lines
 | [lib/section\_head\_pages/project\_info\_body.dart](/lib/section_head_pages/create_new_project/project_info_body.dart) | Dart | 531 | 8 | 7 | 546 |
 | [lib/section\_head\_pages/review\_body.dart](/lib/section_head_pages/create_new_project/review_body.dart) | Dart | 579 | 4 | 5 | 588 |
 | [lib/section\_head\_pages/section\_head\_dashboard.dart](/lib/section_head_pages/section_head_dashboard.dart) | Dart | 277 | 9 | 7 | 293 |
-| [lib/section\_head\_pages/shared\_files/fotter.dart](/lib/shared_files/fotter.dart) | Dart | 128 | 4 | 9 | 141 |
+| [lib/section\_head\_pages/shared\_files/fotter.dart](/lib/shared_files/footer.dart) | Dart | 128 | 4 | 9 | 141 |
 | [lib/section\_head\_pages/shared\_files/nav\_bar.dart](/lib/section_head_pages/create_new_project/shared_files/nav_bar.dart) | Dart | 146 | 4 | 17 | 167 |
 | [lib/section\_head\_pages/shared\_files/navbar\_title.dart](/lib/section_head_pages/create_new_project/shared_files/navbar_title.dart) | Dart | 24 | 0 | 3 | 27 |
 | [lib/shared\_files/background.dart](/lib/shared_files/background.dart) | Dart | 154 | 9 | 22 | 185 |

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class ProjectPage extends StatefulWidget {
   final String projectName;
@@ -254,7 +254,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                CreateNewProjectFooter(
+                Footer(
                   currentStep: 0,
                   mode: FooterMode.backOnly,
                   onBack: () => Navigator.pop(context),

@@ -5,7 +5,7 @@ import 'package:greenlens/engineer_pages/project_page.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
 class EngineerActiveProjectsPage extends StatefulWidget {
@@ -173,7 +173,7 @@ class _EngineerActiveProjectsPageState
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-            child: CreateNewProjectFooter(
+            child: Footer(
               currentStep: 0,
               onNext: () {},
               onBack: () => Navigator.pop(context),

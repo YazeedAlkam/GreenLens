@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import '../shared_files/fotter.dart';
+import '../shared_files/footer.dart';
 
 
 
@@ -213,11 +213,11 @@ class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
             const SizedBox(height: 16),
 
             // ── Footer ──────────────────────────────────────────────────────
-            CreateNewProjectFooter(
+            Footer(
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
-              mode: FooterMode.auditNormal,
+              mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.auditNormal,
               onSaveDraft: widget.onSaveDraft,
             ),
             const SizedBox(height: 10000),
@@ -327,7 +327,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'Remove',
+                        'Remove Item',
                         style: GoogleFonts.firaSans(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -361,7 +361,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
             const SizedBox(height: 12),
 
             // ── Equipment name ────────────────────────────────────────────
-            _fieldLabelRequired('Equipment name'),
+            _fieldLabelRequired('Equipment name', deniedColor),
             const SizedBox(height: 8),
             _buildTextField(
               controller: _item.nameController,
@@ -379,7 +379,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Compressed Air Type'),
+                        _fieldLabelRequired('Compressed Air Type', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.compressedAirTypeController,
@@ -394,7 +394,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Rated power (kW)'),
+                        _fieldLabelRequired('Rated power (kW)', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.ratedPowerController,
@@ -414,7 +414,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Quantity'),
+                        _fieldLabelRequired('Quantity', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.quantityController,
@@ -430,7 +430,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Yearly operating hours'),
+                        _fieldLabelRequired('Yearly operating hours', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.yearlyHoursController,
@@ -451,7 +451,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Rated power (kW)'),
+                        _fieldLabelRequired('Rated power (kW)', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.ratedPowerController,
@@ -467,7 +467,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _fieldLabelRequired('Quantity'),
+                        _fieldLabelRequired('Quantity', deniedColor),
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.quantityController,
@@ -481,7 +481,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                 ],
               ),
               const SizedBox(height: 16),
-              _fieldLabelRequired('Yearly operating hours'),
+              _fieldLabelRequired('Yearly operating hours', deniedColor),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _item.yearlyHoursController,
@@ -502,6 +502,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     value: _item.totalPower > 0
                         ? _item.totalPower.toStringAsFixed(2)
                         : '',
+                    astrickColor: readyColor,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -511,6 +512,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                     value: _item.annualKwh > 0
                         ? _item.annualKwh.toStringAsFixed(2)
                         : '',
+                    astrickColor: readyColor,
                   ),
                 ),
               ],
@@ -537,25 +539,25 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
         maxLines: null,
         keyboardType: keyboardType,
         style: GoogleFonts.firaSans(
-          fontSize: 20,
+          fontSize: 24,
           fontWeight: FontWeight.w600,
         ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.firaSans(
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.w500,
             color: const Color(0xFF808080),
           ),
           filled: readOnly || filled,
-          fillColor: const Color(0xFFEEEEEE),
+          fillColor: const Color(0xFFe0e0e0),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
@@ -566,13 +568,13 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
-Widget _fieldLabelRequired(String text) => RichText(
+Widget _fieldLabelRequired(String text, Color astrickColor) => RichText(
       text: TextSpan(
         children: [
           TextSpan(
             text: text,
             style: GoogleFonts.firaSans(
-              fontSize: 20,
+              fontSize: 24,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -580,9 +582,9 @@ Widget _fieldLabelRequired(String text) => RichText(
           TextSpan(
             text: ' *',
             style: GoogleFonts.firaSans(
-              fontSize: 20,
+              fontSize: 24,
               fontWeight: FontWeight.w500,
-              color: Colors.deepOrange,
+              color: astrickColor,
             ),
           ),
         ],
@@ -590,29 +592,30 @@ Widget _fieldLabelRequired(String text) => RichText(
     );
 
 class _ReadOnlyField extends StatelessWidget {
-  const _ReadOnlyField({required this.label, required this.value});
+  const _ReadOnlyField({required this.label, required this.value, this.astrickColor = deniedColor});
   final String label;
   final String value;
+  final Color astrickColor;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _fieldLabelRequired(label),
+        _fieldLabelRequired(label, astrickColor),
         const SizedBox(height: 6),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF0F4F0),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFCCCCCC), width: 1.5),
+            color: const Color(0xFFe8f5e9),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFF808080), width: 2),
           ),
           child: Text(
             value.isEmpty ? '——' : value,
             style: GoogleFonts.firaSans(
-              fontSize: 18,
+              fontSize: 24,
               color: value.isEmpty ? const Color(0xFFAAAAAA) : Colors.black87,
             ),
           ),

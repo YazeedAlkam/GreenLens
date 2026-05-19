@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class SelectEngineerBody extends StatefulWidget {
   final Map<String, dynamic> project;
@@ -119,7 +119,7 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-          child: CreateNewProjectFooter(
+          child: Footer(
             currentStep: 0,
             onNext: () {},
             onBack: widget.onBack,

@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/create_new_project/contact_info_forums.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class ClientInfoBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -386,7 +386,7 @@ class ClientInfoBodyState extends State<ClientInfoBody>
           const SizedBox(height: 32),
 
           // ── Footer ───────────────────────────────────────────────────────
-          CreateNewProjectFooter(
+          Footer(
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
@@ -255,7 +255,7 @@ class BillsBodyState extends State<BillsBody>
               ),
             ),
             const SizedBox(height: 16),
-            CreateNewProjectFooter(
+            Footer(
               currentStep: 2,
               onNext: () {},
               onBack: widget.onBack,

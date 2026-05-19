@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
 class ActiveProjectsPage extends StatefulWidget {
@@ -143,6 +144,8 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                       final isDraftOrDenied =
                                           status == 'Draft' ||
                                           status == 'Denied';
+                                      final isInProgress =
+                                          status == 'In Progress';
                                       return Project(
                                         title: (project['projectInfo']
                                                     as Map<String, dynamic>?)?[
@@ -172,6 +175,20 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                                   }
                                                 });
                                               }
+                                            : isInProgress
+                                            ? () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        Audit_Entery_Flow(
+                                                      projectId: project['id']
+                                                          as String,
+                                                      readOnly: true,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                             : () {},
                                       );
                                     },
@@ -192,7 +209,7 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-            child: CreateNewProjectFooter(
+            child: Footer(
               currentStep: 0,
               onNext: () {},
               onBack: () => Navigator.pop(context),

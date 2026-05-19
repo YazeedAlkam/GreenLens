@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class CostBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -375,7 +375,7 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             ),
           ),
           const SizedBox(height: 32),
-          CreateNewProjectFooter(
+          Footer(
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
