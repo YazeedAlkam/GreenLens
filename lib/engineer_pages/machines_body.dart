@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import '../shared_files/fotter.dart';
+import '../shared_files/footer.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Data model for one equipment item
@@ -28,7 +28,7 @@ class MachineItem {
     final name = nameController.text.trim();
     if (name.isNotEmpty) return name;
     if (isCompressedAir) return 'Compressed Air';
-    return 'Equipment item $id';
+    return 'Production Line $id';
   }
 
   double get totalPower {
@@ -210,11 +210,11 @@ class MachinesBodyState extends State<MachinesBody> {
             const SizedBox(height: 16),
 
             // ── Footer ──────────────────────────────────────────────────────
-            CreateNewProjectFooter(
+            Footer(
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
-              mode: FooterMode.auditNormal,
+              mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.auditNormal,
               onSaveDraft: widget.onSaveDraft,
             ),
             const SizedBox(height: 10000),
@@ -315,7 +315,7 @@ class _MachineFormState extends State<MachineForm> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'Remove',
+                        'Remove Line',
                         style: GoogleFonts.firaSans(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -330,7 +330,7 @@ class _MachineFormState extends State<MachineForm> {
             const SizedBox(height: 24),
 
             // MACHINE NAME
-            _fieldLabelRequired('Machine name'),
+            _fieldLabelRequired('Machine name', deniedColor),
             const SizedBox(height: 8),
 
             _buildTextField(
@@ -342,7 +342,7 @@ class _MachineFormState extends State<MachineForm> {
             const SizedBox(height: 20),
 
             // RATED POWER
-            _fieldLabelRequired('Rated power (kW)'),
+            _fieldLabelRequired('Rated power (kW)', deniedColor),
             const SizedBox(height: 8),
 
             _buildTextField(
@@ -355,7 +355,7 @@ class _MachineFormState extends State<MachineForm> {
             const SizedBox(height: 20),
 
             // QUANTITY
-            _fieldLabelRequired('Quantity'),
+            _fieldLabelRequired('Quantity', deniedColor),
             const SizedBox(height: 8),
 
             _buildTextField(
@@ -368,7 +368,7 @@ class _MachineFormState extends State<MachineForm> {
             const SizedBox(height: 20),
 
             // OPERATING HOURS
-            _fieldLabelRequired('Yearly operating hours'),
+            _fieldLabelRequired('Yearly operating hours', deniedColor),
             const SizedBox(height: 8),
 
             _buildTextField(
@@ -389,6 +389,7 @@ class _MachineFormState extends State<MachineForm> {
                     value: _item.totalPower > 0
                         ? _item.totalPower.toStringAsFixed(2)
                         : '',
+                    asteriskColor: readyColor,
                   ),
                 ),
 
@@ -400,6 +401,7 @@ class _MachineFormState extends State<MachineForm> {
                     value: _item.annualKwh > 0
                         ? _item.annualKwh.toStringAsFixed(2)
                         : '',
+                    asteriskColor: readyColor,
                   ),
                 ),
               ],
@@ -424,11 +426,11 @@ class _MachineFormState extends State<MachineForm> {
         expands: true,
         maxLines: null,
         keyboardType: keyboardType,
-        style: GoogleFonts.firaSans(fontSize: 20, fontWeight: FontWeight.w600),
+        style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w600),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.firaSans(
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.w500,
             color: const Color(0xFF808080),
           ),
@@ -436,11 +438,11 @@ class _MachineFormState extends State<MachineForm> {
           fillColor: const Color(0xFFEEEEEE),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
@@ -451,13 +453,13 @@ class _MachineFormState extends State<MachineForm> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
-Widget _fieldLabelRequired(String text) => RichText(
+Widget _fieldLabelRequired(String text, Color asteriskColor) => RichText(
   text: TextSpan(
     children: [
       TextSpan(
         text: text,
         style: GoogleFonts.firaSans(
-          fontSize: 20,
+          fontSize: 24,
           fontWeight: FontWeight.w500,
           color: Colors.black87,
         ),
@@ -465,9 +467,9 @@ Widget _fieldLabelRequired(String text) => RichText(
       TextSpan(
         text: ' *',
         style: GoogleFonts.firaSans(
-          fontSize: 20,
+          fontSize: 24,
           fontWeight: FontWeight.w500,
-          color: Colors.deepOrange,
+          color: asteriskColor,
         ),
       ),
     ],
@@ -475,29 +477,30 @@ Widget _fieldLabelRequired(String text) => RichText(
 );
 
 class _ReadOnlyField extends StatelessWidget {
-  const _ReadOnlyField({required this.label, required this.value});
+  const _ReadOnlyField({required this.label, required this.value, this.asteriskColor = deniedColor});
   final String label;
   final String value;
+  final Color asteriskColor;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _fieldLabelRequired(label),
+        _fieldLabelRequired(label, asteriskColor),
         const SizedBox(height: 6),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13.5),
           decoration: BoxDecoration(
-            color: const Color(0xFFF0F4F0),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFCCCCCC), width: 1.5),
+            color: const Color(0xFFe8f5e9),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFF808080), width: 2.0),
           ),
           child: Text(
             value.isEmpty ? '——' : value,
             style: GoogleFonts.firaSans(
-              fontSize: 18,
+              fontSize: 24,
               color: value.isEmpty ? const Color(0xFFAAAAAA) : Colors.black87,
             ),
           ),

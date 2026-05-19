@@ -5,6 +5,7 @@ import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:greenlens/firebase/project_service.dart';
+import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/active_projects/active_projects_page.dart';
 import 'package:greenlens/section_head_pages/previous_projects/previous_projects_page.dart';
@@ -314,6 +315,8 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                       final isDraftOrDenied =
                                           status == 'Draft' ||
                                           status == 'Denied';
+                                      final isInProgress =
+                                          status == 'In Progress';
                                       return Project(
                                         title:
                                             (project['projectInfo']
@@ -345,6 +348,21 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                                     });
                                                   }
                                                 });
+                                              }
+                                            : isInProgress
+                                            ? () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        Audit_Entery_Flow(
+                                                          projectId:
+                                                              project['id']
+                                                                  as String,
+                                                          readOnly: true,
+                                                        ),
+                                                  ),
+                                                );
                                               }
                                             : () {},
                                       );

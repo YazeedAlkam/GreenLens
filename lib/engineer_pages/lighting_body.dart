@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/engineer_pages/area_info_forums.dart';
 import 'package:greenlens/main.dart';
 
-import '../shared_files/fotter.dart';
+import '../shared_files/footer.dart';
 
 class LightingBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -12,6 +12,7 @@ class LightingBody extends StatefulWidget {
   final int currentStep;
   final List<dynamic>? auditLightingData;
   final Future<void> Function()? onSaveDraft;
+  final bool readOnly;
 
   const LightingBody({
     super.key,
@@ -20,6 +21,7 @@ class LightingBody extends StatefulWidget {
     required this.currentStep,
     this.auditLightingData,
     this.onSaveDraft,
+    this.readOnly = false,
   });
 
   @override
@@ -116,6 +118,25 @@ class LightingBodyState extends State<LightingBody>
 
   String _extraAreaLabel(int id) => "Area ${_extraAreas.indexOf(id) + 2}";
 
+  void _deleteArea1() {
+    if (_extraAreas.isEmpty) return;
+    final promotedCtrls = _extraAreaCtrls[0];
+    _area1LightingType.text = promotedCtrls[0].text;
+    _area1RatedPower.text = promotedCtrls[1].text;
+    _area1NumLights.text = promotedCtrls[2].text;
+    _area1YearlyHours.text = promotedCtrls[3].text;
+    _area1TotalPower.text = promotedCtrls[4].text;
+    _area1Annual.text = promotedCtrls[5].text;
+    for (final c in promotedCtrls) {
+      c.dispose();
+    }
+    setState(() {
+      _extraAreas.removeAt(0);
+      _extraAreaCtrls.removeAt(0);
+      _activeArea = 0;
+    });
+  }
+
   void _deleteCurrentExtraArea() {
     final idx = _extraAreas.indexOf(_activeArea);
     if (idx == -1) return;
@@ -198,53 +219,53 @@ class LightingBodyState extends State<LightingBody>
                   );
                 }),
 
-                // "+" button
-                Container(
-                  width: 78,
-                  height: 78,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                  child: SizedBox.expand(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final ctrls = List.generate(
-                          6,
-                          (_) => TextEditingController(),
-                        );
-                        setState(() {
-                          _extraAreas.add(_nextAreaId);
-                          _extraAreaCtrls.add(ctrls);
-                          _activeArea = _nextAreaId;
-                          _nextAreaId++;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          side: const BorderSide(
-                            width: 0,
-                            color: Colors.transparent,
+                if (!widget.readOnly)
+                  Container(
+                    width: 78,
+                    height: 78,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: SizedBox.expand(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final ctrls = List.generate(
+                            6,
+                            (_) => TextEditingController(),
+                          );
+                          setState(() {
+                            _extraAreas.add(_nextAreaId);
+                            _extraAreaCtrls.add(ctrls);
+                            _activeArea = _nextAreaId;
+                            _nextAreaId++;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            side: const BorderSide(
+                              width: 0,
+                              color: Colors.transparent,
+                            ),
                           ),
                         ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/images/Add.svg',
-                        width: 51,
-                        height: 51,
-                        colorFilter: ColorFilter.mode(
-                          addclientbuttoncolor,
-                          BlendMode.srcIn,
+                        child: SvgPicture.asset(
+                          'assets/images/Add.svg',
+                          width: 51,
+                          height: 51,
+                          colorFilter: ColorFilter.mode(
+                            addclientbuttoncolor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -262,54 +283,34 @@ class LightingBodyState extends State<LightingBody>
                 yearlyHoursController: _area1YearlyHours,
                 totalPowerController: _area1TotalPower,
                 annualController: _area1Annual,
+                canDelete: _extraAreas.isNotEmpty,
+                onDelete: _deleteArea1,
+                readOnly: widget.readOnly,
               ),
-              ..._extraAreaCtrls.map(
-                (ctrls) => MainAreaForums(
-                  lightingTypeController: ctrls[0],
-                  ratedPowerController: ctrls[1],
-                  numLightsController: ctrls[2],
-                  yearlyHoursController: ctrls[3],
-                  totalPowerController: ctrls[4],
-                  annualController: ctrls[5],
+              ..._extraAreaCtrls.asMap().entries.map(
+                (entry) => MainAreaForums(
+                  lightingTypeController: entry.value[0],
+                  ratedPowerController: entry.value[1],
+                  numLightsController: entry.value[2],
+                  yearlyHoursController: entry.value[3],
+                  totalPowerController: entry.value[4],
+                  annualController: entry.value[5],
+                  canDelete: true,
+                  onDelete: _deleteCurrentExtraArea,
+                  readOnly: widget.readOnly,
                 ),
               ),
             ],
           ),
 
-          if (_extraAreas.contains(_activeArea)) ...[
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              height: 65,
-              child: ElevatedButton(
-                onPressed: _deleteCurrentExtraArea,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: deniedColor,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "Delete Area",
-                  style: GoogleFonts.firaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-
           const SizedBox(height: 32),
 
           // ── Footer ───────────────────────────────────────────────────────
-          CreateNewProjectFooter(
+          Footer(
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
-            mode: FooterMode.auditNormal,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.auditNormal,
             onSaveDraft: widget.onSaveDraft,
           ),
         ],

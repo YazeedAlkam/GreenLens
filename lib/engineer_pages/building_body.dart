@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
-import '../shared_files/fotter.dart';
+import '../shared_files/footer.dart';
 
 class BuildingBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -12,6 +12,7 @@ class BuildingBody extends StatefulWidget {
   final Map<String, dynamic>? projectInfo;
   final Map<String, dynamic>? auditBuildingData;
   final Future<void> Function()? onSaveDraft;
+  final bool readOnly;
   const BuildingBody({
     super.key,
     required this.onNext,
@@ -20,6 +21,7 @@ class BuildingBody extends StatefulWidget {
     this.projectInfo,
     this.auditBuildingData,
     this.onSaveDraft,
+    this.readOnly = false,
   });
 
   @override
@@ -368,6 +370,7 @@ class BuildingBodyState extends State<BuildingBody> {
           SizedBox(
             child: TextField(
               controller: salesMarkController,
+              readOnly: widget.readOnly,
               maxLines: 4,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
@@ -377,6 +380,8 @@ class BuildingBodyState extends State<BuildingBody> {
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
                 ),
+                filled: widget.readOnly,
+                fillColor: disableColor,
                 enabledBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(width: 2, color: Color(0xFF808080)),
@@ -416,6 +421,8 @@ class BuildingBodyState extends State<BuildingBody> {
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF808080),
                 ),
+                filled: widget.readOnly,
+                fillColor: disableColor,
                 enabledBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(width: 2, color: Color(0xFF808080)),
@@ -429,7 +436,7 @@ class BuildingBodyState extends State<BuildingBody> {
               ),
               controller: visitdatecontroller,
               readOnly: true,
-              onTap: () => pickDate(visitdatecontroller),
+              onTap: widget.readOnly ? null : () => pickDate(visitdatecontroller),
             ),
           ),
           const SizedBox(height: 10),
@@ -450,6 +457,7 @@ class BuildingBodyState extends State<BuildingBody> {
           SizedBox(
             child: TextField(
               controller: notesController,
+              readOnly: widget.readOnly,
               maxLines: 4,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
@@ -459,6 +467,8 @@ class BuildingBodyState extends State<BuildingBody> {
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF808080),
                 ),
+                filled: widget.readOnly,
+                fillColor: disableColor,
                 enabledBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(width: 2, color: Color(0xFF808080)),
@@ -475,11 +485,11 @@ class BuildingBodyState extends State<BuildingBody> {
           const SizedBox(height: 32),
 
           // ── Footer ───────────────────────────────────────────────────────
-          CreateNewProjectFooter(
+          Footer(
             currentStep: widget.currentStep,
             onNext: widget.onNext,
             onBack: widget.onBack,
-            mode: FooterMode.auditNormal,
+            mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.auditNormal,
             onSaveDraft: widget.onSaveDraft,
           ),
           const SizedBox(height: 6000),

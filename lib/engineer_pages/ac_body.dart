@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import '../shared_files/fotter.dart';
+import '../shared_files/footer.dart';
 import 'shared_files/ac_forum_state.dart';
 import 'shared_files/group_forum.dart';
 
@@ -12,6 +12,7 @@ class AcBody extends StatefulWidget {
   final int currentStep;
   final List<dynamic>? auditAcData;
   final Future<void> Function()? onSaveDraft;
+  final bool readOnly;
   const AcBody({
     super.key,
     required this.onNext,
@@ -19,6 +20,7 @@ class AcBody extends StatefulWidget {
     required this.currentStep,
     this.auditAcData,
     this.onSaveDraft,
+    this.readOnly = false,
   });
 
   @override
@@ -53,6 +55,33 @@ class AcBodyState extends State<AcBody> {
       _groupStates.map((s) => s.toMap()).toList();
 
   String _extraGroupLabel(int id) => "Group ${_extraGroup.indexOf(id) + 2}";
+
+  void _deleteActiveGroup() {
+    if (_groupStates.length <= 1) return;
+    if (_activeGroup == 0) {
+      // Promote the first extra group into Group 1
+      _groupStates[0].fromMap(_groupStates[1].toMap());
+      _groupStates[1].dispose();
+      setState(() {
+        _groupStates.removeAt(1);
+        _extraGroup.removeAt(0);
+        _activeGroup = 0;
+      });
+    } else {
+      final idx = _activeGroupIndex;
+      final extraIdx = _extraGroup.indexOf(_activeGroup);
+      _groupStates[idx].dispose();
+      setState(() {
+        _groupStates.removeAt(idx);
+        _extraGroup.removeAt(extraIdx);
+        if (_extraGroup.isEmpty) {
+          _activeGroup = 0;
+        } else {
+          _activeGroup = _extraGroup[(extraIdx - 1).clamp(0, _extraGroup.length - 1)];
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -118,51 +147,49 @@ class AcBodyState extends State<AcBody> {
                     );
                   }),
 
-                  // "+" button
-                  Container(
-                    width: 78,
-                    height: 78,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: SizedBox.expand(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _extraGroup.add(_nextGroupId);
-                            _groupStates.add(
-                              GroupFormState(),
-                            ); // 👈 new form state per group
-                            _activeGroup = _nextGroupId;
-                            _nextGroupId++;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          elevation: 0,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            side: const BorderSide(
-                              width: 0,
-                              color: Colors.transparent,
+                  if (!widget.readOnly)
+                    Container(
+                      width: 78,
+                      height: 78,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: Colors.black, width: 2),
+                      ),
+                      child: SizedBox.expand(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _extraGroup.add(_nextGroupId);
+                              _groupStates.add(GroupFormState());
+                              _activeGroup = _nextGroupId;
+                              _nextGroupId++;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              side: const BorderSide(
+                                width: 0,
+                                color: Colors.transparent,
+                              ),
                             ),
                           ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/images/Add.svg',
-                          width: 51,
-                          height: 51,
-                          colorFilter: ColorFilter.mode(
-                            addclientbuttoncolor,
-                            BlendMode.srcIn,
+                          child: SvgPicture.asset(
+                            'assets/images/Add.svg',
+                            width: 51,
+                            height: 51,
+                            colorFilter: ColorFilter.mode(
+                              addclientbuttoncolor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -179,17 +206,20 @@ class AcBodyState extends State<AcBody> {
                   label: _activeGroupLabel,
                   state: _groupStates[_activeGroupIndex],
                   onChanged: () => setState(() {}),
+                  canDelete: _groupStates.length > 1,
+                  onDelete: _deleteActiveGroup,
+                  readOnly: widget.readOnly,
                 ),
               ),
             ),
             SizedBox(height: 16),
 
             // ── Footer ───────────────────────────────────────────────────────
-            CreateNewProjectFooter(
+            Footer(
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
-              mode: FooterMode.auditNormal,
+              mode: widget.readOnly ? FooterMode.viewOnly : FooterMode.auditNormal,
               onSaveDraft: widget.onSaveDraft,
             ),
             SizedBox(height: 10000),

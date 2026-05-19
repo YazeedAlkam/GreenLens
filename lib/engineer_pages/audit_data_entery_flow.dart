@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/engineer_pages/Equipment_Body.dart';
 import 'package:greenlens/engineer_pages/ac_body.dart';
+import 'package:greenlens/engineer_pages/ac_review.dart';
 import 'package:greenlens/engineer_pages/building_body.dart';
+import 'package:greenlens/engineer_pages/equipment_review.dart';
 import 'package:greenlens/engineer_pages/lighting_body.dart';
+import 'package:greenlens/engineer_pages/lighting_review.dart';
 import 'package:greenlens/engineer_pages/machines_body.dart';
+import 'package:greenlens/engineer_pages/production_review.dart';
+import 'package:greenlens/engineer_pages/review_eng.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng.dart';
 import 'package:greenlens/engineer_pages/shared_files/navbar_eng_title.dart';
 import 'package:greenlens/firebase/project_service.dart';
@@ -11,7 +16,8 @@ import 'package:greenlens/main.dart';
 
 class Audit_Entery_Flow extends StatefulWidget {
   final String projectId;
-  const Audit_Entery_Flow({super.key, required this.projectId});
+  final bool readOnly;
+  const Audit_Entery_Flow({super.key, required this.projectId, this.readOnly = false});
 
   @override
   State<Audit_Entery_Flow> createState() => _Audit_Entery_FlowState();
@@ -19,6 +25,7 @@ class Audit_Entery_Flow extends StatefulWidget {
 
 class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
   int _currentStep = 0;
+  int? _reviewDetail; // 0=lighting 1=ac 2=equipment 3=machines
   Map<String, dynamic>? _projectInfo;
   Map<String, dynamic>? _auditData;
   bool _loading = true;
@@ -69,6 +76,10 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
   }
 
   void _back() {
+    if (_reviewDetail != null) {
+      setState(() => _reviewDetail = null);
+      return;
+    }
     if (_currentStep > 0) {
       setState(() => _currentStep--);
     } else {
@@ -77,7 +88,10 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
   }
 
   void _onStepTapped(int step) {
-    setState(() => _currentStep = step);
+    setState(() {
+      _currentStep = step;
+      _reviewDetail = null;
+    });
   }
 
   @override
@@ -113,52 +127,84 @@ class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : IndexedStack(
-              index: _currentStep,
-              children: [
-                BuildingBody(
-                  key: _buildingKey,
-                  onNext: _next,
-                  onBack: _back,
-                  currentStep: _currentStep,
-                  projectInfo: _projectInfo,
-                  auditBuildingData: _auditData?['building'] as Map<String, dynamic>?,
-                  onSaveDraft: _save,
-                ),
-                LightingBody(
-                  key: _lightingKey,
-                  onNext: _next,
-                  onBack: _back,
-                  currentStep: _currentStep,
-                  auditLightingData: _auditData?['lighting'] as List<dynamic>?,
-                  onSaveDraft: _save,
-                ),
-                AcBody(
-                  key: _acKey,
-                  onNext: _next,
-                  onBack: _back,
-                  currentStep: _currentStep,
-                  auditAcData: _auditData?['ac'] as List<dynamic>?,
-                  onSaveDraft: _save,
-                ),
-                ElectricalEquipmentBody(
-                  key: _equipmentKey,
-                  onNext: _next,
-                  onBack: _back,
-                  currentStep: _currentStep,
-                  auditEquipmentData: _auditData?['equipment'] as List<dynamic>?,
-                  onSaveDraft: _save,
-                ),
-                MachinesBody(
-                  key: _machinesKey,
-                  onNext: _next,
-                  onBack: _back,
-                  currentStep: _currentStep,
-                  auditMachinesData: _auditData?['machines'] as List<dynamic>?,
-                  onSaveDraft: _save,
-                ),
-                const SizedBox.shrink(), // step 6 – Review (placeholder)
-              ],
+          : Builder(
+              builder: (context) {
+                final lightingData = _lightingKey.currentState?.getLightingData() ?? [];
+                final acData = _acKey.currentState?.getAcData() ?? [];
+                final equipmentData = _equipmentKey.currentState?.getEquipmentData() ?? [];
+                final machinesData = _machinesKey.currentState?.getMachinesData() ?? [];
+
+                return IndexedStack(
+                  index: _reviewDetail != null ? 6 + _reviewDetail! : _currentStep,
+                  children: [
+                    BuildingBody(
+                      key: _buildingKey,
+                      onNext: _next,
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      projectInfo: _projectInfo,
+                      auditBuildingData: _auditData?['building'] as Map<String, dynamic>?,
+                      onSaveDraft: _save,
+                      readOnly: widget.readOnly,
+                    ),
+                    LightingBody(
+                      key: _lightingKey,
+                      onNext: _next,
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      auditLightingData: _auditData?['lighting'] as List<dynamic>?,
+                      onSaveDraft: _save,
+                      readOnly: widget.readOnly,
+                    ),
+                    AcBody(
+                      key: _acKey,
+                      onNext: _next,
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      auditAcData: _auditData?['ac'] as List<dynamic>?,
+                      onSaveDraft: _save,
+                      readOnly: widget.readOnly,
+                    ),
+                    ElectricalEquipmentBody(
+                      key: _equipmentKey,
+                      onNext: _next,
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      auditEquipmentData: _auditData?['equipment'] as List<dynamic>?,
+                      onSaveDraft: _save,
+                      readOnly: widget.readOnly,
+                    ),
+                    MachinesBody(
+                      key: _machinesKey,
+                      onNext: _next,
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      auditMachinesData: _auditData?['machines'] as List<dynamic>?,
+                      onSaveDraft: _save,
+                      readOnly: widget.readOnly,
+                    ),
+                    ReviewBodyEng(
+                      onBack: _back,
+                      currentStep: _currentStep,
+                      onSave: _save,
+                      projectInfo: _projectInfo,
+                      lightingData: lightingData,
+                      acData: acData,
+                      equipmentData: equipmentData,
+                      machinesData: machinesData,
+                      onViewLighting: () => setState(() => _reviewDetail = 0),
+                      onViewAC: () => setState(() => _reviewDetail = 1),
+                      onViewEquipment: () => setState(() => _reviewDetail = 2),
+                      onViewMachines: () => setState(() => _reviewDetail = 3),
+                      readOnly: widget.readOnly,
+                    ),
+                    LightingReview(onBack: _back, lightingData: lightingData),
+                    AcReview(onBack: _back, acData: acData),
+                    EquipmentReview(onBack: _back, equipmentData: equipmentData),
+                    ProductionReview(onBack: _back, machinesData: machinesData),
+                  ],
+                );
+              },
             ),
     );
   }

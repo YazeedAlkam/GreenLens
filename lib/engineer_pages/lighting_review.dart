@@ -4,7 +4,32 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
 class LightingReview extends StatelessWidget {
-  const LightingReview({super.key});
+  final VoidCallback onBack;
+  final List<dynamic> lightingData;
+
+  const LightingReview({super.key, required this.onBack, this.lightingData = const []});
+
+  String _v(Map map, String key, {String suffix = ''}) {
+    final val = map[key]?.toString() ?? '';
+    return val.isEmpty ? '—' : '$val$suffix';
+  }
+
+  TableRow _row(String label, String value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Text(label, style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w400, color: Colors.black)),
+              const Spacer(),
+              Text(value, style: GoogleFonts.firaSans(fontSize: 24, fontWeight: FontWeight.w400, color: Colors.black)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +37,12 @@ class LightingReview extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(32, 30, 32, 0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header ───────────────────────────────────────────────────────
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: onBack,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
@@ -30,424 +55,49 @@ class LightingReview extends StatelessWidget {
                 ),
                 Text(
                   ' Lighting Breakdown',
-                  style: GoogleFonts.firaSans(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                  ),
+                  style: GoogleFonts.firaSans(fontSize: 40, fontWeight: FontWeight.bold, color: primaryColor),
                 ),
               ],
             ),
             Divider(color: dividerColor),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Area 1",
-                  style: GoogleFonts.firaSans(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                    color: primaryColor,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: tablelinescolor, width: 2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Table(
-                  border: TableBorder.symmetric(
-                    inside: BorderSide(color: tablelinescolor, width: 2),
-                  ),
+            if (lightingData.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
+                child: Text('No lighting data entered.', style: GoogleFonts.firaSans(fontSize: 24, color: Colors.grey)),
+              )
+            else
+              ...lightingData.asMap().entries.map((entry) {
+                final i = entry.key;
+                final area = entry.value as Map;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Row -1-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Type",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "LED",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
+                    Text('Area ${i + 1}', style: GoogleFonts.firaSans(fontSize: 32, fontWeight: FontWeight.w600, color: primaryColor)),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: tablelinescolor, width: 2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Table(
+                          border: TableBorder.symmetric(inside: BorderSide(color: tablelinescolor, width: 2)),
+                          children: [
+                            _row('Type', _v(area, 'lightingType')),
+                            _row('No of lights', _v(area, 'numLights')),
+                            _row('Rated Power', _v(area, 'ratedPower', suffix: ' W')),
+                            _row('Usage (Hrs / Year)', _v(area, 'yearlyHours', suffix: ' Hrs')),
+                            _row('Total kWh / Year', _v(area, 'annual', suffix: ' kWh')),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    //Row -2-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "No of lights",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "10",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -3-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Rated Power",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "25 W",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -4-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Usage (Hrs / Year)",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "2400 Hrs",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -5-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Total Energy Cost / Year",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "20 JD",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -6-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Total kWh / Year",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "200 kWh",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 16),
                   ],
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  "Area 2",
-                  style: GoogleFonts.firaSans(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                    color: primaryColor,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: tablelinescolor, width: 2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Table(
-                  border: TableBorder.symmetric(
-                    inside: BorderSide(color: tablelinescolor, width: 2),
-                  ),
-                  children: [
-                    //Row -1-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Type",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "LED",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -2-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "No of lights",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "10",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -3-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Rated Power",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "25 W",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -4-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Usage (Hrs / Year)",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "2400 Hrs",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -5-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Total Energy Cost / Year",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "20 JD",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //Row -6-
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Total kWh / Year",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "200 kWh",
-                                style: GoogleFonts.firaSans(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10000,)
+                );
+              }),
+            const SizedBox(height: 32),
           ],
         ),
       ),

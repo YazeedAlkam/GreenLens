@@ -16,9 +16,11 @@ enum FooterMode {
   done,
   /// Back + Save + Next Step        (audit data entry steps)
   auditNormal,
+  /// Back + Submit for Review       (engineer review/last step)
+  submitReview,
 }
 
-class CreateNewProjectFooter extends StatelessWidget {
+class Footer extends StatelessWidget {
   final int currentStep;
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -26,7 +28,7 @@ class CreateNewProjectFooter extends StatelessWidget {
   final Future<void> Function()? onSaveDraft;
   final Future<void> Function()? onSaveProject;
 
-  const CreateNewProjectFooter({
+  const Footer({
     super.key,
     required this.currentStep,
     required this.onNext,
@@ -182,6 +184,23 @@ class CreateNewProjectFooter extends StatelessWidget {
     ),
   );
 
+  Widget _submitForReviewButton() => SizedBox(
+    width: 760,
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onSaveProject,
+      style: _saveStyle,
+      child: Text(
+        "Submit for Review",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+
   Widget _saveProjectButton() => SizedBox(
     width: 760,
     height: 65,
@@ -265,6 +284,17 @@ class CreateNewProjectFooter extends StatelessWidget {
             Expanded(child: _backButton()),
             const SizedBox(width: 17),
             Expanded(child: _doneButton()),
+          ],
+        );
+
+      // ── Submit Review: Back + Submit for Review ────────────────────────
+      case FooterMode.submitReview:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButton()),
+            const SizedBox(width: 17),
+            _submitForReviewButton(),
           ],
         );
     }

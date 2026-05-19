@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/main.dart';
 
-class MainAreaForums extends StatelessWidget {
+class MainAreaForums extends StatefulWidget {
   final TextEditingController lightingTypeController;
   final TextEditingController ratedPowerController;
   final TextEditingController numLightsController;
   final TextEditingController yearlyHoursController;
   final TextEditingController totalPowerController;
   final TextEditingController annualController;
+  final bool canDelete;
+  final VoidCallback? onDelete;
+  final bool readOnly;
 
   const MainAreaForums({
     super.key,
@@ -17,15 +21,55 @@ class MainAreaForums extends StatelessWidget {
     required this.yearlyHoursController,
     required this.totalPowerController,
     required this.annualController,
+    this.canDelete = false,
+    this.onDelete,
+    this.readOnly = false,
   });
 
-  InputDecoration _fieldDecoration(String hint) => InputDecoration(
+  @override
+  State<MainAreaForums> createState() => _MainAreaForumsState();
+}
+
+class _MainAreaForumsState extends State<MainAreaForums> {
+  void _recalculate() {
+    final ratedW = double.tryParse(widget.ratedPowerController.text) ?? 0;
+    final numLights = double.tryParse(widget.numLightsController.text) ?? 0;
+    final hours = double.tryParse(widget.yearlyHoursController.text) ?? 0;
+
+    final totalKw = ratedW * numLights / 1000;
+    final annualKwh = totalKw * hours;
+
+    widget.totalPowerController.text =
+        (totalKw > 0) ? totalKw.toStringAsFixed(2) : '';
+    widget.annualController.text =
+        (annualKwh > 0) ? annualKwh.toStringAsFixed(2) : '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.ratedPowerController.addListener(_recalculate);
+    widget.numLightsController.addListener(_recalculate);
+    widget.yearlyHoursController.addListener(_recalculate);
+  }
+
+  @override
+  void dispose() {
+    widget.ratedPowerController.removeListener(_recalculate);
+    widget.numLightsController.removeListener(_recalculate);
+    widget.yearlyHoursController.removeListener(_recalculate);
+    super.dispose();
+  }
+
+  InputDecoration _fieldDecoration(String hint, {bool readOnly = false}) => InputDecoration(
     hintText: hint,
     hintStyle: GoogleFonts.firaSans(
       fontSize: 24,
       fontWeight: FontWeight.w600,
       color: const Color(0xFF808080),
     ),
+    filled: readOnly,
+    fillColor: disableColor,
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(width: 2, color: Color(0xFF808080)),
       borderRadius: BorderRadius.circular(12),
@@ -51,46 +95,114 @@ class MainAreaForums extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Lighting Type',
-              style: GoogleFonts.firaSans(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Lighting Type',
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '*',
+                      style: GoogleFonts.firaSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: deniedColor,
+                      ),
+                    ),
+                  ],
+                ),
+                if (!widget.readOnly && widget.canDelete && widget.onDelete != null)
+                  GestureDetector(
+                    onTap: widget.onDelete,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFEDED),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Delete Area',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
             SizedBox(
               height: 65,
               child: TextField(
-                controller: lightingTypeController,
+                controller: widget.lightingTypeController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
                 style: GoogleFonts.firaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                 ),
-                decoration: _fieldDecoration('e.g Fluorescent'),
+                decoration: _fieldDecoration('e.g Fluorescent', readOnly: widget.readOnly),
               ),
             ),
             const SizedBox(height: 30),
             Row(
               children: [
-                Text(
-                  'Rated Power (W)',
-                  style: GoogleFonts.firaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        'Rated Power (W)',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: deniedColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 336),
-                Text(
-                  'No. of Lights',
-                  style: GoogleFonts.firaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        'No. of Lights',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: deniedColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -103,7 +215,8 @@ class MainAreaForums extends StatelessWidget {
                   child: SizedBox(
                     height: 65,
                     child: TextField(
-                      controller: ratedPowerController,
+                      controller: widget.ratedPowerController,
+                      readOnly: widget.readOnly,
                       expands: true,
                       maxLines: null,
                       keyboardType: TextInputType.number,
@@ -111,7 +224,7 @@ class MainAreaForums extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                       ),
-                      decoration: _fieldDecoration('e.g 36'),
+                      decoration: _fieldDecoration('e.g 36', readOnly: widget.readOnly),
                     ),
                   ),
                 ),
@@ -120,7 +233,8 @@ class MainAreaForums extends StatelessWidget {
                   child: SizedBox(
                     height: 65,
                     child: TextField(
-                      controller: numLightsController,
+                      controller: widget.numLightsController,
+                      readOnly: widget.readOnly,
                       expands: true,
                       maxLines: null,
                       keyboardType: TextInputType.number,
@@ -128,26 +242,39 @@ class MainAreaForums extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                       ),
-                      decoration: _fieldDecoration('e.g 120'),
+                      decoration: _fieldDecoration('e.g 120', readOnly: widget.readOnly),
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 30),
-            Text(
-              'Yearly Operating Hours',
-              style: GoogleFonts.firaSans(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
+            Row(
+              children: [
+                Text(
+                  'Yearly Operating Hours',
+                  style: GoogleFonts.firaSans(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  '*',
+                  style: GoogleFonts.firaSans(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: deniedColor,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             SizedBox(
               height: 65,
               child: TextField(
-                controller: yearlyHoursController,
+                controller: widget.yearlyHoursController,
+                readOnly: widget.readOnly,
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.number,
@@ -155,27 +282,55 @@ class MainAreaForums extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                 ),
-                decoration: _fieldDecoration('e.g 1200'),
+                decoration: _fieldDecoration('e.g 1200', readOnly: widget.readOnly),
               ),
             ),
             const SizedBox(height: 30),
             Row(
               children: [
-                Text(
-                  'Total Power (kW)',
-                  style: GoogleFonts.firaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        'Total Power (kW)',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: readyColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 336),
-                Text(
-                  'Annual (kW/yr)',
-                  style: GoogleFonts.firaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        'Annual (kWh/yr)',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: readyColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -188,7 +343,7 @@ class MainAreaForums extends StatelessWidget {
                   child: SizedBox(
                     height: 65,
                     child: TextField(
-                      controller: totalPowerController,
+                      controller: widget.totalPowerController,
                       readOnly: true,
                       expands: true,
                       maxLines: null,
@@ -196,7 +351,10 @@ class MainAreaForums extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                       ),
-                      decoration: _fieldDecoration('----'),
+                      decoration: _fieldDecoration('----').copyWith(
+                        filled: true,
+                        fillColor: const Color(0xFFe8f5e9),
+                      ),
                     ),
                   ),
                 ),
@@ -205,7 +363,7 @@ class MainAreaForums extends StatelessWidget {
                   child: SizedBox(
                     height: 65,
                     child: TextField(
-                      controller: annualController,
+                      controller: widget.annualController,
                       readOnly: true,
                       expands: true,
                       maxLines: null,
@@ -213,7 +371,10 @@ class MainAreaForums extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                       ),
-                      decoration: _fieldDecoration('----'),
+                      decoration: _fieldDecoration('----').copyWith(
+                        filled: true,
+                        fillColor: const Color(0xFFe8f5e9),
+                      ),
                     ),
                   ),
                 ),

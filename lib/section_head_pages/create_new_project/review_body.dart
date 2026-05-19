@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/shared_files/fotter.dart';
+import 'package:greenlens/shared_files/footer.dart';
 
 class ReviewBody extends StatefulWidget {
   final VoidCallback onNext;
@@ -353,7 +353,7 @@ class _ReviewBodyState extends State<ReviewBody>
               ),
             ),
             const SizedBox(height: 32),
-            CreateNewProjectFooter(
+            Footer(
               currentStep: widget.currentStep,
               onNext: widget.onNext,
               onBack: widget.onBack,
