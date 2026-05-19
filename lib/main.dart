@@ -16,7 +16,7 @@ git add .
 git commit -m "describe your change"
 git push
 
-go to githup and then pull req 
+go to github and then pull req
 check if conflict happened 
 if no conf merge it 
 then do this : 

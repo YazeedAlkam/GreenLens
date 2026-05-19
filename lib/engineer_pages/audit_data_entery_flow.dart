@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greenlens/engineer_pages/Equipment_Body.dart';
+import 'package:greenlens/engineer_pages/equipment_body.dart';
 import 'package:greenlens/engineer_pages/ac_body.dart';
 import 'package:greenlens/engineer_pages/ac_review.dart';
 import 'package:greenlens/engineer_pages/building_body.dart';
@@ -14,16 +14,16 @@ import 'package:greenlens/engineer_pages/shared_files/navbar_eng_title.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
-class Audit_Entery_Flow extends StatefulWidget {
+class AuditEntryFlow extends StatefulWidget {
   final String projectId;
   final bool readOnly;
-  const Audit_Entery_Flow({super.key, required this.projectId, this.readOnly = false});
+  const AuditEntryFlow({super.key, required this.projectId, this.readOnly = false});
 
   @override
-  State<Audit_Entery_Flow> createState() => _Audit_Entery_FlowState();
+  State<AuditEntryFlow> createState() => _AuditEntryFlowState();
 }
 
-class _Audit_Entery_FlowState extends State<Audit_Entery_Flow> {
+class _AuditEntryFlowState extends State<AuditEntryFlow> {
   int _currentStep = 0;
   int? _reviewDetail; // 0=lighting 1=ac 2=equipment 3=machines
   Map<String, dynamic>? _projectInfo;
