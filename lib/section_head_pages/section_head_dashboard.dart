@@ -355,7 +355,7 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (_) =>
-                                                        Audit_Entery_Flow(
+                                                        AuditEntryFlow(
                                                           projectId:
                                                               project['id']
                                                                   as String,
