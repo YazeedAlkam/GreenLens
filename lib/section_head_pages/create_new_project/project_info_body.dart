@@ -59,8 +59,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
     _initiationDateCtrl.text = data['initiationDate'] ?? '';
     _deadlineDateCtrl.text = data['deadlineDate'] ?? '';
     _salesMarkCtrl.text = data['salesMark'] ?? '';
-    final avg = data['averageBill'];
-    if (avg != null) _avgMonthlyBillCtrl.text = avg.toString();
+    final avg = data['averageMonthlyBill'];
+    if (avg != null) _avgMonthlyBillCtrl.text = (avg as num).toStringAsFixed(2);
   }
 
   @override

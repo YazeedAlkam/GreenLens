@@ -7,8 +7,16 @@ import 'package:greenlens/shared_files/footer.dart';
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
   final void Function(double)? onAverageChanged;
+  final List<Map<String, dynamic>>? initialBills;
+  final double? initialAverageBill;
 
-  const BillsBody({super.key, required this.onBack, this.onAverageChanged});
+  const BillsBody({
+    super.key,
+    required this.onBack,
+    this.onAverageChanged,
+    this.initialBills,
+    this.initialAverageBill,
+  });
 
   @override
   State<BillsBody> createState() => BillsBodyState();
@@ -30,6 +38,16 @@ class BillsBodyState extends State<BillsBody>
     _months = _getLast12Months();
     _energyCtrls = List.generate(12, (_) => TextEditingController());
     _billCtrls = List.generate(12, (_) => TextEditingController());
+
+    final initial = widget.initialBills;
+    if (initial != null) {
+      for (int i = 0; i < 12 && i < initial.length; i++) {
+        _energyCtrls[i].text = initial[i]['energyConsumed']?.toString() ?? '';
+        _billCtrls[i].text = initial[i]['billAmount']?.toString() ?? '';
+      }
+    }
+    _averageMonthlyBill = widget.initialAverageBill ?? 0;
+
     for (final ctrl in _billCtrls) {
       ctrl.addListener(_recalculateAverage);
     }

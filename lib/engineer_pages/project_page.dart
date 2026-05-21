@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
 class ProjectPage extends StatefulWidget {
@@ -217,7 +218,17 @@ class _ProjectPageState extends State<ProjectPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ProjectSummaryPage(
+                                            projectId: widget.projectId,
+                                            projectName: widget.projectName,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                     child: Center(
                                       child: Row(
                                         mainAxisAlignment:
