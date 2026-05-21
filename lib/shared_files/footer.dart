@@ -18,6 +18,8 @@ enum FooterMode {
   auditNormal,
   /// Back + Submit for Review       (engineer review/last step)
   submitReview,
+  /// Back + Accept Project + Deny Project  (CEO approval flow)
+  acceptDeny,
 }
 
 class Footer extends StatelessWidget {
@@ -27,6 +29,8 @@ class Footer extends StatelessWidget {
   final FooterMode mode;
   final Future<void> Function()? onSaveDraft;
   final Future<void> Function()? onSaveProject;
+  final Future<void> Function()? onAccept;
+  final Future<void> Function()? onDeny;
 
   const Footer({
     super.key,
@@ -34,8 +38,10 @@ class Footer extends StatelessWidget {
     required this.onNext,
     required this.onBack,
     this.mode = FooterMode.normal,
-    this.onSaveDraft, // ← add
-    this.onSaveProject, // ← add
+    this.onSaveDraft,
+    this.onSaveProject,
+    this.onAccept,
+    this.onDeny,
   });
 
   // ── shared button styles ────────────────────────────────────────────────
@@ -77,6 +83,33 @@ class Footer extends StatelessWidget {
       style: _outlineStyle,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/images/Left Arrow.svg',
+            width: 40,
+            height: 40,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            "Back",
+            style: GoogleFonts.firaSans(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _backButtonCompact() => SizedBox(
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onBack,
+      style: _outlineStyle,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
             'assets/images/Left Arrow.svg',
@@ -218,6 +251,52 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  Widget _acceptButton() => SizedBox(
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onAccept,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF2E7D32),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+      child: Text(
+        "Accept Project",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+
+  Widget _denyButton() => SizedBox(
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onDeny,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: deniedColor,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+      child: Text(
+        "Deny Project",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     switch (mode) {
@@ -295,6 +374,19 @@ class Footer extends StatelessWidget {
             Expanded(child: _backButton()),
             const SizedBox(width: 17),
             _submitForReviewButton(),
+          ],
+        );
+
+      // ── Accept/Deny: Back + Accept Project + Deny Project ─────────────
+      case FooterMode.acceptDeny:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _backButtonCompact(),
+            const SizedBox(width: 17),
+            Expanded(child: _acceptButton()),
+            const SizedBox(width: 17),
+            Expanded(child: _denyButton()),
           ],
         );
     }

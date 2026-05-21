@@ -298,6 +298,13 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                       onBack: _back,
                       onAverageChanged: (avg) =>
                           _projectKey.currentState?.updateAverageBill(avg),
+                      initialBills: (_initialData?['projectInfo']
+                              as Map<String, dynamic>?)?['bills']
+                          ?.cast<Map<String, dynamic>>(),
+                      initialAverageBill: ((_initialData?['projectInfo']
+                                  as Map<String, dynamic>?)?['averageMonthlyBill']
+                              as num?)
+                          ?.toDouble(),
                     ), // index 5
                     AllContactPage(
                       onBack: _back,
