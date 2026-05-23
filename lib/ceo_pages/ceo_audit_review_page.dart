@@ -14,7 +14,14 @@ import 'package:greenlens/shared_files/footer.dart';
 class CeoAuditReviewPage extends StatefulWidget {
   final Map<String, dynamic> project;
 
-  const CeoAuditReviewPage({super.key, required this.project});
+  /// When true, approve/deny write to [sectionhead_approved] instead of [ceo_approved].
+  final bool isSectionHead;
+
+  const CeoAuditReviewPage({
+    super.key,
+    required this.project,
+    this.isSectionHead = false,
+  });
 
   @override
   State<CeoAuditReviewPage> createState() => _CeoAuditReviewPageState();
@@ -75,12 +82,24 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   String _equipmentLabel() {
     if (_equipment.isEmpty) return 'Not entered';
-    return '${_equipment.length} item${_equipment.length == 1 ? '' : 's'}';
+    final filled = _equipment.where((e) {
+      final m = e as Map;
+      return ['name', 'ratedPower', 'quantity', 'yearlyHours']
+          .any((k) => m[k]?.toString().trim().isNotEmpty == true);
+    }).toList();
+    if (filled.isEmpty) return 'Not entered';
+    return '${filled.length} item${filled.length == 1 ? '' : 's'}';
   }
 
   String _machinesLabel() {
     if (_machines.isEmpty) return 'Not entered';
-    return '${_machines.length} machine${_machines.length == 1 ? '' : 's'}';
+    final filled = _machines.where((e) {
+      final m = e as Map;
+      return ['name', 'ratedPower', 'quantity', 'yearlyHours']
+          .any((k) => m[k]?.toString().trim().isNotEmpty == true);
+    }).toList();
+    if (filled.isEmpty) return 'Not entered';
+    return '${filled.length} machine${filled.length == 1 ? '' : 's'}';
   }
 
   // ── total annual kWh (mirrors review_eng.dart logic) ──────────────────────
@@ -150,11 +169,19 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
   Future<void> _acceptProject() async {
     setState(() => _isProcessing = true);
 
-    final sectionHeadApproved =
-        widget.project['section_head_approved'] as bool? ?? false;
+    final Map<String, dynamic> updates;
 
-    final updates = <String, dynamic>{'ceo_approved': true};
-    if (sectionHeadApproved) updates['status'] = 'Ready';
+    if (widget.isSectionHead) {
+      final ceoApproved =
+          widget.project['ceo_approved'] as bool? ?? false;
+      updates = {'sectionhead_approved': true};
+      if (ceoApproved) updates['status'] = 'Ready';
+    } else {
+      final sectionHeadApproved =
+          widget.project['sectionhead_approved'] as bool? ?? false;
+      updates = {'ceo_approved': true};
+      if (sectionHeadApproved) updates['status'] = 'Ready';
+    }
 
     await _projectService.updateFields(
       widget.project['id'] as String,
@@ -165,9 +192,14 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   Future<void> _denyProject() async {
     setState(() => _isProcessing = true);
+    // Reset both flags so the next review cycle starts clean
     await _projectService.updateFields(
       widget.project['id'] as String,
-      {'status': 'Denied'},
+      {
+        'ceo_approved': false,
+        'sectionhead_approved': false,
+        'status': 'Denied',
+      },
     );
     if (mounted) Navigator.pop(context, true);
   }
@@ -276,9 +308,9 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // Building Info card
   Widget _buildingInfoCard() {
-    final avgBill = _proj['averageMonthlyBill'];
-    final avgBillDisplay = avgBill != null && (avgBill as num) > 0
-        ? '$avgBill JOD'
+    final avgBillRaw = (_proj['averageMonthlyBill'] as num?)?.toDouble() ?? 0;
+    final avgBillDisplay = avgBillRaw > 0
+        ? '${avgBillRaw == avgBillRaw.truncateToDouble() ? avgBillRaw.toInt() : avgBillRaw.toStringAsFixed(2)} JOD'
         : _v(null);
 
     final hrs = _proj['operatingHrsPerDay']?.toString() ?? '';
@@ -389,8 +421,9 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
   }
 
   Widget _energyRow(String label, String statusLabel, VoidCallback onTap) {
+    final hasData = statusLabel != 'Not entered';
     return InkWell(
-      onTap: onTap,
+      onTap: hasData ? onTap : null,
       child: SizedBox(
         height: 60,
         child: Padding(
@@ -412,17 +445,19 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
+                      color: hasData ? Colors.black : Colors.grey,
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/images/arrowright.svg',
-                    width: 40,
-                    height: 40,
-                    colorFilter: ColorFilter.mode(
-                      primaryColor,
-                      BlendMode.srcIn,
+                  if (hasData)
+                    SvgPicture.asset(
+                      'assets/images/arrowright.svg',
+                      width: 40,
+                      height: 40,
+                      colorFilter: ColorFilter.mode(
+                        primaryColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],

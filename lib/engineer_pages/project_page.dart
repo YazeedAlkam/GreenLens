@@ -1,22 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
 import 'package:greenlens/engineer_pages/project_summary_page.dart';
+import 'package:greenlens/shared_files/charts/project_charts_grid.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
 class ProjectPage extends StatefulWidget {
   final String projectName;
   final String projectId;
-  const ProjectPage({super.key, required this.projectName, required this.projectId});
+  final String status;
+  const ProjectPage({
+    super.key,
+    required this.projectName,
+    required this.projectId,
+    this.status = '',
+  });
 
   @override
   State<ProjectPage> createState() => _ProjectPageState();
 }
 
 class _ProjectPageState extends State<ProjectPage> {
+  bool _isCompleting = false;
+
+  bool get _isReady => widget.status == 'Ready';
+
+  Future<void> _markAsCompleted() async {
+    setState(() => _isCompleting = true);
+    try {
+      await ProjectService().updateFields(widget.projectId, {
+        'status': 'Completed',
+      });
+      if (mounted) Navigator.pop(context, true);
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isCompleting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to mark as completed: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,27 +59,28 @@ class _ProjectPageState extends State<ProjectPage> {
           child: Center(
             child: Column(
               children: [
-                //First Button --------------->
-                SizedBox(
-                  width: double.infinity,
-                  height: 64,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      backgroundColor: dashButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                // Only visible when Ready
+                if (_isReady) ...[
+                  // Generate Technical Report
+                  SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        backgroundColor: dashButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      // TODO: Handle button press, create and save a pdf to the downloads folder on the device
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          child: Row(
+                      onPressed: () {
+                        // TODO: generate and save PDF to device downloads
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -58,41 +88,150 @@ class _ProjectPageState extends State<ProjectPage> {
                                 'assets/images/GenrateChart.svg',
                                 height: 40,
                                 width: 40,
-                                colorFilter: ColorFilter.mode(
+                                colorFilter: const ColorFilter.mode(
                                   Colors.white,
                                   BlendMode.srcIn,
                                 ),
                               ),
-                              SizedBox(width: 10),
-                              Text(
+                              const SizedBox(width: 10),
+                              const Text(
                                 'Generate Technical Report',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.normal,
-                                ), //w500 meduim weight
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        Spacer(),
-                        SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 40,
-                          width: 40,
-                        ),
-                      ],
+                          const Spacer(),
+                          SvgPicture.asset(
+                            'assets/images/arrowright.svg',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                //2nd button --------------->
-                SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Generate Cost Report
+                  SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        backgroundColor: dashButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        // TODO: generate and save PDF to device downloads
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/Dollar Square.svg',
+                                height: 40,
+                                width: 40,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Generate Cost Report',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(
+                            'assets/images/arrowright.svg',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Generate Technical & Cost Report
+                  SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        backgroundColor: dashButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        // TODO: generate and save PDF to device downloads
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/Document Justify Center 1.svg',
+                                height: 40,
+                                width: 40,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Generate Technical & Cost Report',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(
+                            'assets/images/arrowright.svg',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Operational Audit Data
                 SizedBox(
                   width: double.infinity,
                   height: 64,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                       backgroundColor: dashButtonColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -102,41 +241,42 @@ class _ProjectPageState extends State<ProjectPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => AuditEntryFlow(projectId: widget.projectId),
+                          builder: (_) =>
+                              AuditEntryFlow(projectId: widget.projectId),
                         ),
-                      );
+                      ).then((result) {
+                        if (result == true && mounted) Navigator.pop(context);
+                      });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/Opertaional.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
-                                ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/Opertaional.svg',
+                              height: 40,
+                              width: 40,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
                               ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Operational Audit Data',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                            ),
+                            const SizedBox(width: 10),
+                            const Text(
+                              'Operational Audit Data',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Spacer(),
+                        const Spacer(),
                         SvgPicture.asset(
                           'assets/images/arrowright.svg',
                           height: 40,
@@ -146,7 +286,9 @@ class _ProjectPageState extends State<ProjectPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
+
+                // Project Summary card
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -156,12 +298,11 @@ class _ProjectPageState extends State<ProjectPage> {
                         color: Colors.black.withValues(alpha: 0.2),
                         spreadRadius: 0,
                         blurRadius: 7.2,
-                        offset: Offset(0, 0), // changes position of shadow
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
-                  width: double.infinity, //
-                  height: 818.8,
+                  width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                     child: Column(
@@ -175,102 +316,72 @@ class _ProjectPageState extends State<ProjectPage> {
                             color: primaryColor,
                           ),
                         ),
-                        Table(
-                          children: [
-                            TableRow(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Image.asset(
-                                        "assets/images/GraphOne.png",
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Image.asset(
-                                        "assets/images/GraphTwo.png",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Image.asset(
-                                        "assets/images/GraphThree.png",
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Image.asset(
-                                        "assets/images/GraphFour.png",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => ProjectSummaryPage(
-                                            projectId: widget.projectId,
-                                            projectName: widget.projectName,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "View All",
-                                            style: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 22.68,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/images/arrowright.svg",
-                                            width: 40,
-                                            height: 40,
-                                            colorFilter: ColorFilter.mode(
-                                              primaryColor,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                        const SizedBox(height: 12),
+                        const ProjectChartsGrid(),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ProjectSummaryPage(
+                                    projectId: widget.projectId,
+                                    projectName: widget.projectName,
                                   ),
                                 ),
-                              ],
+                              );
+                            },
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "View All",
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 22.68,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    "assets/images/arrowright.svg",
+                                    width: 40,
+                                    height: 40,
+                                    colorFilter: ColorFilter.mode(
+                                      primaryColor,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
-                Footer(
-                  currentStep: 0,
-                  mode: FooterMode.backOnly,
-                  onBack: () => Navigator.pop(context),
-                  onNext: () {},
-                ),
+                const SizedBox(height: 16),
+
+                // Footer
+                if (_isCompleting)
+                  const Center(child: CircularProgressIndicator())
+                else if (_isReady)
+                  Footer(
+                    currentStep: 0,
+                    mode: FooterMode.markComplete,
+                    onBack: () => Navigator.pop(context),
+                    onNext: () {},
+                    onMarkComplete: _markAsCompleted,
+                  )
+                else
+                  Footer(
+                    currentStep: 0,
+                    mode: FooterMode.backOnly,
+                    onBack: () => Navigator.pop(context),
+                    onNext: () {},
+                  ),
               ],
             ),
           ),

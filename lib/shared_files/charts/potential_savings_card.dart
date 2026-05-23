@@ -1,0 +1,221 @@
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'chart_theme.dart';
+
+class PotentialSavingsCard extends StatelessWidget {
+  final ChartTheme theme;
+  final List<double> beforeMwh;
+  final List<double> afterMwh;
+  final double maxY;
+  final double interval;
+
+  const PotentialSavingsCard({
+    super.key,
+    required this.theme,
+    required this.beforeMwh,
+    required this.afterMwh,
+    this.maxY = 450,
+    this.interval = 50,
+  }) : assert(beforeMwh.length == 12),
+       assert(afterMwh.length == 12);
+
+  factory PotentialSavingsCard.sample(ChartTheme theme) {
+    return PotentialSavingsCard(
+      theme: theme,
+      beforeMwh: const [
+        350,
+        350,
+        160,
+        140,
+        165,
+        195,
+        410,
+        415,
+        200,
+        190,
+        165,
+        180,
+      ],
+      afterMwh: const [
+        310,
+        310,
+        230,
+        120,
+        130,
+        240,
+        360,
+        370,
+        100,
+        135,
+        165,
+        125,
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final beforeColor = theme.primary;
+    final afterColor = theme.warning;
+
+    return ChartCard(
+      title: 'Potential Savings',
+      subtitle: '(kWh/Year)',
+      theme: theme,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'TOTAL ENERGY CONSUMPTION (MWh)',
+                    style: theme.sectionTitleStyle.copyWith(fontSize: 10),
+                  ),
+                  Text(
+                    'BEFORE vs. AFTER IMPLEMENTATION',
+                    style: theme.sectionTitleStyle.copyWith(fontSize: 10),
+                  ),
+                ],
+              ),
+
+              Row(
+                children: [
+                  LegendDot(
+                    square: true,
+                    color: beforeColor,
+                    label: 'BEFORE (MWh)',
+                    style: theme.legendStyle.copyWith(fontSize: 11),
+                  ),
+                  const SizedBox(width: 10),
+                  LegendDot(
+                    square: true,
+                    color: afterColor,
+                    label: 'AFTER (MWh)',
+                    style: theme.legendStyle.copyWith(fontSize: 11),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 240,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: maxY,
+                barGroups: [
+                  for (int i = 0; i < 12; i++)
+                    BarChartGroupData(
+                      x: i,
+                      barsSpace: 2,
+                      barRods: [
+                        _rod(beforeMwh[i], beforeColor),
+                        _rod(afterMwh[i], afterColor),
+                      ],
+                    ),
+                ],
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: interval,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color: theme.axisLine,
+                    strokeWidth: 1,
+                    dashArray: const [4, 4],
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 32,
+                      interval: interval,
+                      getTitlesWidget: (v, _) => Text(
+                        v.toInt().toString(),
+                        style: theme.axisLabelStyle,
+                      ),
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 22,
+                      interval: 1,
+                      getTitlesWidget: (v, _) {
+                        final i = v.toInt();
+                        if (i < 0 || i > 11) return const SizedBox.shrink();
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            ChartTheme.months[i].toUpperCase(),
+                            style: theme.axisLabelStyle,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    bottom: BorderSide(color: theme.axisLine),
+                    left: BorderSide(color: theme.axisLine),
+                  ),
+                ),
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => Colors.white,
+                    tooltipBorder: BorderSide(color: theme.cardBorder),
+                    tooltipBorderRadius: BorderRadius.circular(8),
+                    tooltipPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) =>
+                        BarTooltipItem(
+                      rod.toY.toInt().toString(),
+                      theme.valueLabelStyle.copyWith(
+                        color: theme.textPrimary,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  BarChartRodData _rod(double value, Color color) {
+    return BarChartRodData(
+      toY: value,
+      color: color,
+      width: 7,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(2),
+        topRight: Radius.circular(2),
+      ),
+    );
+  }
+}

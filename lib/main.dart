@@ -47,7 +47,7 @@ const Color removeEngColor = Color(0xFFffe6e6);
 const Color tablelinescolor = Color(0xFF808080);
 Color statusColor = Color(0xFFFFFFFF);
 const Color addclientbuttoncolor = Color(0xFF2D264B);
-final List<String> roles = ['Section Head', 'Engineer', 'Financial Manager'];
+final List<String> roles = ['Section Head', 'Engineer'];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

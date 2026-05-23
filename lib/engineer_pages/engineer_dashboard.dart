@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:greenlens/engineer_pages/active_projects/active_projects_page.dart';
 import 'package:greenlens/engineer_pages/previous_projects/previous_projects_page.dart';
 import 'package:greenlens/engineer_pages/project_page.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
@@ -160,18 +161,33 @@ class _EngineerPageState extends State<EngineerPage> {
                                       'Unnamed Project';
                                   final status = projects[i]['status'] as String? ?? 'Draft';
                                   final id = projects[i]['id'] as String? ?? '';
-                                  final isNavigable = status == 'Ready' || status == 'In Progress';
+                                  VoidCallback? onTap;
+                                  if (status == 'Ready' || status == 'In Progress' || status == 'Denied') {
+                                    onTap = () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ProjectPage(projectName: name, projectId: id, status: status),
+                                          ),
+                                        ).then((_) {
+                                          if (mounted) {
+                                            setState(() {
+                                              _activeProjectsFuture =
+                                                  _projectService.getEngineerActiveProjects();
+                                            });
+                                          }
+                                        });
+                                  } else if (status == 'Awaiting Approval') {
+                                    onTap = () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ProjectSummaryPage(projectId: id, projectName: name),
+                                          ),
+                                        );
+                                  }
                                   return Project(
                                     title: name,
                                     status: status,
-                                    onTap: isNavigable
-                                        ? () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => ProjectPage(projectName: name, projectId: id),
-                                              ),
-                                            )
-                                        : null,
+                                    onTap: onTap,
                                   );
                                 }),
                               ],

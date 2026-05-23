@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
-import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
@@ -268,9 +268,9 @@ class _PreviousProjectRow extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => CreateProjectFlow(
-                  existingProjectId: project['id'] as String,
-                  readOnly: true,
+                builder: (_) => ProjectSummaryPage(
+                  projectId: project['id'] as String,
+                  projectName: title,
                 ),
               ),
             );

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/ceo_pages/ceo_audit_review_page.dart';
 import 'package:greenlens/ceo_pages/ceo_project_review_page.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
@@ -73,7 +74,22 @@ class _CeoActiveProjectsPageState extends State<CeoActiveProjectsPage> {
           );
     }
 
-    // TODO: add navigation for projects with 'Ready' status
+    if (status == 'Ready') {
+      final projectName = (project['projectInfo']
+              as Map<String, dynamic>?)?['projectName'] as String? ??
+          project['customId'] as String? ??
+          'Untitled';
+      return () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProjectSummaryPage(
+                projectId: project['id'] as String,
+                projectName: projectName,
+              ),
+            ),
+          );
+    }
+
     return null;
   }
 

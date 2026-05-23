@@ -10,6 +10,7 @@ class CustomAppBar {
       centerTitle: true,
       elevation: 10,
       shadowColor: Colors.black,
+      automaticallyImplyLeading: false,
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

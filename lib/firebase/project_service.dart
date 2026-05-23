@@ -51,7 +51,7 @@ class ProjectService {
         newId = 1;
         tx.set(counterRef, {'lastId': 1});
       } else {
-        newId = (counterSnap.data()!['lastId'] as int) + 1;
+        newId = ((counterSnap.data()!['lastId'] as int?) ?? 0) + 1;
         tx.update(counterRef, {'lastId': newId});
       }
 
@@ -132,7 +132,17 @@ class ProjectService {
         .get();
     final docs = snap.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     return docs
-        .where((p) => (p['status'] as String? ?? '').toLowerCase() != 'completed')
+        .where((p) {
+          final s = (p['status'] as String? ?? '').toLowerCase();
+          if (s == 'completed') return false;
+          if (s == 'denied') {
+            final auditData = p['auditData'];
+            final hasAuditData = auditData != null &&
+                (auditData as Map).isNotEmpty;
+            return !hasAuditData;
+          }
+          return true;
+        })
         .toList();
   }
 
@@ -167,7 +177,14 @@ class ProjectService {
     return docs
         .where((p) {
           final s = p['status'] as String? ?? '';
-          return s == 'In Progress' || s == 'Ready';
+          if (s == 'In Progress' || s == 'Ready' || s == 'Awaiting Approval') {
+            return true;
+          }
+          if (s == 'Denied') {
+            final auditData = p['auditData'];
+            return auditData != null && (auditData as Map).isNotEmpty;
+          }
+          return false;
         })
         .take(4)
         .toList();
