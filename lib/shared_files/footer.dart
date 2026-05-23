@@ -6,20 +6,30 @@ import 'package:greenlens/main.dart';
 enum FooterMode {
   /// Back + Save Draft + Next Step  (steps 0–3)
   normal,
+
   /// Back + Save Project            (step 4 – Review)
   review,
+
   /// Back only                      (Bills / All Contacts sub-pages)
   backOnly,
+
   /// Back + Next only               (read-only view mode)
   viewOnly,
+
   /// Back + Done                    (read-only review/last step)
   done,
+
   /// Back + Save + Next Step        (audit data entry steps)
   auditNormal,
+
   /// Back + Submit for Review       (engineer review/last step)
   submitReview,
+
   /// Back + Accept Project + Deny Project  (CEO approval flow)
   acceptDeny,
+
+  /// Back + Mark as Completed              (engineer project page, Ready status)
+  markComplete,
 }
 
 class Footer extends StatelessWidget {
@@ -31,6 +41,7 @@ class Footer extends StatelessWidget {
   final Future<void> Function()? onSaveProject;
   final Future<void> Function()? onAccept;
   final Future<void> Function()? onDeny;
+  final Future<void> Function()? onMarkComplete;
 
   const Footer({
     super.key,
@@ -42,6 +53,7 @@ class Footer extends StatelessWidget {
     this.onSaveProject,
     this.onAccept,
     this.onDeny,
+    this.onMarkComplete,
   });
 
   // ── shared button styles ────────────────────────────────────────────────
@@ -259,9 +271,7 @@ class Footer extends StatelessWidget {
         backgroundColor: const Color(0xFF2E7D32),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       child: Text(
         "Accept Project",
@@ -274,6 +284,37 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  Widget _markCompleteButton() => SizedBox(
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onMarkComplete,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF2E7D32),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/images/Tick.svg',
+            width: 40,
+            height: 40,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            "Mark as Completed",
+            style: GoogleFonts.firaSans(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
   Widget _denyButton() => SizedBox(
     height: 65,
     child: ElevatedButton(
@@ -282,9 +323,7 @@ class Footer extends StatelessWidget {
         backgroundColor: deniedColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       child: Text(
         "Deny Project",
@@ -387,6 +426,17 @@ class Footer extends StatelessWidget {
             Expanded(child: _acceptButton()),
             const SizedBox(width: 17),
             Expanded(child: _denyButton()),
+          ],
+        );
+
+      // ── Mark Complete: Back + Mark as Completed ────────────────────────
+      case FooterMode.markComplete:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButtonCompact()),
+            const SizedBox(width: 17),
+            Expanded(child: _markCompleteButton()),
           ],
         );
     }

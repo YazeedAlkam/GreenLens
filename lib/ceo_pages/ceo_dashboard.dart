@@ -9,6 +9,7 @@ import 'package:greenlens/ceo_pages/ceo_active_projects_page.dart';
 import 'package:greenlens/ceo_pages/ceo_audit_review_page.dart';
 import 'package:greenlens/ceo_pages/ceo_project_review_page.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/section_head_pages/previous_projects/previous_projects_page.dart';
 
 class CEOPage extends StatefulWidget {
@@ -68,7 +69,22 @@ class _CEOPageState extends State<CEOPage> {
           );
     }
 
-    // TODO: add navigation for projects with 'Ready' status
+    if (status == 'Ready') {
+      final projectName = (project['projectInfo']
+              as Map<String, dynamic>?)?['projectName'] as String? ??
+          project['customId'] as String? ??
+          'Untitled';
+      return () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProjectSummaryPage(
+                projectId: project['id'] as String,
+                projectName: projectName,
+              ),
+            ),
+          );
+    }
+
     return null;
   }
 

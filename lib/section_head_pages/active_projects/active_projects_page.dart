@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/ceo_pages/ceo_audit_review_page.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
+import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
@@ -117,7 +119,16 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                 ),
                               );
                             }
-                            final projects = snapshot.data ?? [];
+                            final projects = (snapshot.data ?? []).where((p) {
+                              final s = (p['status'] as String? ?? '').toLowerCase();
+                              if (s == 'awaiting approval') {
+                                // Hide if section head already approved — waiting on CEO
+                                final sectionHeadApproved =
+                                    p['sectionhead_approved'] as bool? ?? false;
+                                if (sectionHeadApproved) return false;
+                              }
+                              return true;
+                            }).toList();
                             if (projects.isEmpty) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -144,14 +155,23 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                       final isDraftOrDenied =
                                           status == 'Draft' ||
                                           status == 'Denied';
+                                      final isAwaitingApproval =
+                                          status == 'Awaiting Approval';
                                       final isInProgress =
                                           status == 'In Progress';
+                                      final isReady = status == 'Ready';
+                                      final projectName =
+                                          (project['projectInfo']
+                                              as Map<String, dynamic>?)?[
+                                          'projectName'] as String? ??
+                                          project['customId'] as String? ??
+                                          'Untitled';
+                                      final hasAuditData = () {
+                                        final a = project['auditData'];
+                                        return a != null && (a as Map).isNotEmpty;
+                                      }();
                                       return Project(
-                                        title: (project['projectInfo']
-                                                    as Map<String, dynamic>?)?[
-                                                'projectName'] ??
-                                            project['customId'] ??
-                                            'Untitled',
+                                        title: projectName,
                                         status: status,
                                         onTap: isDraftOrDenied
                                             ? () {
@@ -175,6 +195,42 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                                   }
                                                 });
                                               }
+                                            : isAwaitingApproval
+                                            ? () {
+                                                if (hasAuditData) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          CeoAuditReviewPage(
+                                                        project: project,
+                                                        isSectionHead: true,
+                                                      ),
+                                                    ),
+                                                  ).then((_) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _projectsFuture =
+                                                            ProjectService()
+                                                                .getActiveProjects();
+                                                      });
+                                                    }
+                                                  });
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          CreateProjectFlow(
+                                                        existingProjectId:
+                                                            project['id']
+                                                                as String,
+                                                        readOnly: true,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              }
                                             : isInProgress
                                             ? () {
                                                 Navigator.push(
@@ -189,7 +245,21 @@ class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
                                                   ),
                                                 );
                                               }
-                                            : () {},
+                                            : isReady
+                                            ? () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ProjectSummaryPage(
+                                                      projectId: project['id']
+                                                          as String,
+                                                      projectName: projectName,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            : null,
                                       );
                                     },
                                   ),

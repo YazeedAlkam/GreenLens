@@ -383,7 +383,7 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
                         const SizedBox(height: 8),
                         _buildTextField(
                           controller: _item.compressedAirTypeController,
-                          hint: 'e.g 8',
+                          hint: 'e.g Centrifugal Compressors',
                           readOnly: widget.readOnly,
                         ),
                       ],

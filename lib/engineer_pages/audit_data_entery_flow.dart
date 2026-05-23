@@ -51,21 +51,42 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     });
   }
 
+  Map<String, dynamic> _buildAuditPayload() => {
+    'auditData.building': _buildingKey.currentState?.getBuildingAuditData() ?? {},
+    'auditData.lighting': _lightingKey.currentState?.getLightingData() ?? [],
+    'auditData.ac': _acKey.currentState?.getAcData() ?? [],
+    'auditData.equipment': _equipmentKey.currentState?.getEquipmentData() ?? [],
+    'auditData.machines': _machinesKey.currentState?.getMachinesData() ?? [],
+    'projectInfo.salesMark': _buildingKey.currentState?.getSalesMark() ?? '',
+  };
+
   Future<void> _save() async {
     try {
-      await ProjectService().updateFields(widget.projectId, {
-        'auditData.building': _buildingKey.currentState?.getBuildingAuditData() ?? {},
-        'auditData.lighting': _lightingKey.currentState?.getLightingData() ?? [],
-        'auditData.ac': _acKey.currentState?.getAcData() ?? [],
-        'auditData.equipment': _equipmentKey.currentState?.getEquipmentData() ?? [],
-        'auditData.machines': _machinesKey.currentState?.getMachinesData() ?? [],
-        'projectInfo.salesMark': _buildingKey.currentState?.getSalesMark() ?? '',
-      });
+      await ProjectService().updateFields(widget.projectId, _buildAuditPayload());
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Save failed: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _submitForReview() async {
+    try {
+      await ProjectService().updateFields(widget.projectId, {
+        ..._buildAuditPayload(),
+        'status': 'Awaiting Approval',
+        // Reset both approval flags so reviewers must re-approve the updated audit
+        'ceo_approved': false,
+        'sectionhead_approved': false,
+      });
+      if (mounted) Navigator.pop(context, true);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Submit failed: $e')),
         );
       }
     }
@@ -186,7 +207,11 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
                     ReviewBodyEng(
                       onBack: _back,
                       currentStep: _currentStep,
-                      onSave: _save,
+                      onSave: widget.readOnly
+                          ? () async {
+                              if (mounted) Navigator.pop(context);
+                            }
+                          : _submitForReview,
                       projectInfo: _projectInfo,
                       lightingData: lightingData,
                       acData: acData,

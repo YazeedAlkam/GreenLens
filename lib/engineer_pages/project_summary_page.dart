@@ -8,6 +8,7 @@ import 'package:greenlens/engineer_pages/production_review.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/all_contacts_body.dart';
+import 'package:greenlens/shared_files/charts/project_charts_grid.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
@@ -133,12 +134,24 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
 
   String _equipmentLabel() {
     if (_equipment.isEmpty) return 'Not entered';
-    return '${_equipment.length} item${_equipment.length == 1 ? '' : 's'}';
+    final filled = _equipment.where((e) {
+      final m = e as Map;
+      return ['name', 'ratedPower', 'quantity', 'yearlyHours']
+          .any((k) => m[k]?.toString().trim().isNotEmpty == true);
+    }).toList();
+    if (filled.isEmpty) return 'Not entered';
+    return '${filled.length} item${filled.length == 1 ? '' : 's'}';
   }
 
   String _machinesLabel() {
     if (_machines.isEmpty) return 'Not entered';
-    return '${_machines.length} machine${_machines.length == 1 ? '' : 's'}';
+    final filled = _machines.where((e) {
+      final m = e as Map;
+      return ['name', 'ratedPower', 'quantity', 'yearlyHours']
+          .any((k) => m[k]?.toString().trim().isNotEmpty == true);
+    }).toList();
+    if (filled.isEmpty) return 'Not entered';
+    return '${filled.length} machine${filled.length == 1 ? '' : 's'}';
   }
 
   double _totalAnnualKwh() {
@@ -309,24 +322,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
                         const SizedBox(height: 8),
 
                         // ── charts ────────────────────────────────────
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Image.asset('assets/images/GraphOne.png')),
-                            Expanded(
-                                child: Image.asset('assets/images/GraphTwo.png')),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child:
-                                    Image.asset('assets/images/GraphThree.png')),
-                            Expanded(
-                                child:
-                                    Image.asset('assets/images/GraphFour.png')),
-                          ],
-                        ),
+                        const ProjectChartsGrid(),
                         const SizedBox(height: 24),
 
                         // ── Client Info ───────────────────────────────
@@ -361,9 +357,14 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
                           _row('Operating Hours', _operatingHours()),
                           _row(
                             'Monthly Bill',
-                            (_proj['averageMonthlyBill'] as num? ?? 0) > 0
-                                ? '${_proj['averageMonthlyBill']} JOD'
-                                : 'No Data',
+                            () {
+                              final v = (_proj['averageMonthlyBill'] as num?)?.toDouble() ?? 0;
+                              if (v <= 0) return 'No Data';
+                              final s = v == v.truncateToDouble()
+                                  ? v.toInt().toString()
+                                  : v.toStringAsFixed(2);
+                              return '$s JOD';
+                            }(),
                           ),
                         ]),
                         const SizedBox(height: 24),
@@ -564,8 +565,9 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
   }
 
   Widget _energyRow(String label, String statusLabel, VoidCallback onTap) {
+    final hasData = statusLabel != 'Not entered';
     return InkWell(
-      onTap: onTap,
+      onTap: hasData ? onTap : null,
       child: SizedBox(
         height: 60,
         child: Padding(
@@ -583,18 +585,17 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
-                      color: statusLabel == 'Not entered'
-                          ? Colors.grey
-                          : Colors.black,
+                      color: hasData ? Colors.black : Colors.grey,
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/images/arrowright.svg',
-                    width: 40,
-                    height: 40,
-                    colorFilter:
-                        ColorFilter.mode(primaryColor, BlendMode.srcIn),
-                  ),
+                  if (hasData)
+                    SvgPicture.asset(
+                      'assets/images/arrowright.svg',
+                      width: 40,
+                      height: 40,
+                      colorFilter:
+                          ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                    ),
                 ],
               ),
             ],
