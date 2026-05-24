@@ -34,12 +34,12 @@ class MachineItem {
   double get totalPower {
     final power = double.tryParse(ratedPowerController.text) ?? 0;
     final qty = double.tryParse(quantityController.text) ?? 0;
-    return power * qty;
+    final hours = double.tryParse(yearlyHoursController.text) ?? 0;
+    return power * qty * hours;
   }
 
-  double get annualKwh {
-    final hours = double.tryParse(yearlyHoursController.text) ?? 0;
-    return totalPower * hours;
+  double get energyCost {
+    return totalPower * energyTariffJodPerKwh;
   }
 
   Map<String, dynamic> toMap() => {
@@ -50,6 +50,7 @@ class MachineItem {
     'ratedPower': ratedPowerController.text,
     'quantity': quantityController.text,
     'yearlyHours': yearlyHoursController.text,
+    'energyCost': energyCost > 0 ? energyCost.toStringAsFixed(2) : '',
   };
 
   static MachineItem fromMap(Map<String, dynamic> map) {
@@ -397,9 +398,9 @@ class _MachineFormState extends State<MachineForm> {
 
                 Expanded(
                   child: _ReadOnlyField(
-                    label: 'Annual (kWh/yr)',
-                    value: _item.annualKwh > 0
-                        ? _item.annualKwh.toStringAsFixed(2)
+                    label: 'Energy Cost (JD)',
+                    value: _item.energyCost > 0
+                        ? _item.energyCost.toStringAsFixed(2)
                         : '',
                     asteriskColor: readyColor,
                   ),

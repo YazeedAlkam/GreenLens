@@ -288,8 +288,8 @@ class _SplitForm extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _ReadOnlyField(
-                label: 'Annual (kWh/yr)',
-                value: state.annualKwh,
+                label: 'Energy Cost (JD)',
+                value: state.energyCost,
                 astrickColor: readyColor,
               ),
             ),
@@ -394,8 +394,8 @@ class _PackagedForm extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _ReadOnlyField(
-                label: 'Annual (kWh/yr)',
-                value: state.packageAnnualKwh,
+                label: 'Energy Cost (JD)',
+                value: state.packageEnergyCost,
                 astrickColor: readyColor,
               ),
             ),
@@ -529,8 +529,8 @@ class _CentralForm extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _ReadOnlyField(
-                label: 'Annual (kWh/yr)',
-                value: state.centralAnnualKwh,
+                label: 'Energy Cost (JD)',
+                value: state.centralEnergyCost,
                 astrickColor: readyColor,
               ),
             ),
