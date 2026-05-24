@@ -49,6 +49,8 @@ Color statusColor = Color(0xFFFFFFFF);
 const Color addclientbuttoncolor = Color(0xFF2D264B);
 final List<String> roles = ['Section Head', 'Engineer'];
 
+const double energyTariffJodPerKwh = 0.12;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

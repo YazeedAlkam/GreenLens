@@ -85,55 +85,52 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${data.length} groups';
   }
 
-  double _totalAnnualKwh() {
+  double _totalEnergyCost() {
     double total = 0;
 
-    // Lighting: 'annual' is pre-computed and stored in the map
+    // Lighting: 'energyCost' is pre-computed (JD) and stored in the map
     for (final e in widget.lightingData) {
       final map = e as Map;
-      total += double.tryParse(map['annual']?.toString() ?? '') ?? 0;
+      total += double.tryParse(map['energyCost']?.toString() ?? '') ?? 0;
     }
 
     // AC: compute based on acType (not stored in toMap)
     for (final e in widget.acData) {
       final map = e as Map;
       final acType = map['acType'] as int? ?? 0;
+      double kwh = 0;
       if (acType == 0) {
-        // Split: noOfUnits × ratedPower × yearlyHours
         final units = double.tryParse(map['noOfUnits']?.toString() ?? '') ?? 0;
         final power = double.tryParse(map['ratedPower']?.toString() ?? '') ?? 0;
         final hours = double.tryParse(map['yearlyHours']?.toString() ?? '') ?? 0;
-        total += units * power * hours;
+        kwh = units * power * hours;
       } else if (acType == 1) {
-        // Packaged: noOfPackages × packagePower × packageHours
         final units = double.tryParse(map['noOfPackages']?.toString() ?? '') ?? 0;
         final power = double.tryParse(map['packagePower']?.toString() ?? '') ?? 0;
         final hours = double.tryParse(map['packageHours']?.toString() ?? '') ?? 0;
-        total += units * power * hours;
+        kwh = units * power * hours;
       } else if (acType == 2) {
-        // Central: chillerPower × chillerHours
         final power = double.tryParse(map['chillerPower']?.toString() ?? '') ?? 0;
         final hours = double.tryParse(map['chillerHours']?.toString() ?? '') ?? 0;
-        total += power * hours;
+        kwh = power * hours;
       }
+      total += kwh * energyTariffJodPerKwh;
     }
 
-    // Equipment: ratedPower × quantity × yearlyHours (annualKwh not in toMap)
     for (final e in widget.equipmentData) {
       final map = e as Map;
       final power = double.tryParse(map['ratedPower']?.toString() ?? '') ?? 0;
       final qty   = double.tryParse(map['quantity']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(map['yearlyHours']?.toString() ?? '') ?? 0;
-      total += power * qty * hours;
+      total += power * qty * hours * energyTariffJodPerKwh;
     }
 
-    // Machines: ratedPower × quantity × yearlyHours (annualKwh not in toMap)
     for (final e in widget.machinesData) {
       final map = e as Map;
       final power = double.tryParse(map['ratedPower']?.toString() ?? '') ?? 0;
       final qty   = double.tryParse(map['quantity']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(map['yearlyHours']?.toString() ?? '') ?? 0;
-      total += power * qty * hours;
+      total += power * qty * hours * energyTariffJodPerKwh;
     }
 
     return total;
@@ -142,9 +139,9 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
   String _formatTotal(double value) {
     if (value == 0) return '—';
     if (value == value.truncateToDouble()) {
-      return '${value.toInt()} kWh/yr';
+      return '${value.toInt()} JOD';
     }
-    return '${value.toStringAsFixed(2)} kWh/yr';
+    return '${value.toStringAsFixed(2)} JOD';
   }
 
   String _countLabel(List<dynamic> list, String unit) {
@@ -333,7 +330,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Total annual consumption",
+                    "Total Energy Cost",
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
                       fontWeight: FontWeight.w400,
@@ -341,7 +338,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
                     ),
                   ),
                   Text(
-                    _formatTotal(_totalAnnualKwh()),
+                    _formatTotal(_totalEnergyCost()),
                     style: GoogleFonts.firaSans(
                       fontSize: 24,
                       color: Colors.black,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greenlens/main.dart';
 
 class GroupFormState {
   int activeType = 0; // 0=Split, 1=Packaged, 2=Central
@@ -29,42 +30,42 @@ class GroupFormState {
   String get totalPower {
     final units = double.tryParse(noOfUnits.text) ?? 0;
     final power = double.tryParse(ratedPower.text) ?? 0;
-    if (units == 0 || power == 0) return '';
-    return (units * power).toStringAsFixed(2);
+    final hours = double.tryParse(yearlyHours.text) ?? 0;
+    if (units == 0 || power == 0 || hours == 0) return '';
+    return (units * power * hours).toStringAsFixed(2);
   }
 
-  String get annualKwh {
+  String get energyCost {
     final tp = double.tryParse(totalPower) ?? 0;
-    final hours = double.tryParse(yearlyHours.text) ?? 0;
-    if (tp == 0 || hours == 0) return '';
-    return (tp * hours).toStringAsFixed(2);
+    if (tp == 0) return '';
+    return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
   String get packageTotalPower {
     final units = double.tryParse(noOfPackages.text) ?? 0;
     final power = double.tryParse(packagePower.text) ?? 0;
-    if (units == 0 || power == 0) return '';
-    return (units * power).toStringAsFixed(2);
+    final hours = double.tryParse(packageHours.text) ?? 0;
+    if (units == 0 || power == 0 || hours == 0) return '';
+    return (units * power * hours).toStringAsFixed(2);
   }
 
-  String get packageAnnualKwh {
+  String get packageEnergyCost {
     final tp = double.tryParse(packageTotalPower) ?? 0;
-    final hours = double.tryParse(packageHours.text) ?? 0;
-    if (tp == 0 || hours == 0) return '';
-    return (tp * hours).toStringAsFixed(2);
+    if (tp == 0) return '';
+    return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
   String get centralTotalPower {
     final power = double.tryParse(chillerPower.text) ?? 0;
-    if (power == 0) return '';
-    return power.toStringAsFixed(2);
+    final hours = double.tryParse(chillerHours.text) ?? 0;
+    if (power == 0 || hours == 0) return '';
+    return (power * hours).toStringAsFixed(2);
   }
 
-  String get centralAnnualKwh {
+  String get centralEnergyCost {
     final tp = double.tryParse(centralTotalPower) ?? 0;
-    final hours = double.tryParse(chillerHours.text) ?? 0;
-    if (tp == 0 || hours == 0) return '';
-    return (tp * hours).toStringAsFixed(2);
+    if (tp == 0) return '';
+    return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
   void fromMap(Map<String, dynamic> map) {
@@ -95,15 +96,18 @@ class GroupFormState {
       'capacity': capacity.text,
       'yearlyHours': yearlyHours.text,
       'ratedPower': ratedPower.text,
+      'energyCost': energyCost,
       'notes': notes.text,
       'noOfPackages': noOfPackages.text,
       'packageCapacity': packageCapacity.text,
       'packageHours': packageHours.text,
       'packagePower': packagePower.text,
+      'packageEnergyCost': packageEnergyCost,
       'packageNotes': packageNotes.text,
       'chillerCapacity': chillerCapacity.text,
       'chillerPower': chillerPower.text,
       'chillerHours': chillerHours.text,
+      'centralEnergyCost': centralEnergyCost,
       'ahuCount': ahuCount.text,
       'centralNotes': centralNotes.text,
     };

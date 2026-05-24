@@ -104,22 +104,23 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── total annual kWh (mirrors review_eng.dart logic) ──────────────────────
 
-  double _totalAnnualKwh() {
+  double _totalEnergyCost() {
     double total = 0;
 
     for (final e in _lighting) {
       final m = e as Map;
-      total += double.tryParse(m['annual']?.toString() ?? '') ?? 0;
+      total += double.tryParse(m['energyCost']?.toString() ?? '') ?? 0;
     }
 
     for (final e in _ac) {
       final m = e as Map;
       final acType = m['acType'] as int? ?? 0;
+      double kwh = 0;
       if (acType == 0) {
         final units = double.tryParse(m['noOfUnits']?.toString() ?? '') ?? 0;
         final power = double.tryParse(m['ratedPower']?.toString() ?? '') ?? 0;
         final hours = double.tryParse(m['yearlyHours']?.toString() ?? '') ?? 0;
-        total += units * power * hours;
+        kwh = units * power * hours;
       } else if (acType == 1) {
         final units =
             double.tryParse(m['noOfPackages']?.toString() ?? '') ?? 0;
@@ -127,14 +128,15 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
             double.tryParse(m['packagePower']?.toString() ?? '') ?? 0;
         final hours =
             double.tryParse(m['packageHours']?.toString() ?? '') ?? 0;
-        total += units * power * hours;
+        kwh = units * power * hours;
       } else if (acType == 2) {
         final power =
             double.tryParse(m['chillerPower']?.toString() ?? '') ?? 0;
         final hours =
             double.tryParse(m['chillerHours']?.toString() ?? '') ?? 0;
-        total += power * hours;
+        kwh = power * hours;
       }
+      total += kwh * energyTariffJodPerKwh;
     }
 
     for (final e in _equipment) {
@@ -142,7 +144,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
       final power = double.tryParse(m['ratedPower']?.toString() ?? '') ?? 0;
       final qty = double.tryParse(m['quantity']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(m['yearlyHours']?.toString() ?? '') ?? 0;
-      total += power * qty * hours;
+      total += power * qty * hours * energyTariffJodPerKwh;
     }
 
     for (final e in _machines) {
@@ -150,18 +152,18 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
       final power = double.tryParse(m['ratedPower']?.toString() ?? '') ?? 0;
       final qty = double.tryParse(m['quantity']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(m['yearlyHours']?.toString() ?? '') ?? 0;
-      total += power * qty * hours;
+      total += power * qty * hours * energyTariffJodPerKwh;
     }
 
     return total;
   }
 
   String _formatTotal() {
-    final v = _totalAnnualKwh();
+    final v = _totalEnergyCost();
     if (v == 0) return '—';
     return v == v.truncateToDouble()
-        ? '${v.toInt()} kWh/yr'
-        : '${v.toStringAsFixed(2)} kWh/yr';
+        ? '${v.toInt()} JOD'
+        : '${v.toStringAsFixed(2)} JOD';
   }
 
   // ── actions ────────────────────────────────────────────────────────────────
@@ -481,7 +483,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Total annual consumption',
+            'Total Energy Cost',
             style: GoogleFonts.firaSans(
               fontSize: 24,
               fontWeight: FontWeight.w400,

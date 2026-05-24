@@ -31,26 +31,35 @@ class AcReview extends StatelessWidget {
     );
   }
 
-  String _annualKwh(Map g) {
+  double _computeKwh(Map g) {
     final acType = g['acType'] as int? ?? 0;
-    double kwh = 0;
     if (acType == 0) {
       final units = double.tryParse(g['noOfUnits']?.toString() ?? '') ?? 0;
       final power = double.tryParse(g['ratedPower']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(g['yearlyHours']?.toString() ?? '') ?? 0;
-      kwh = units * power * hours;
+      return units * power * hours;
     } else if (acType == 1) {
       final units = double.tryParse(g['noOfPackages']?.toString() ?? '') ?? 0;
       final power = double.tryParse(g['packagePower']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(g['packageHours']?.toString() ?? '') ?? 0;
-      kwh = units * power * hours;
-    } else if (acType == 2) {
+      return units * power * hours;
+    } else {
       final power = double.tryParse(g['chillerPower']?.toString() ?? '') ?? 0;
       final hours = double.tryParse(g['chillerHours']?.toString() ?? '') ?? 0;
-      kwh = power * hours;
+      return power * hours;
     }
+  }
+
+  String _totalPower(Map g) {
+    final kwh = _computeKwh(g);
     if (kwh == 0) return '—';
     return kwh == kwh.truncateToDouble() ? '${kwh.toInt()} kWh' : '${kwh.toStringAsFixed(2)} kWh';
+  }
+
+  String _energyCost(Map g) {
+    final cost = _computeKwh(g) * energyTariffJodPerKwh;
+    if (cost == 0) return '—';
+    return cost == cost.truncateToDouble() ? '${cost.toInt()} JOD' : '${cost.toStringAsFixed(2)} JOD';
   }
 
   List<TableRow> _groupRows(Map g) {
@@ -61,7 +70,8 @@ class AcReview extends StatelessWidget {
         _row('Capacity (TR)', _v(g, 'capacity', suffix: ' TR')),
         _row('Rated Power (kW)', _v(g, 'ratedPower', suffix: ' kW')),
         _row('Usage (Hrs / Year)', _v(g, 'yearlyHours', suffix: ' Hrs')),
-        _row('Total kWh / Year', _annualKwh(g)),
+        _row('Total Power (kWh)', _totalPower(g)),
+        _row('Energy Cost (JD)', _energyCost(g)),
       ];
     } else if (acType == 1) {
       return [
@@ -69,14 +79,16 @@ class AcReview extends StatelessWidget {
         _row('Package Capacity (TR)', _v(g, 'packageCapacity', suffix: ' TR')),
         _row('Package Power (kW)', _v(g, 'packagePower', suffix: ' kW')),
         _row('Usage (Hrs / Year)', _v(g, 'packageHours', suffix: ' Hrs')),
-        _row('Total kWh / Year', _annualKwh(g)),
+        _row('Total Power (kWh)', _totalPower(g)),
+        _row('Energy Cost (JD)', _energyCost(g)),
       ];
     } else {
       return [
         _row('Chiller Capacity (TR)', _v(g, 'chillerCapacity', suffix: ' TR')),
         _row('Chiller Power (kW)', _v(g, 'chillerPower', suffix: ' kW')),
         _row('Usage (Hrs / Year)', _v(g, 'chillerHours', suffix: ' Hrs')),
-        _row('Total kWh / Year', _annualKwh(g)),
+        _row('Total Power (kWh)', _totalPower(g)),
+        _row('Energy Cost (JD)', _energyCost(g)),
       ];
     }
   }

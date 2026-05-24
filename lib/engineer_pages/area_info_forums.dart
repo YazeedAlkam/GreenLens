@@ -8,7 +8,7 @@ class MainAreaForums extends StatefulWidget {
   final TextEditingController numLightsController;
   final TextEditingController yearlyHoursController;
   final TextEditingController totalPowerController;
-  final TextEditingController annualController;
+  final TextEditingController energyCostController;
   final bool canDelete;
   final VoidCallback? onDelete;
   final bool readOnly;
@@ -20,7 +20,7 @@ class MainAreaForums extends StatefulWidget {
     required this.numLightsController,
     required this.yearlyHoursController,
     required this.totalPowerController,
-    required this.annualController,
+    required this.energyCostController,
     this.canDelete = false,
     this.onDelete,
     this.readOnly = false,
@@ -36,13 +36,13 @@ class _MainAreaForumsState extends State<MainAreaForums> {
     final numLights = double.tryParse(widget.numLightsController.text) ?? 0;
     final hours = double.tryParse(widget.yearlyHoursController.text) ?? 0;
 
-    final totalKw = ratedW * numLights / 1000;
-    final annualKwh = totalKw * hours;
+    final totalKwh = (ratedW / 1000) * numLights * hours;
+    final energyCost = totalKwh * energyTariffJodPerKwh;
 
     widget.totalPowerController.text =
-        (totalKw > 0) ? totalKw.toStringAsFixed(2) : '';
-    widget.annualController.text =
-        (annualKwh > 0) ? annualKwh.toStringAsFixed(2) : '';
+        (totalKwh > 0) ? totalKwh.toStringAsFixed(2) : '';
+    widget.energyCostController.text =
+        (energyCost > 0) ? energyCost.toStringAsFixed(2) : '';
   }
 
   @override
@@ -315,7 +315,7 @@ class _MainAreaForumsState extends State<MainAreaForums> {
                   child: Row(
                     children: [
                       Text(
-                        'Annual (kWh/yr)',
+                        'Energy Cost (JD)',
                         style: GoogleFonts.firaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w500,
@@ -363,7 +363,7 @@ class _MainAreaForumsState extends State<MainAreaForums> {
                   child: SizedBox(
                     height: 65,
                     child: TextField(
-                      controller: widget.annualController,
+                      controller: widget.energyCostController,
                       readOnly: true,
                       expands: true,
                       maxLines: null,

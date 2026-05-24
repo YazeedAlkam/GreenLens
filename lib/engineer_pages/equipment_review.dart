@@ -31,13 +31,23 @@ class EquipmentReview extends StatelessWidget {
     );
   }
 
-  String _annualKwh(Map item) {
+  double _computeKwh(Map item) {
     final power = double.tryParse(item['ratedPower']?.toString() ?? '') ?? 0;
     final qty = double.tryParse(item['quantity']?.toString() ?? '') ?? 0;
     final hours = double.tryParse(item['yearlyHours']?.toString() ?? '') ?? 0;
-    final kwh = power * qty * hours;
+    return power * qty * hours;
+  }
+
+  String _totalPower(Map item) {
+    final kwh = _computeKwh(item);
     if (kwh == 0) return '—';
     return kwh == kwh.truncateToDouble() ? '${kwh.toInt()} kWh' : '${kwh.toStringAsFixed(2)} kWh';
+  }
+
+  String _energyCost(Map item) {
+    final cost = _computeKwh(item) * energyTariffJodPerKwh;
+    if (cost == 0) return '—';
+    return cost == cost.truncateToDouble() ? '${cost.toInt()} JOD' : '${cost.toStringAsFixed(2)} JOD';
   }
 
   String _itemTitle(Map item, int index) {
@@ -101,7 +111,8 @@ class EquipmentReview extends StatelessWidget {
                             _row('Quantity', _v(item, 'quantity')),
                             _row('Rated Power (kW)', _v(item, 'ratedPower', suffix: ' kW')),
                             _row('Usage (Hrs / Year)', _v(item, 'yearlyHours', suffix: ' Hrs')),
-                            _row('Total kWh / Year', _annualKwh(item)),
+                            _row('Total Power (kWh)', _totalPower(item)),
+                            _row('Energy Cost (JD)', _energyCost(item)),
                           ],
                         ),
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/firebase/project_service.dart';
+import 'package:greenlens/firebase/report_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/engineer_pages/audit_data_entery_flow.dart';
@@ -26,6 +27,7 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   bool _isCompleting = false;
+  bool _isGeneratingReport = false;
 
   bool get _isReady => widget.status == 'Ready';
 
@@ -43,6 +45,23 @@ class _ProjectPageState extends State<ProjectPage> {
           SnackBar(content: Text('Failed to mark as completed: $e')),
         );
       }
+    }
+  }
+
+  Future<void> _generateTechnicalReport() async {
+    setState(() => _isGeneratingReport = true);
+    String? errorMsg;
+    try {
+      await ReportService().generateTechnicalReport(widget.projectId);
+    } catch (e) {
+      errorMsg = 'Failed to generate report: $e';
+    } finally {
+      if (mounted) setState(() => _isGeneratingReport = false);
+    }
+    if (errorMsg != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg)),
+      );
     }
   }
 
@@ -73,9 +92,9 @@ class _ProjectPageState extends State<ProjectPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: generate and save PDF to device downloads
-                      },
+                      onPressed: _isGeneratingReport
+                          ? null
+                          : _generateTechnicalReport,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,15 +103,31 @@ class _ProjectPageState extends State<ProjectPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                'assets/images/GenrateChart.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
+                              if (_isGeneratingReport)
+                                const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                SvgPicture.asset(
+                                  'assets/images/GenrateChart.svg',
+                                  height: 40,
+                                  width: 40,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              ),
                               const SizedBox(width: 10),
                               const Text(
                                 'Generate Technical Report',

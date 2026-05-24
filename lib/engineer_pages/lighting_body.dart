@@ -43,7 +43,7 @@ class LightingBodyState extends State<LightingBody>
   final _area1NumLights = TextEditingController();
   final _area1YearlyHours = TextEditingController();
   final _area1TotalPower = TextEditingController();
-  final _area1Annual = TextEditingController();
+  final _area1EnergyCost = TextEditingController();
 
   // Controllers for dynamically added extra areas
   // Each entry is [lightingType, ratedPower, numLights, yearlyHours, totalPower, annual]
@@ -55,7 +55,7 @@ class LightingBodyState extends State<LightingBody>
     ctrls[2].text = area['numLights']?.toString() ?? '';
     ctrls[3].text = area['yearlyHours']?.toString() ?? '';
     ctrls[4].text = area['totalPower']?.toString() ?? '';
-    ctrls[5].text = area['annual']?.toString() ?? '';
+    ctrls[5].text = area['energyCost']?.toString() ?? '';
   }
 
   @override
@@ -67,7 +67,7 @@ class LightingBodyState extends State<LightingBody>
     final first = saved[0] as Map<String, dynamic>;
     _populateArea([
       _area1LightingType, _area1RatedPower, _area1NumLights,
-      _area1YearlyHours, _area1TotalPower, _area1Annual,
+      _area1YearlyHours, _area1TotalPower, _area1EnergyCost,
     ], first);
 
     for (int i = 1; i < saved.length; i++) {
@@ -86,7 +86,7 @@ class LightingBodyState extends State<LightingBody>
     _area1NumLights.dispose();
     _area1YearlyHours.dispose();
     _area1TotalPower.dispose();
-    _area1Annual.dispose();
+    _area1EnergyCost.dispose();
     for (final ctrls in _extraAreaCtrls) {
       for (final c in ctrls) {
         c.dispose();
@@ -101,7 +101,7 @@ class LightingBodyState extends State<LightingBody>
     'numLights': ctrls[2].text,
     'yearlyHours': ctrls[3].text,
     'totalPower': ctrls[4].text,
-    'annual': ctrls[5].text,
+    'energyCost': ctrls[5].text,
   };
 
   List<Map<String, String>> getLightingData() => [
@@ -111,7 +111,7 @@ class LightingBodyState extends State<LightingBody>
       'numLights': _area1NumLights.text,
       'yearlyHours': _area1YearlyHours.text,
       'totalPower': _area1TotalPower.text,
-      'annual': _area1Annual.text,
+      'energyCost': _area1EnergyCost.text,
     },
     ..._extraAreaCtrls.map(_areaCtrlsToMap),
   ];
@@ -126,7 +126,7 @@ class LightingBodyState extends State<LightingBody>
     _area1NumLights.text = promotedCtrls[2].text;
     _area1YearlyHours.text = promotedCtrls[3].text;
     _area1TotalPower.text = promotedCtrls[4].text;
-    _area1Annual.text = promotedCtrls[5].text;
+    _area1EnergyCost.text = promotedCtrls[5].text;
     for (final c in promotedCtrls) {
       c.dispose();
     }
@@ -282,7 +282,7 @@ class LightingBodyState extends State<LightingBody>
                 numLightsController: _area1NumLights,
                 yearlyHoursController: _area1YearlyHours,
                 totalPowerController: _area1TotalPower,
-                annualController: _area1Annual,
+                energyCostController: _area1EnergyCost,
                 canDelete: _extraAreas.isNotEmpty,
                 onDelete: _deleteArea1,
                 readOnly: widget.readOnly,
@@ -294,7 +294,7 @@ class LightingBodyState extends State<LightingBody>
                   numLightsController: entry.value[2],
                   yearlyHoursController: entry.value[3],
                   totalPowerController: entry.value[4],
-                  annualController: entry.value[5],
+                  energyCostController: entry.value[5],
                   canDelete: true,
                   onDelete: _deleteCurrentExtraArea,
                   readOnly: widget.readOnly,
