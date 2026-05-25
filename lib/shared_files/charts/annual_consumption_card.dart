@@ -5,60 +5,33 @@ import 'chart_theme.dart';
 class AnnualConsumptionCard extends StatelessWidget {
   final ChartTheme theme;
 
-  /// 12 values per series (Jan..Dec) in MWh.
-  final List<double> electricityMwh;
-  final List<double> naturalGasMwh;
+  /// 12 values (Jan..Dec) in kWh.
+  final List<double> electricityKwh;
   final double maxY;
   final double interval;
 
   const AnnualConsumptionCard({
     super.key,
     required this.theme,
-    required this.electricityMwh,
-    required this.naturalGasMwh,
-    this.maxY = 250,
-    this.interval = 50,
-  }) : assert(electricityMwh.length == 12),
-       assert(naturalGasMwh.length == 12);
+    required this.electricityKwh,
+    this.maxY = 2000,
+    this.interval = 500,
+  }) : assert(electricityKwh.length == 12);
 
   factory AnnualConsumptionCard.sample(ChartTheme theme) {
     return AnnualConsumptionCard(
       theme: theme,
-      electricityMwh: const [
-        110,
-        115,
-        120,
-        130,
-        165,
-        195,
-        210,
-        215,
-        200,
-        160,
-        130,
-        125,
+      electricityKwh: const [
+        917, 958, 1000, 1083, 1375, 1625, 1750, 1792, 1667, 1333, 1083, 1042,
       ],
-      naturalGasMwh: const [
-        190,
-        185,
-        160,
-        140,
-        100,
-        80,
-        75,
-        80,
-        100,
-        135,
-        165,
-        180,
-      ],
+      maxY: 2000,
+      interval: 500,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final electricityColor = theme.primary;
-    final gasColor = theme.warning;
 
     return ChartCard(
       title: 'Total Annual Consumption',
@@ -74,14 +47,10 @@ class AnnualConsumptionCard extends StatelessWidget {
                 'GRID ELECTRICITY USAGE BY MONTH',
                 style: theme.sectionTitleStyle.copyWith(fontSize: 11),
               ),
-              Row(
-                children: [
-                  LegendDot(
-                    color: electricityColor,
-                    label: 'Electricity (MWh)',
-                    style: theme.legendStyle.copyWith(fontSize: 11),
-                  ),
-                ],
+              LegendDot(
+                color: electricityColor,
+                label: 'Electricity (kWh)',
+                style: theme.legendStyle.copyWith(fontSize: 11),
               ),
             ],
           ),
@@ -114,7 +83,7 @@ class AnnualConsumptionCard extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 32,
+                      reservedSize: 40,
                       interval: interval,
                       getTitlesWidget: (v, _) => Padding(
                         padding: const EdgeInsets.only(right: 4),
@@ -158,7 +127,7 @@ class AnnualConsumptionCard extends StatelessWidget {
                   ),
                 ),
                 lineBarsData: [
-                  _series(electricityMwh, electricityColor, fillAlpha: 0.18),
+                  _series(electricityKwh, electricityColor, fillAlpha: 0.18),
                 ],
               ),
             ),
@@ -168,11 +137,8 @@ class AnnualConsumptionCard extends StatelessWidget {
     );
   }
 
-  LineChartBarData _series(
-    List<double> data,
-    Color color, {
-    double fillAlpha = 0.2,
-  }) {
+  LineChartBarData _series(List<double> data, Color color,
+      {double fillAlpha = 0.2}) {
     return LineChartBarData(
       spots: [
         for (int i = 0; i < data.length; i++) FlSpot(i.toDouble(), data[i]),

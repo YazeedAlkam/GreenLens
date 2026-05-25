@@ -386,7 +386,7 @@ class _ProjectPageState extends State<ProjectPage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const ProjectChartsGrid(),
+                        ProjectChartsGrid(projectId: widget.projectId),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextButton(
