@@ -28,6 +28,7 @@ class ProjectPage extends StatefulWidget {
 class _ProjectPageState extends State<ProjectPage> {
   bool _isCompleting = false;
   bool _isGeneratingReport = false;
+  bool _isGeneratingCostReport = false;
 
   bool get _isReady => widget.status == 'Ready';
 
@@ -45,6 +46,23 @@ class _ProjectPageState extends State<ProjectPage> {
           SnackBar(content: Text('Failed to mark as completed: $e')),
         );
       }
+    }
+  }
+
+  Future<void> _generateCostReport() async {
+    setState(() => _isGeneratingCostReport = true);
+    String? errorMsg;
+    try {
+      await ReportService().generateCostReport(widget.projectId);
+    } catch (e) {
+      errorMsg = 'Failed to generate cost report: $e';
+    } finally {
+      if (mounted) setState(() => _isGeneratingCostReport = false);
+    }
+    if (errorMsg != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg)),
+      );
     }
   }
 
@@ -162,9 +180,9 @@ class _ProjectPageState extends State<ProjectPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: generate and save PDF to device downloads
-                      },
+                      onPressed: _isGeneratingCostReport
+                          ? null
+                          : _generateCostReport,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -173,15 +191,31 @@ class _ProjectPageState extends State<ProjectPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                'assets/images/Dollar Square.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
+                              if (_isGeneratingCostReport)
+                                const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                SvgPicture.asset(
+                                  'assets/images/Dollar Square.svg',
+                                  height: 40,
+                                  width: 40,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              ),
                               const SizedBox(width: 10),
                               const Text(
                                 'Generate Cost Report',
