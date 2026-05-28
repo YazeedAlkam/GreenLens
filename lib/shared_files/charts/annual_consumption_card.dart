@@ -10,12 +10,16 @@ class AnnualConsumptionCard extends StatelessWidget {
   final double maxY;
   final double interval;
 
+  /// Optional x-axis labels (12 short month strings e.g. "May", "Jun"…).
+  final List<String>? monthLabels;
+
   const AnnualConsumptionCard({
     super.key,
     required this.theme,
     required this.electricityKwh,
     this.maxY = 2000,
     this.interval = 500,
+    this.monthLabels,
   }) : assert(electricityKwh.length == 12);
 
   factory AnnualConsumptionCard.sample(ChartTheme theme) {
@@ -38,7 +42,6 @@ class AnnualConsumptionCard extends StatelessWidget {
       subtitle: '(kWh/Year)',
       theme: theme,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,8 +58,7 @@ class AnnualConsumptionCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 220,
+          Expanded(
             child: LineChart(
               LineChartData(
                 minX: 0,
@@ -105,7 +107,7 @@ class AnnualConsumptionCard extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
-                            ChartTheme.months[i].toUpperCase(),
+                            (monthLabels ?? ChartTheme.months)[i].toUpperCase(),
                             style: theme.axisLabelStyle,
                           ),
                         );

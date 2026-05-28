@@ -66,6 +66,9 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
         ids,
       );
       if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Engineers saved')),
+      );
       widget.onSaved();
     } catch (e) {
       if (!mounted) return;

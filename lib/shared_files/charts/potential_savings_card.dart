@@ -11,6 +11,9 @@ class PotentialSavingsCard extends StatelessWidget {
   final double maxY;
   final double interval;
 
+  /// Optional x-axis labels (12 short month strings e.g. "May", "Jun"…).
+  final List<String>? monthLabels;
+
   const PotentialSavingsCard({
     super.key,
     required this.theme,
@@ -18,6 +21,7 @@ class PotentialSavingsCard extends StatelessWidget {
     required this.afterKwh,
     this.maxY = 2000,
     this.interval = 500,
+    this.monthLabels,
   })  : assert(beforeKwh.length == 12),
         assert(afterKwh.length == 12);
 
@@ -45,7 +49,6 @@ class PotentialSavingsCard extends StatelessWidget {
       subtitle: '(kWh/Year)',
       theme: theme,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,8 +86,7 @@ class PotentialSavingsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 240,
+          Expanded(
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
@@ -139,7 +141,7 @@ class PotentialSavingsCard extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
-                            ChartTheme.months[i].toUpperCase(),
+                            (monthLabels ?? ChartTheme.months)[i].toUpperCase(),
                             style: theme.axisLabelStyle,
                           ),
                         );

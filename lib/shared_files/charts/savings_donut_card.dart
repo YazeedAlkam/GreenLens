@@ -43,7 +43,6 @@ class SavingsDonutCard extends StatelessWidget {
       title: 'Savings as % of Total Consumption',
       theme: theme,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Text('Savings as % of total consumption', style: theme.sectionTitleStyle),
           Text('Potential reduction per energy system', style: theme.footnoteStyle),
@@ -121,6 +120,7 @@ class SavingsDonutCard extends StatelessWidget {
             _BarRow(category: c, theme: theme),
             const SizedBox(height: 6),
           ],
+          const Spacer(),
           const SizedBox(height: 10),
           Container(
             width: double.infinity,

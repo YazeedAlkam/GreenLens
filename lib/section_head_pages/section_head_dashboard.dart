@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlens/firebase/auth_service.dart';
+import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
@@ -36,13 +38,14 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
         title: 'Dashboard|Section Head',
         subtitle: 'Manage and monitor your audit projects',
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(32, 30, 32, 16),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(32, 30, 32, 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
                 //First Button --------------->
                 SizedBox(
                   width: double.infinity,
@@ -499,11 +502,54 @@ class _SectionHeadPageState extends State<SectionHeadPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 60),
-              ],
+                SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
+            child: SizedBox(
+              width: double.infinity,
+              height: 64,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  backgroundColor: const Color(0xFFD32F2F),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () async {
+                  await AuthService().signOut();
+                  if (context.mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SignInPage()),
+                      (route) => false,
+                    );
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.logout, color: Colors.white, size: 32),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Logout',
+                      style: GoogleFonts.firaSans(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

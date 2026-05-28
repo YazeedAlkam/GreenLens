@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'annual_consumption_card.dart';
@@ -13,19 +16,90 @@ class ProjectChartsGrid extends StatefulWidget {
   final String? projectId;
   final ChartTheme? theme;
   final double spacing;
+  final void Function(Future<List<Uint8List?>> Function()?)? onCaptureReady;
+  // Delivers a function that captures only chart 4 (Estimated Annual Cost).
+  final void Function(Future<Uint8List?> Function()?)? onCaptureCostChart;
 
   const ProjectChartsGrid({
     super.key,
     this.projectId,
     this.theme,
     this.spacing = 12,
+    this.onCaptureReady,
+    this.onCaptureCostChart,
   });
 
   @override
-  State<ProjectChartsGrid> createState() => _ProjectChartsGridState();
+  State<ProjectChartsGrid> createState() => ProjectChartsGridState();
 }
 
-class _ProjectChartsGridState extends State<ProjectChartsGrid> {
+class ProjectChartsGridState extends State<ProjectChartsGrid> {
+  final List<GlobalKey> _chartKeys = List.generate(4, (_) => GlobalKey());
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onCaptureReady?.call(_captureCharts);
+    widget.onCaptureCostChart?.call(_captureCostChart);
+    _load();
+  }
+
+  @override
+  void didUpdateWidget(covariant ProjectChartsGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.onCaptureReady != oldWidget.onCaptureReady) {
+      oldWidget.onCaptureReady?.call(null);
+      widget.onCaptureReady?.call(_captureCharts);
+    }
+    if (widget.onCaptureCostChart != oldWidget.onCaptureCostChart) {
+      oldWidget.onCaptureCostChart?.call(null);
+      widget.onCaptureCostChart?.call(_captureCostChart);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.onCaptureReady?.call(null);
+    widget.onCaptureCostChart?.call(null);
+    super.dispose();
+  }
+
+  // Shared single-chart capture (index 0-3).
+  Future<Uint8List?> _captureOne(int index) async {
+    final key = _chartKeys[index];
+    try {
+      final ctx = key.currentContext;
+      if (ctx == null) {
+        debugPrint('[Charts] chart${index + 1}: context is null (widget not in tree)');
+        return null;
+      }
+      final ro = ctx.findRenderObject();
+      if (ro is! RenderRepaintBoundary) {
+        debugPrint('[Charts] chart${index + 1}: render object is $ro, not a RenderRepaintBoundary');
+        return null;
+      }
+      final image = await ro.toImage(pixelRatio: 2.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final bytes = byteData?.buffer.asUint8List();
+      debugPrint('[Charts] chart${index + 1}: captured ${bytes?.length ?? 0} bytes');
+      return bytes;
+    } catch (e) {
+      debugPrint('[Charts] chart${index + 1}: ERROR $e');
+      return null;
+    }
+  }
+
+  Future<List<Uint8List?>> _captureCharts() async {
+    final results = <Uint8List?>[];
+    for (int i = 0; i < _chartKeys.length; i++) {
+      results.add(await _captureOne(i));
+    }
+    return results;
+  }
+
+  // Captures only chart 4 — Estimated Annual Cost (index 3).
+  Future<Uint8List?> _captureCostChart() => _captureOne(3);
+
   bool _loading = true;
 
   // Chart 1 — Savings Donut
@@ -33,15 +107,10 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
   double _totalSavingPercent = 20;
   double _potentialAnnualSavingJod = 0;
 
-  // Charts 2, 3, 4 — monthly data (12 values)
+  // Charts 2, 3, 4 — monthly data (12 values, chronological order)
   List<double> _monthlyKwh = List.filled(12, 0);
   List<double> _currentCostJod = List.filled(12, 0);
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
+  List<String>? _monthLabels;
 
   Future<void> _load() async {
     if (widget.projectId == null) {
@@ -61,7 +130,7 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
 
     // ── Monthly bills ─────────────────────────────────────────────────────────
     final monthlyJod = _buildMonthlyBills(projectInfo);
-    final monthlyKwh = monthlyJod.map((v) => v / energyTariffJodPerKwh).toList();
+    final monthlyKwh = monthlyJod.values.map((v) => v / energyTariffJodPerKwh).toList();
 
     // ── Energy cost per system (for donut) ────────────────────────────────────
     final lighting = auditData['lighting'] as List? ?? [];
@@ -95,7 +164,8 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
 
     setState(() {
       _monthlyKwh = monthlyKwh;
-      _currentCostJod = monthlyJod;
+      _currentCostJod = monthlyJod.values;
+      _monthLabels = monthlyJod.labels;
       _donutCategories = categories;
       _totalSavingPercent = 20;
       _potentialAnnualSavingJod = totalCost * _savingsFactor;
@@ -105,44 +175,58 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  /// Maps month name string like "January 2025" → 0-based index (0=Jan).
-  static int _monthIndex(String monthStr) {
-    const months = [
+  /// Parses "May 2025" → DateTime(2025, 5). Returns null on failure.
+  static DateTime? _parseMonthYear(String s) {
+    const names = [
       'january', 'february', 'march', 'april', 'may', 'june',
       'july', 'august', 'september', 'october', 'november', 'december'
     ];
-    final lower = monthStr.toLowerCase();
-    for (int i = 0; i < months.length; i++) {
-      if (lower.startsWith(months[i])) return i;
-    }
-    return -1;
+    final parts = s.toLowerCase().trim().split(RegExp(r'\s+'));
+    if (parts.length < 2) return null;
+    final mIdx = names.indexWhere((m) => parts[0].startsWith(m));
+    if (mIdx < 0) return null;
+    final year = int.tryParse(parts[1]);
+    if (year == null) return null;
+    return DateTime(year, mIdx + 1);
   }
 
-  /// Builds a 12-element monthly bill list (JOD). Missing months are filled
-  /// with the average monthly bill from projectInfo.
-  static List<double> _buildMonthlyBills(Map<String, dynamic> projectInfo) {
+  /// Builds 12 chronologically-ordered monthly bill values (JOD) starting
+  /// from the oldest bill, plus matching short month labels ("May", "Jun"…).
+  /// Missing months are filled with the stored average monthly bill.
+  static ({List<double> values, List<String> labels}) _buildMonthlyBills(
+      Map<String, dynamic> projectInfo) {
+    const abbr = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
     final avgBill =
         (projectInfo['averageMonthlyBill'] as num?)?.toDouble() ?? 0.0;
     final rawBills = projectInfo['bills'] as List? ?? [];
 
-    final result = List<double>.filled(12, 0.0);
+    // Parse all bills that have a valid date
+    final billMap = <DateTime, double>{};
     for (final bill in rawBills) {
       final b = bill as Map;
       final amount =
           double.tryParse(b['billAmount']?.toString() ?? '') ?? 0.0;
-      if (amount <= 0) continue;
-      final idx = _monthIndex(b['month'] as String? ?? '');
-      if (idx >= 0) result[idx] = amount;
+      final dt = _parseMonthYear(b['month'] as String? ?? '');
+      if (dt != null && amount > 0) billMap[dt] = amount;
     }
 
-    // Fill unset months with the stored average
-    if (avgBill > 0) {
-      for (int i = 0; i < 12; i++) {
-        if (result[i] == 0) result[i] = avgBill;
-      }
+    // Determine start: earliest bill, or Jan of current year as fallback
+    final DateTime start = billMap.isEmpty
+        ? DateTime(DateTime.now().year, 1)
+        : billMap.keys.reduce((a, b) => a.isBefore(b) ? a : b);
+
+    final values = <double>[];
+    final labels = <String>[];
+    for (int i = 0; i < 12; i++) {
+      final dt = DateTime(start.year, start.month + i);
+      values.add(billMap[dt] ?? avgBill);
+      labels.add(abbr[dt.month - 1]);
     }
 
-    return result;
+    return (values: values, labels: labels);
   }
 
   /// Sum energyCost field across lighting / equipment / machines items.
@@ -227,6 +311,7 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
             electricityKwh: _monthlyKwh,
             maxY: kwh2max,
             interval: kwh2interval,
+            monthLabels: _monthLabels,
           )
         : AnnualConsumptionCard.sample(t);
 
@@ -237,6 +322,7 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
             afterKwh: afterKwh,
             maxY: kwh2max,
             interval: kwh2interval,
+            monthLabels: _monthLabels,
           )
         : PotentialSavingsCard.sample(t);
 
@@ -247,19 +333,27 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
             afterSavings: afterCost,
             maxY: costMax,
             interval: costInterval,
+            monthLabels: _monthLabels,
           )
         : EstimatedCostCard.sample(t);
 
     final cards = [donut, consumption, savings, costCard];
 
+    const double cardHeight = 430;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final twoCol = constraints.maxWidth >= 720;
+        Widget bounded(int i) => RepaintBoundary(
+              key: _chartKeys[i],
+              child: cards[i],
+            );
+
         if (!twoCol) {
           return Column(
             children: [
               for (int i = 0; i < cards.length; i++) ...[
-                cards[i],
+                SizedBox(height: cardHeight, child: bounded(i)),
                 if (i < cards.length - 1) SizedBox(height: widget.spacing),
               ],
             ],
@@ -267,22 +361,28 @@ class _ProjectChartsGridState extends State<ProjectChartsGrid> {
         }
         return Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: cards[0]),
-                SizedBox(width: widget.spacing),
-                Expanded(child: cards[1]),
-              ],
+            SizedBox(
+              height: cardHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: bounded(0)),
+                  SizedBox(width: widget.spacing),
+                  Expanded(child: bounded(1)),
+                ],
+              ),
             ),
             SizedBox(height: widget.spacing),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: cards[2]),
-                SizedBox(width: widget.spacing),
-                Expanded(child: cards[3]),
-              ],
+            SizedBox(
+              height: cardHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: bounded(2)),
+                  SizedBox(width: widget.spacing),
+                  Expanded(child: bounded(3)),
+                ],
+              ),
             ),
           ],
         );
