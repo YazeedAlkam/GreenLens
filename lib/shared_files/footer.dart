@@ -30,6 +30,9 @@ enum FooterMode {
 
   /// Back + Mark as Completed              (engineer project page, Ready status)
   markComplete,
+
+  /// Back + Save Changes                   (CEO assign engineer costs page)
+  saveChanges,
 }
 
 class Footer extends StatelessWidget {
@@ -42,6 +45,7 @@ class Footer extends StatelessWidget {
   final Future<void> Function()? onAccept;
   final Future<void> Function()? onDeny;
   final Future<void> Function()? onMarkComplete;
+  final Future<void> Function()? onSaveChanges;
 
   const Footer({
     super.key,
@@ -54,6 +58,7 @@ class Footer extends StatelessWidget {
     this.onAccept,
     this.onDeny,
     this.onMarkComplete,
+    this.onSaveChanges,
   });
 
   // ── shared button styles ────────────────────────────────────────────────
@@ -315,6 +320,23 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  Widget _saveChangesButton() => SizedBox(
+    width: double.infinity,
+    height: 65,
+    child: ElevatedButton(
+      onPressed: onSaveChanges,
+      style: _primaryStyle,
+      child: Text(
+        "Save Changes",
+        style: GoogleFonts.firaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+
   Widget _denyButton() => SizedBox(
     height: 65,
     child: ElevatedButton(
@@ -437,6 +459,17 @@ class Footer extends StatelessWidget {
             Expanded(child: _backButtonCompact()),
             const SizedBox(width: 17),
             Expanded(child: _markCompleteButton()),
+          ],
+        );
+
+      // ── Save Changes: Back + Save Changes ─────────────────────────────
+      case FooterMode.saveChanges:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: _backButton()),
+            const SizedBox(width: 17),
+            Expanded(child: _saveChangesButton()),
           ],
         );
     }

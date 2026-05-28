@@ -5,12 +5,16 @@ import 'chart_theme.dart';
 class EstimatedCostCard extends StatelessWidget {
   final ChartTheme theme;
 
-  /// 12 values per series (Jan..Dec) in JOD.
+  /// 12 values per series in JOD.
   final List<double> currentCost;
   final List<double> afterSavings;
   final double tariffJodPerKwh;
   final double maxY;
   final double interval;
+
+  /// Optional x-axis labels (12 short month strings e.g. "May", "Jun"…).
+  /// Falls back to Jan–Dec when null.
+  final List<String>? monthLabels;
 
   const EstimatedCostCard({
     super.key,
@@ -20,6 +24,7 @@ class EstimatedCostCard extends StatelessWidget {
     this.tariffJodPerKwh = 0.32,
     this.maxY = 4500,
     this.interval = 500,
+    this.monthLabels,
   })  : assert(currentCost.length == 12),
         assert(afterSavings.length == 12);
 
@@ -42,7 +47,6 @@ class EstimatedCostCard extends StatelessWidget {
       subtitle: '(JOD/year)',
       theme: theme,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Text('Estimated annual cost', style: theme.sectionTitleStyle),
           Text('(JOD / year)', style: theme.footnoteStyle),
@@ -80,8 +84,7 @@ class EstimatedCostCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 200,
+          Expanded(
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
@@ -131,7 +134,7 @@ class EstimatedCostCard extends StatelessWidget {
                         if (i < 0 || i > 11) return const SizedBox.shrink();
                         return Padding(
                           padding: const EdgeInsets.only(top: 4),
-                          child: Text(ChartTheme.months[i],
+                          child: Text((monthLabels ?? ChartTheme.months)[i],
                               style: theme.axisLabelStyle),
                         );
                       },

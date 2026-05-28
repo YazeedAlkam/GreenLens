@@ -165,7 +165,6 @@ class ChartCard extends StatelessWidget {
       padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
         children: [
           Text(title, style: theme.titleStyle, textAlign: TextAlign.center),
           if (subtitle != null) ...[
@@ -173,7 +172,7 @@ class ChartCard extends StatelessWidget {
             Text(subtitle!, style: theme.subtitleStyle, textAlign: TextAlign.center),
           ],
           const SizedBox(height: 12),
-          child,
+          Expanded(child: child),
         ],
       ),
     );

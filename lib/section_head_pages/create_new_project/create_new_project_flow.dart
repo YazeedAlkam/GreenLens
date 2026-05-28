@@ -115,7 +115,12 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],
       costs: _costKey.currentState?.getCosts() ?? {},
     );
-    if (mounted) Navigator.pop(context);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Draft saved')),
+      );
+      Navigator.pop(context);
+    }
   }
 
   Future<void> _saveProject() async {
@@ -127,7 +132,12 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       assignedEngineers: _assignKey.currentState?.getAssignedEngineers() ?? [],
       costs: _costKey.currentState?.getCosts() ?? {},
     );
-    if (mounted) Navigator.pop(context);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Project submitted for approval')),
+      );
+      Navigator.pop(context);
+    }
   }
 
   int _currentStep = 0;

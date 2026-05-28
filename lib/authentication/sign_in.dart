@@ -67,6 +67,106 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  Future<void> _showForgotPasswordDialog() async {
+    final resetEmailController = TextEditingController(
+      text: _emailController.text.trim(),
+    );
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) {
+        String? dialogError;
+        bool isSending = false;
+        bool emailSent = false;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text(
+                'Reset Password',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              content: emailSent
+                  ? const Text(
+                      'A password reset link has been sent to your email.',
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Enter your email and we\'ll send you a reset link.',
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: resetEmailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        if (dialogError != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            dialogError!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ],
+                    ),
+              actions: emailSent
+                  ? [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: const Text('OK'),
+                      ),
+                    ]
+                  : [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: isSending
+                            ? null
+                            : () async {
+                                setDialogState(() {
+                                  isSending = true;
+                                  dialogError = null;
+                                });
+                                try {
+                                  await _authService.sendPasswordResetEmail(
+                                    resetEmailController.text.trim(),
+                                  );
+                                  setDialogState(() => emailSent = true);
+                                } catch (e) {
+                                  setDialogState(() {
+                                    dialogError = e
+                                        .toString()
+                                        .replaceFirst('Exception: ', '');
+                                    isSending = false;
+                                  });
+                                }
+                              },
+                        child: isSending
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Text('Send'),
+                      ),
+                    ],
+            );
+          },
+        );
+      },
+    );
+
+    resetEmailController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -156,9 +256,7 @@ class _SignInPageState extends State<SignInPage> {
                     style: ButtonStyle(
                       overlayColor: WidgetStateColor.transparent,
                     ),
-                    onPressed: () {
-                      // TODO: implement forgot password
-                    },
+                    onPressed: () => _showForgotPasswordDialog(),
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(

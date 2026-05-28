@@ -54,7 +54,12 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
       widget.project['id'] as String,
       {'status': 'In Progress'},
     );
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Project accepted')),
+      );
+      Navigator.pop(context, true);
+    }
   }
 
   Future<void> _denyProject() async {
@@ -62,7 +67,12 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
       widget.project['id'] as String,
       {'status': 'Denied'},
     );
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Project denied')),
+      );
+      Navigator.pop(context, true);
+    }
   }
 
   String _v(String? value) =>

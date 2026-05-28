@@ -63,7 +63,12 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
   Future<void> _save() async {
     try {
       await ProjectService().updateFields(widget.projectId, _buildAuditPayload());
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Audit data saved')),
+        );
+        Navigator.pop(context);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +87,12 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
         'ceo_approved': false,
         'sectionhead_approved': false,
       });
-      if (mounted) Navigator.pop(context, true);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Submitted for review')),
+        );
+        Navigator.pop(context, true);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

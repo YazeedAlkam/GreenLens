@@ -326,7 +326,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
                         const SizedBox(height: 8),
 
                         // ── charts ────────────────────────────────────
-                        const ProjectChartsGrid(),
+                        ProjectChartsGrid(projectId: widget.projectId),
                         const SizedBox(height: 24),
 
                         // ── Client Info ───────────────────────────────

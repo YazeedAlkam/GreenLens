@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,8 +27,13 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
+  Future<List<Uint8List?>> Function()? _captureCharts;
+  Future<Uint8List?> Function()? _captureCostChart;
+
   bool _isCompleting = false;
   bool _isGeneratingReport = false;
+  bool _isGeneratingCostReport = false;
+  bool _isGeneratingTechCostReport = false;
 
   bool get _isReady => widget.status == 'Ready';
 
@@ -37,7 +43,12 @@ class _ProjectPageState extends State<ProjectPage> {
       await ProjectService().updateFields(widget.projectId, {
         'status': 'Completed',
       });
-      if (mounted) Navigator.pop(context, true);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Project marked as completed')),
+        );
+        Navigator.pop(context, true);
+      }
     } catch (e) {
       if (mounted) {
         setState(() => _isCompleting = false);
@@ -48,19 +59,75 @@ class _ProjectPageState extends State<ProjectPage> {
     }
   }
 
+  Future<void> _generateCostReport() async {
+    // Capture the cost chart BEFORE setState so the render tree is still stable.
+    debugPrint('[Report] _captureCostChart is ${_captureCostChart == null ? "NULL – callback never wired" : "set"}');
+    final costChart = await _captureCostChart?.call();
+    debugPrint('[Report] cost chart: ${costChart == null ? "null" : "${costChart.length} bytes"}');
+
+    setState(() => _isGeneratingCostReport = true);
+    String? errorMsg;
+    try {
+      await ReportService().generateCostReport(widget.projectId, costChart: costChart);
+    } catch (e) {
+      errorMsg = 'Failed to generate cost report: $e';
+    } finally {
+      if (mounted) setState(() => _isGeneratingCostReport = false);
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMsg ?? 'Cost report generated successfully'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _generateTechCostReport() async {
+    debugPrint('[Report] _captureCharts is ${_captureCharts == null ? "NULL – callback never wired" : "set"}');
+    final chartImages = await _captureCharts?.call() ?? [];
+    debugPrint('[Report] captured ${chartImages.where((b) => b != null).length}/${chartImages.length} charts');
+
+    setState(() => _isGeneratingTechCostReport = true);
+    String? errorMsg;
+    try {
+      await ReportService()
+          .generateTechCostReport(widget.projectId, chartImages: chartImages);
+    } catch (e) {
+      errorMsg = 'Failed to generate report: $e';
+    } finally {
+      if (mounted) setState(() => _isGeneratingTechCostReport = false);
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMsg ?? 'Technical & Cost report generated successfully'),
+        ),
+      );
+    }
+  }
+
   Future<void> _generateTechnicalReport() async {
+    // Capture charts BEFORE setState so the render tree is still stable.
+    debugPrint('[Report] _captureCharts is ${_captureCharts == null ? "NULL – callback never wired" : "set"}');
+    final chartImages = await _captureCharts?.call() ?? [];
+    debugPrint('[Report] captured ${chartImages.where((b) => b != null).length}/${chartImages.length} charts');
+
     setState(() => _isGeneratingReport = true);
     String? errorMsg;
     try {
-      await ReportService().generateTechnicalReport(widget.projectId);
+      await ReportService()
+          .generateTechnicalReport(widget.projectId, chartImages: chartImages);
     } catch (e) {
       errorMsg = 'Failed to generate report: $e';
     } finally {
       if (mounted) setState(() => _isGeneratingReport = false);
     }
-    if (errorMsg != null && mounted) {
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg)),
+        SnackBar(
+          content: Text(errorMsg ?? 'Technical report generated successfully'),
+        ),
       );
     }
   }
@@ -162,9 +229,9 @@ class _ProjectPageState extends State<ProjectPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: generate and save PDF to device downloads
-                      },
+                      onPressed: _isGeneratingCostReport
+                          ? null
+                          : _generateCostReport,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -173,15 +240,31 @@ class _ProjectPageState extends State<ProjectPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                'assets/images/Dollar Square.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
+                              if (_isGeneratingCostReport)
+                                const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                SvgPicture.asset(
+                                  'assets/images/Dollar Square.svg',
+                                  height: 40,
+                                  width: 40,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              ),
                               const SizedBox(width: 10),
                               const Text(
                                 'Generate Cost Report',
@@ -216,9 +299,9 @@ class _ProjectPageState extends State<ProjectPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: generate and save PDF to device downloads
-                      },
+                      onPressed: _isGeneratingTechCostReport
+                          ? null
+                          : _generateTechCostReport,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,15 +310,31 @@ class _ProjectPageState extends State<ProjectPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                'assets/images/Document Justify Center 1.svg',
-                                height: 40,
-                                width: 40,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
+                              if (_isGeneratingTechCostReport)
+                                const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                SvgPicture.asset(
+                                  'assets/images/Document Justify Center 1.svg',
+                                  height: 40,
+                                  width: 40,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              ),
                               const SizedBox(width: 10),
                               const Text(
                                 'Generate Technical & Cost Report',
@@ -260,68 +359,70 @@ class _ProjectPageState extends State<ProjectPage> {
                   const SizedBox(height: 16),
                 ],
 
-                // Operational Audit Data
-                SizedBox(
-                  width: double.infinity,
-                  height: 64,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      backgroundColor: dashButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                // Operational Audit Data — hidden when project is Ready
+                if (!_isReady) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        backgroundColor: dashButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                AuditEntryFlow(projectId: widget.projectId),
+                          ),
+                        ).then((result) {
+                          if (result == true && mounted) Navigator.pop(context);
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/Opertaional.svg',
+                                height: 40,
+                                width: 40,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Operational Audit Data',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(
+                            'assets/images/arrowright.svg',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              AuditEntryFlow(projectId: widget.projectId),
-                        ),
-                      ).then((result) {
-                        if (result == true && mounted) Navigator.pop(context);
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/Opertaional.svg',
-                              height: 40,
-                              width: 40,
-                              colorFilter: const ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Operational Audit Data',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        SvgPicture.asset(
-                          'assets/images/arrowright.svg',
-                          height: 40,
-                          width: 40,
-                        ),
-                      ],
-                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                ],
 
                 // Project Summary card
                 Container(
@@ -352,7 +453,11 @@ class _ProjectPageState extends State<ProjectPage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const ProjectChartsGrid(),
+                        ProjectChartsGrid(
+                          projectId: widget.projectId,
+                          onCaptureReady: (fn) => _captureCharts = fn,
+                          onCaptureCostChart: (fn) => _captureCostChart = fn,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextButton(

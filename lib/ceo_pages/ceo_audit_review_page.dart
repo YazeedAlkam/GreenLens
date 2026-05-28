@@ -189,7 +189,12 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
       widget.project['id'] as String,
       updates,
     );
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Audit approved')),
+      );
+      Navigator.pop(context, true);
+    }
   }
 
   Future<void> _denyProject() async {
@@ -203,7 +208,12 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
         'status': 'Denied',
       },
     );
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Audit denied')),
+      );
+      Navigator.pop(context, true);
+    }
   }
 
   void _openLighting() => setState(() => _activeReview = 0);

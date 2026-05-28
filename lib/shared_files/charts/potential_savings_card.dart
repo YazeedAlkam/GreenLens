@@ -4,52 +4,38 @@ import 'chart_theme.dart';
 
 class PotentialSavingsCard extends StatelessWidget {
   final ChartTheme theme;
-  final List<double> beforeMwh;
-  final List<double> afterMwh;
+
+  /// 12 values (Jan..Dec) in kWh.
+  final List<double> beforeKwh;
+  final List<double> afterKwh;
   final double maxY;
   final double interval;
+
+  /// Optional x-axis labels (12 short month strings e.g. "May", "Jun"…).
+  final List<String>? monthLabels;
 
   const PotentialSavingsCard({
     super.key,
     required this.theme,
-    required this.beforeMwh,
-    required this.afterMwh,
-    this.maxY = 450,
-    this.interval = 50,
-  }) : assert(beforeMwh.length == 12),
-       assert(afterMwh.length == 12);
+    required this.beforeKwh,
+    required this.afterKwh,
+    this.maxY = 2000,
+    this.interval = 500,
+    this.monthLabels,
+  })  : assert(beforeKwh.length == 12),
+        assert(afterKwh.length == 12);
 
   factory PotentialSavingsCard.sample(ChartTheme theme) {
     return PotentialSavingsCard(
       theme: theme,
-      beforeMwh: const [
-        350,
-        350,
-        160,
-        140,
-        165,
-        195,
-        410,
-        415,
-        200,
-        190,
-        165,
-        180,
+      beforeKwh: const [
+        917, 958, 1000, 1083, 1375, 1625, 1750, 1792, 1667, 1333, 1083, 1042,
       ],
-      afterMwh: const [
-        310,
-        310,
-        230,
-        120,
-        130,
-        240,
-        360,
-        370,
-        100,
-        135,
-        165,
-        125,
+      afterKwh: const [
+        733, 767, 800, 867, 1100, 1300, 1400, 1433, 1333, 1067, 867, 833,
       ],
+      maxY: 2000,
+      interval: 500,
     );
   }
 
@@ -63,7 +49,6 @@ class PotentialSavingsCard extends StatelessWidget {
       subtitle: '(kWh/Year)',
       theme: theme,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,7 +57,7 @@ class PotentialSavingsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'TOTAL ENERGY CONSUMPTION (MWh)',
+                    'TOTAL ENERGY CONSUMPTION (kWh)',
                     style: theme.sectionTitleStyle.copyWith(fontSize: 10),
                   ),
                   Text(
@@ -81,20 +66,19 @@ class PotentialSavingsCard extends StatelessWidget {
                   ),
                 ],
               ),
-
               Row(
                 children: [
                   LegendDot(
                     square: true,
                     color: beforeColor,
-                    label: 'BEFORE (MWh)',
+                    label: 'BEFORE (kWh)',
                     style: theme.legendStyle.copyWith(fontSize: 11),
                   ),
                   const SizedBox(width: 10),
                   LegendDot(
                     square: true,
                     color: afterColor,
-                    label: 'AFTER (MWh)',
+                    label: 'AFTER (kWh)',
                     style: theme.legendStyle.copyWith(fontSize: 11),
                   ),
                 ],
@@ -102,8 +86,7 @@ class PotentialSavingsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 240,
+          Expanded(
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
@@ -114,8 +97,8 @@ class PotentialSavingsCard extends StatelessWidget {
                       x: i,
                       barsSpace: 2,
                       barRods: [
-                        _rod(beforeMwh[i], beforeColor),
-                        _rod(afterMwh[i], afterColor),
+                        _rod(beforeKwh[i], beforeColor),
+                        _rod(afterKwh[i], afterColor),
                       ],
                     ),
                 ],
@@ -139,7 +122,7 @@ class PotentialSavingsCard extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 32,
+                      reservedSize: 40,
                       interval: interval,
                       getTitlesWidget: (v, _) => Text(
                         v.toInt().toString(),
@@ -158,7 +141,7 @@ class PotentialSavingsCard extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
-                            ChartTheme.months[i].toUpperCase(),
+                            (monthLabels ?? ChartTheme.months)[i].toUpperCase(),
                             style: theme.axisLabelStyle,
                           ),
                         );
@@ -180,12 +163,10 @@ class PotentialSavingsCard extends StatelessWidget {
                     tooltipBorder: BorderSide(color: theme.cardBorder),
                     tooltipBorderRadius: BorderRadius.circular(8),
                     tooltipPadding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
+                        horizontal: 10, vertical: 6),
                     getTooltipItem: (group, groupIndex, rod, rodIndex) =>
                         BarTooltipItem(
-                      rod.toY.toInt().toString(),
+                      '${rod.toY.toInt()} kWh',
                       theme.valueLabelStyle.copyWith(
                         color: theme.textPrimary,
                         shadows: [
