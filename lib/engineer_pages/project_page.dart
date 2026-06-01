@@ -27,6 +27,7 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
+  final GlobalKey<ProjectChartsGridState> _chartsKey = GlobalKey<ProjectChartsGridState>();
   Future<List<Uint8List?>> Function()? _captureCharts;
   Future<Uint8List?> Function()? _captureCostChart;
 
@@ -380,7 +381,9 @@ class _ProjectPageState extends State<ProjectPage> {
                                 AuditEntryFlow(projectId: widget.projectId),
                           ),
                         ).then((result) {
-                          if (result == true && mounted) Navigator.pop(context);
+                          if (!mounted) return;
+                          _chartsKey.currentState?.reload();
+                          if (result == true) Navigator.pop(context);
                         });
                       },
                       child: Row(
@@ -454,6 +457,7 @@ class _ProjectPageState extends State<ProjectPage> {
                         ),
                         const SizedBox(height: 12),
                         ProjectChartsGrid(
+                          key: _chartsKey,
                           projectId: widget.projectId,
                           onCaptureReady: (fn) => _captureCharts = fn,
                           onCaptureCostChart: (fn) => _captureCostChart = fn,
