@@ -144,9 +144,24 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${value.toStringAsFixed(2)} JOD';
   }
 
-  String _countLabel(List<dynamic> list, String unit) {
-    if (list.isEmpty) return 'Not entered';
-    return '${list.length} $unit${list.length == 1 ? '' : 's'}';
+  String _equipmentLabel() {
+    final data = widget.equipmentData;
+    if (data.isEmpty) return 'Not entered';
+    final e = data[0] as Map;
+    final hasData = ['name', 'ratedPower', 'quantity', 'yearlyHours']
+        .any((k) => e[k]?.toString().isNotEmpty == true);
+    if (data.length == 1) return hasData ? '1 item' : 'Not entered';
+    return '${data.length} items';
+  }
+
+  String _machinesLabel() {
+    final data = widget.machinesData;
+    if (data.isEmpty) return 'Not entered';
+    final m = data[0] as Map;
+    final hasData = ['name', 'ratedPower', 'quantity', 'yearlyHours']
+        .any((k) => m[k]?.toString().isNotEmpty == true);
+    if (data.length == 1) return hasData ? '1 line' : 'Not entered';
+    return '${data.length} lines';
   }
 
   Widget _infoRow(String label, String value) {
@@ -184,7 +199,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return Column(
       children: [
         InkWell(
-          onTap: onTap,
+          onTap: isEntered ? onTap : null,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -207,7 +222,8 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
                     color: isEntered ? Colors.black : Colors.grey,
                   ),
                 ),
-                SvgPicture.asset('assets/images/arrowright.svg', colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),),
+                if (isEntered)
+                  SvgPicture.asset('assets/images/arrowright.svg', colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),),
               ],
             ),
           ),
@@ -313,8 +329,8 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
                 children: [
                   _sectionRow("Lighting", label: _lightingLabel(), dividerBelow: true, onTap: widget.onViewLighting),
                   _sectionRow("AC", label: _acLabel(), dividerBelow: true, onTap: widget.onViewAC),
-                  _sectionRow("Equipment", label: _countLabel(widget.equipmentData, 'item'), dividerBelow: true, onTap: widget.onViewEquipment),
-                  _sectionRow("Production Lines", label: _countLabel(widget.machinesData, 'line'), dividerBelow: false, onTap: widget.onViewMachines),
+                  _sectionRow("Equipment", label: _equipmentLabel(), dividerBelow: true, onTap: widget.onViewEquipment),
+                  _sectionRow("Production Lines", label: _machinesLabel(), dividerBelow: false, onTap: widget.onViewMachines),
                 ],
               ),
             ),

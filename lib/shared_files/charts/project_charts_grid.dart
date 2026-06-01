@@ -44,6 +44,9 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     _load();
   }
 
+  /// Call this after saving audit data to refresh the charts.
+  Future<void> reload() => _load();
+
   @override
   void didUpdateWidget(covariant ProjectChartsGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -111,6 +114,7 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
   List<double> _monthlyKwh = List.filled(12, 0);
   List<double> _currentCostJod = List.filled(12, 0);
   List<String>? _monthLabels;
+  double _tariffJodPerKwh = energyTariffJodPerKwh;
 
   Future<void> _load() async {
     if (widget.projectId == null) {
@@ -130,7 +134,9 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
 
     // ── Monthly bills ─────────────────────────────────────────────────────────
     final monthlyJod = _buildMonthlyBills(projectInfo);
-    final monthlyKwh = monthlyJod.values.map((v) => v / energyTariffJodPerKwh).toList();
+    final calcTariff = _calcTariffFromBills(projectInfo);
+    final tariff = calcTariff > 0 ? calcTariff : energyTariffJodPerKwh;
+    final monthlyKwh = monthlyJod.values.map((v) => v / tariff).toList();
 
     // ── Energy cost per system (for donut) ────────────────────────────────────
     final lighting = auditData['lighting'] as List? ?? [];
@@ -169,6 +175,7 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
       _donutCategories = categories;
       _totalSavingPercent = 20;
       _potentialAnnualSavingJod = totalCost * _savingsFactor;
+      _tariffJodPerKwh = tariff;
       _loading = false;
     });
   }
@@ -188,6 +195,25 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     final year = int.tryParse(parts[1]);
     if (year == null) return null;
     return DateTime(year, mIdx + 1);
+  }
+
+  /// Calculates the effective tariff (JOD/kWh) from the bills data.
+  /// Returns total bill amount divided by total energy consumed across all
+  /// months that have both values. Returns 0 if data is insufficient.
+  static double _calcTariffFromBills(Map<String, dynamic> projectInfo) {
+    final rawBills = projectInfo['bills'] as List? ?? [];
+    double totalBill = 0;
+    double totalKwh = 0;
+    for (final bill in rawBills) {
+      final b = bill as Map;
+      final amount = double.tryParse(b['billAmount']?.toString() ?? '') ?? 0.0;
+      final kwh = double.tryParse(b['energyConsumed']?.toString() ?? '') ?? 0.0;
+      if (amount > 0 && kwh > 0) {
+        totalBill += amount;
+        totalKwh += kwh;
+      }
+    }
+    return totalKwh > 0 ? totalBill / totalKwh : 0.0;
   }
 
   /// Builds 12 chronologically-ordered monthly bill values (JOD) starting
@@ -284,58 +310,51 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     }
 
     final t = widget.theme ?? ChartTheme();
-    final afterKwh = _monthlyKwh.map((v) => v * (1 - _savingsFactor)).toList();
-    final afterCost =
-        _currentCostJod.map((v) => v * (1 - _savingsFactor)).toList();
-
-    final kwh2max = _niceMax(_monthlyKwh);
-    final kwh2interval = (kwh2max / 4).ceilToDouble();
-    final costMax = _niceMax(_currentCostJod);
-    final costInterval = (costMax / 4).ceilToDouble();
-
-    // Use sample data for donut when no audit data
-    final SavingsDonutCard donut = _donutCategories.isEmpty
-        ? SavingsDonutCard.sample(t)
-        : SavingsDonutCard(
-            theme: t,
-            categories: _donutCategories,
-            totalSavingPercent: _totalSavingPercent,
-            potentialAnnualSavingJod: _potentialAnnualSavingJod,
-          );
-
     final hasMonthlyData = _monthlyKwh.any((v) => v > 0);
 
-    final AnnualConsumptionCard consumption = hasMonthlyData
-        ? AnnualConsumptionCard(
-            theme: t,
-            electricityKwh: _monthlyKwh,
-            maxY: kwh2max,
-            interval: kwh2interval,
-            monthLabels: _monthLabels,
-          )
-        : AnnualConsumptionCard.sample(t);
+    final List<double> kwhData = hasMonthlyData ? _monthlyKwh : List.filled(12, 0);
+    final List<double> costData = hasMonthlyData ? _currentCostJod : List.filled(12, 0);
+    final afterKwh = kwhData.map((v) => v * (1 - _savingsFactor)).toList();
+    final afterCost = costData.map((v) => v * (1 - _savingsFactor)).toList();
 
-    final PotentialSavingsCard savings = hasMonthlyData
-        ? PotentialSavingsCard(
-            theme: t,
-            beforeKwh: _monthlyKwh,
-            afterKwh: afterKwh,
-            maxY: kwh2max,
-            interval: kwh2interval,
-            monthLabels: _monthLabels,
-          )
-        : PotentialSavingsCard.sample(t);
+    final double kwh2max = hasMonthlyData ? _niceMax(_monthlyKwh) : 2000.0;
+    final double kwh2interval = hasMonthlyData ? (_niceMax(_monthlyKwh) / 4).ceilToDouble() : 500.0;
+    final double costMax = hasMonthlyData ? _niceMax(_currentCostJod) : 4500.0;
+    final double costInterval = hasMonthlyData ? (_niceMax(_currentCostJod) / 4).ceilToDouble() : 500.0;
 
-    final EstimatedCostCard costCard = hasMonthlyData
-        ? EstimatedCostCard(
-            theme: t,
-            currentCost: _currentCostJod,
-            afterSavings: afterCost,
-            maxY: costMax,
-            interval: costInterval,
-            monthLabels: _monthLabels,
-          )
-        : EstimatedCostCard.sample(t);
+    final Widget donut = SavingsDonutCard(
+      theme: t,
+      categories: _donutCategories,
+      totalSavingPercent: _totalSavingPercent,
+      potentialAnnualSavingJod: _potentialAnnualSavingJod,
+    );
+
+    final Widget consumption = AnnualConsumptionCard(
+      theme: t,
+      electricityKwh: kwhData,
+      maxY: kwh2max,
+      interval: kwh2interval,
+      monthLabels: _monthLabels,
+    );
+
+    final Widget savings = PotentialSavingsCard(
+      theme: t,
+      beforeKwh: kwhData,
+      afterKwh: afterKwh,
+      maxY: kwh2max,
+      interval: kwh2interval,
+      monthLabels: _monthLabels,
+    );
+
+    final Widget costCard = EstimatedCostCard(
+      theme: t,
+      currentCost: costData,
+      afterSavings: afterCost,
+      tariffJodPerKwh: _tariffJodPerKwh,
+      maxY: costMax,
+      interval: costInterval,
+      monthLabels: _monthLabels,
+    );
 
     final cards = [donut, consumption, savings, costCard];
 

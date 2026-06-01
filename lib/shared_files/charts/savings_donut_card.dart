@@ -39,6 +39,18 @@ class SavingsDonutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEmpty = categories.isEmpty;
+    final sections = isEmpty
+        ? [PieChartSectionData(value: 1, color: theme.axisLine, radius: 22, showTitle: false)]
+        : categories
+            .map((c) => PieChartSectionData(
+                  value: c.percent,
+                  color: c.color,
+                  radius: 22,
+                  showTitle: false,
+                ))
+            .toList();
+
     return ChartCard(
       title: 'Savings as % of Total Consumption',
       theme: theme,
@@ -60,24 +72,17 @@ class SavingsDonutCard extends StatelessWidget {
                         sectionsSpace: 0,
                         centerSpaceRadius: 38,
                         startDegreeOffset: -90,
-                        sections: categories
-                            .map((c) => PieChartSectionData(
-                                  value: c.percent,
-                                  color: c.color,
-                                  radius: 22,
-                                  showTitle: false,
-                                ))
-                            .toList(),
+                        sections: sections,
                       ),
                     ),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '${totalSavingPercent.toStringAsFixed(0)}%',
+                          isEmpty ? '—' : '${totalSavingPercent.toStringAsFixed(0)}%',
                           style: theme.titleStyle.copyWith(
                             fontSize: 22,
-                            color: theme.primary,
+                            color: isEmpty ? theme.textMuted : theme.primary,
                           ),
                         ),
                         Text('total saving',
@@ -90,36 +95,43 @@ class SavingsDonutCard extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (final c in categories) ...[
-                      Row(
+                child: isEmpty
+                    ? Center(
+                        child: Text('No data yet',
+                            style: theme.axisLabelStyle
+                                .copyWith(color: theme.textMuted)),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            child: LegendDot(
-                              color: c.color,
-                              label: c.label,
-                              style: theme.legendStyle,
+                          for (final c in categories) ...[
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: LegendDot(
+                                    color: c.color,
+                                    label: c.label,
+                                    style: theme.legendStyle,
+                                  ),
+                                ),
+                                Text('${c.percent.toStringAsFixed(0)}%',
+                                    style: theme.legendStyle),
+                              ],
                             ),
-                          ),
-                          Text('${c.percent.toStringAsFixed(0)}%',
-                              style: theme.legendStyle),
+                            const SizedBox(height: 4),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 4),
-                    ],
-                  ],
-                ),
               ),
             ],
           ),
           const SizedBox(height: 14),
-          for (final c in categories) ...[
-            _BarRow(category: c, theme: theme),
-            const SizedBox(height: 6),
-          ],
+          if (!isEmpty)
+            for (final c in categories) ...[
+              _BarRow(category: c, theme: theme),
+              const SizedBox(height: 6),
+            ],
           const Spacer(),
           const SizedBox(height: 10),
           Container(
@@ -134,10 +146,10 @@ class SavingsDonutCard extends StatelessWidget {
               children: [
                 Text('Potential annual saving', style: theme.legendStyle),
                 Text(
-                  '${_formatNumber(potentialAnnualSavingJod)} JOD / year',
+                  isEmpty ? '—' : '${_formatNumber(potentialAnnualSavingJod)} JOD / year',
                   style: theme.legendStyle.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: theme.primary,
+                    color: isEmpty ? theme.textMuted : theme.primary,
                   ),
                 ),
               ],
