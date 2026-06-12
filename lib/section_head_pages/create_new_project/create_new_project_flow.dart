@@ -12,6 +12,24 @@ import 'bills_body.dart';
 import 'cost_body.dart';
 import 'client_info_body.dart';
 
+/// 5-step wizard for the Section Head to create or edit a project.
+///
+/// Steps:
+///   1. Client Info    — main contact, secondary contact, and extra contacts
+///   2. Project Info   — building type, floor area, dates, operating hours, average bill
+///   3. Assign Engineers — pick which engineers will perform the audit
+///   4. Costs          — transportation, machinery, other costs (engineer cost auto-calculated)
+///   5. Review         — final overview before submitting
+///
+/// Two hidden sub-pages can overlay any step:
+///   - Bills page     (monthly utility bills input, accessed from Project Info step)
+///   - All Contacts   (full contact list view, accessed from Review step)
+///
+/// If [existingProjectId] is provided, the flow loads the existing project data
+/// and updates it. Otherwise a new project is created with a fresh sequential ID.
+///
+/// Saving as Draft keeps status = "Draft".
+/// Submitting changes status to "Awaiting Approval" for CEO review.
 class CreateProjectFlow extends StatefulWidget {
   final String? existingProjectId;
   final bool readOnly;
@@ -21,6 +39,8 @@ class CreateProjectFlow extends StatefulWidget {
   State<CreateProjectFlow> createState() => _CreateProjectFlowState();
 }
 
+/// State for [CreateProjectFlow]. Manages step navigation, form GlobalKeys,
+/// and project save/submit logic.
 class _CreateProjectFlowState extends State<CreateProjectFlow> {
   final _projectService = ProjectService();
   String? _projectId;
@@ -28,6 +48,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
   bool _loading = false;
   Map<String, dynamic>? _initialData;
 
+  /// Parses a "d/M/yyyy" date string into a [DateTime], or returns null.
   DateTime? _parseDate(String? s) {
     if (s == null || s.trim().isEmpty) return null;
     final parts = s.split('/');
@@ -39,6 +60,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     return DateTime(y, m, d);
   }
 
+  /// Counts working days (Mon–Thu, Sun) between [start] and [end] inclusive,
+  /// excluding Friday and Saturday (Jordanian weekend).
   int _workingDaysBetween(DateTime start, DateTime end) {
     int count = 0;
     DateTime cur = DateTime(start.year, start.month, start.day);
@@ -52,6 +75,11 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     return count;
   }
 
+  /// Calculates the estimated engineer cost from the current form state.
+  ///
+  /// Formula: sum over all assigned engineers of (rate × 8 hrs × working days).
+  /// Working days are counted between initiationDate and deadlineDate, excluding
+  /// Fridays and Saturdays. Returns null if dates are missing or invalid.
   double? _computeEngineerCost() {
     final proj = _projectKey.currentState?.getProjectInfo() ?? {};
     final engs = _assignKey.currentState?.getAssignedEngineersInfo() ?? [];
@@ -86,6 +114,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     }
   }
 
+  /// Loads the existing project document (when editing a draft or viewing
+  /// read-only) so every step can pre-fill its form from [_initialData].
   Future<void> _loadExistingProject() async {
     final data = await _projectService.getProjectById(
       widget.existingProjectId!,
@@ -99,6 +129,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     });
   }
 
+  /// Combines the Project Info form with the Bills sub-page data into the
+  /// single `projectInfo` map stored on the Firestore document.
   Map<String, dynamic> _mergedProjectInfo() {
     return {
       ...?_projectKey.currentState?.getProjectInfo(),
@@ -106,6 +138,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     };
   }
 
+  /// Persists the project to Firestore with status = "Draft" and closes the flow.
   Future<void> _saveDraft() async {
     _projectId = await _projectService.saveProject(
       existingProjectId: _projectId,
@@ -123,6 +156,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     }
   }
 
+  /// Persists the project with status = "Awaiting Approval" and closes the flow.
+  /// This triggers the CEO review queue.
   Future<void> _saveProject() async {
     _projectId = await _projectService.saveProject(
       existingProjectId: _projectId,
@@ -144,6 +179,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
   bool _showingBills = false;
   bool _showingAllContacts = false;
 
+  /// Advances to the next wizard step, or closes sub-pages (bills / all-contacts) first.
   void _next() {
     if (_showingBills) {
       setState(() => _showingBills = false);
@@ -160,6 +196,7 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     if (_currentStep < 4) setState(() => _currentStep++);
   }
 
+  /// Navigates backward, closing sub-pages first then decrementing the step.
   void _back() {
     if (_showingBills) {
       setState(() => _showingBills = false);
@@ -176,10 +213,13 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
     }
   }
 
+  /// Shows the monthly bills sub-page on top of the current step.
   void _goToBills() => setState(() => _showingBills = true);
 
+  /// Shows the all-contacts sub-page on top of the current step.
   void _goToAllContacts() => setState(() => _showingAllContacts = true);
 
+  /// Jumps directly to [step] from the nav-bar and closes any open sub-pages.
   void _onStepTapped(int step) {
     setState(() {
       _currentStep = step;
@@ -239,6 +279,9 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                 final costs = _costKey.currentState?.getCosts() ??
                     (_initialData?['costs'] as Map<String, dynamic>? ?? {});
 
+                // IndexedStack keeps every step mounted at once so form
+                // state survives navigation. Indexes 0-4 are the wizard
+                // steps; 5 = Bills sub-page, 6 = All Contacts sub-page.
                 return IndexedStack(
                   index: _showingBills
                       ? 5

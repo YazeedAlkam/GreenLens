@@ -5,6 +5,10 @@ import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 2 of the Assign Engineers flow: pick one or more engineers for the project.
+///
+/// Pre-selects engineers already assigned to [project] and persists changes
+/// to Firestore when saved. Calls [onSaved] on success.
 class SelectEngineerBody extends StatefulWidget {
   final Map<String, dynamic> project;
   final VoidCallback onBack;
@@ -21,6 +25,8 @@ class SelectEngineerBody extends StatefulWidget {
   State<SelectEngineerBody> createState() => _SelectEngineerBodyState();
 }
 
+/// State for [SelectEngineerBody]. Manages engineer list, selection set,
+/// and the save operation.
 class _SelectEngineerBodyState extends State<SelectEngineerBody> {
   final List<Map<String, dynamic>> _engineers = [];
   bool _isLoading = true;
@@ -32,6 +38,7 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     _loadEngineers();
   }
 
+  /// Fetches all engineers and pre-selects those already assigned to the project.
   Future<void> _loadEngineers() async {
     try {
       final engineers = await ProjectService().getEngineers();
@@ -55,6 +62,8 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     }
   }
 
+  /// Persists the current selection to the project's `assignedEngineers`
+  /// array in Firestore, then notifies the parent flow via [widget.onSaved].
   Future<void> _saveProject() async {
     try {
       final ids = _engineers
@@ -80,6 +89,8 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     }
   }
 
+  /// Display name for the page title: project name, falling back to its
+  /// custom ID, then a generic label.
   String get _projectName {
     return (widget.project['projectInfo']
             as Map<String, dynamic>?)?['projectName'] ??
@@ -134,6 +145,8 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     );
   }
 
+  /// Engineer table with an Add/Remove toggle button per row (same layout
+  /// as the Assign Engineers step in the Create Project wizard).
   Widget _buildTable() {
     return Container(
       decoration: BoxDecoration(
@@ -238,6 +251,7 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     );
   }
 
+  /// Green bold header cell for the engineers table.
   Widget _headerCell(String text) {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -254,6 +268,7 @@ class _SelectEngineerBodyState extends State<SelectEngineerBody> {
     );
   }
 
+  /// Plain data cell for the engineers table.
   Widget _dataCell(String text) {
     return Container(
       padding: const EdgeInsets.all(10),

@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'chart_theme.dart';
 
+/// Chart card comparing before- and after-implementation monthly kWh as a grouped bar chart.
 class PotentialSavingsCard extends StatelessWidget {
   final ChartTheme theme;
 
@@ -25,6 +26,7 @@ class PotentialSavingsCard extends StatelessWidget {
   })  : assert(beforeKwh.length == 12),
         assert(afterKwh.length == 12);
 
+  /// Creates a [PotentialSavingsCard] pre-filled with hard-coded sample data for previews.
   factory PotentialSavingsCard.sample(ChartTheme theme) {
     return PotentialSavingsCard(
       theme: theme,
@@ -188,6 +190,7 @@ class PotentialSavingsCard extends StatelessWidget {
     );
   }
 
+  /// Builds a single bar rod with rounded top corners.
   BarChartRodData _rod(double value, Color color) {
     return BarChartRodData(
       toY: value,

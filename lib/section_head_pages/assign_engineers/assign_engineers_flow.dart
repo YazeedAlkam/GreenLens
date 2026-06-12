@@ -6,6 +6,10 @@ import 'package:greenlens/section_head_pages/assign_engineers/select_project_bod
 import 'package:greenlens/section_head_pages/assign_engineers/shared_files/nav_bar.dart';
 import 'package:greenlens/section_head_pages/assign_engineers/shared_files/navbar_title.dart';
 
+/// Two-step flow for assigning engineers to an existing project.
+///
+/// Step 1 — [SelectProjectBody]: choose a project.
+/// Step 2 — [SelectEngineerBody]: choose one or more engineers to assign.
 class AssignEngineersFlow extends StatefulWidget {
   const AssignEngineersFlow({super.key});
 
@@ -13,10 +17,12 @@ class AssignEngineersFlow extends StatefulWidget {
   State<AssignEngineersFlow> createState() => _AssignEngineersFlowState();
 }
 
+/// State for [AssignEngineersFlow]. Tracks the selected project and current step.
 class _AssignEngineersFlowState extends State<AssignEngineersFlow> {
   int _currentStep = 0;
   Map<String, dynamic>? _selectedProject;
 
+  /// Stores the chosen project and advances to step 2 (select engineer).
   void _onProjectSelected(Map<String, dynamic> project) {
     setState(() {
       _selectedProject = project;
@@ -24,10 +30,12 @@ class _AssignEngineersFlowState extends State<AssignEngineersFlow> {
     });
   }
 
+  /// Allows tapping the nav bar to go back to step 0 (select project).
   void _onStepTapped(int step) {
     if (step == 0) setState(() => _currentStep = 0);
   }
 
+  /// Goes back to step 0 or pops the route when already on step 0.
   void _back() {
     if (_currentStep == 0) {
       Navigator.pop(context);
@@ -36,6 +44,7 @@ class _AssignEngineersFlowState extends State<AssignEngineersFlow> {
     }
   }
 
+  /// Pops the route after engineers have been successfully saved.
   void _onSaved() {
     Navigator.pop(context);
   }

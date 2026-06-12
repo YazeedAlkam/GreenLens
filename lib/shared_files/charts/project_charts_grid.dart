@@ -10,8 +10,20 @@ import 'estimated_cost_card.dart';
 import 'potential_savings_card.dart';
 import 'savings_donut_card.dart';
 
+/// Assumed energy savings ratio applied to all "after implementation" chart series (20%).
 const double _savingsFactor = 0.20;
 
+/// Responsive 2×2 grid of the four project energy charts.
+///
+/// Loads project data from Firestore using [projectId], computes monthly kWh,
+/// cost, and donut breakdown values, then renders:
+///   1. Savings Donut        — energy cost split by system type
+///   2. Annual Consumption   — monthly kWh line chart
+///   3. Potential Savings    — before vs. after kWh bar chart
+///   4. Estimated Cost       — current vs. savings-adjusted cost bar chart
+///
+/// Exposes [onCaptureReady] and [onCaptureCostChart] so parent pages can
+/// capture chart PNGs for report generation without coupling to this widget.
 class ProjectChartsGrid extends StatefulWidget {
   final String? projectId;
   final ChartTheme? theme;
@@ -33,6 +45,8 @@ class ProjectChartsGrid extends StatefulWidget {
   State<ProjectChartsGrid> createState() => ProjectChartsGridState();
 }
 
+/// State for [ProjectChartsGrid]. Exposed (public) so parent pages can hold a
+/// [GlobalKey<ProjectChartsGridState>] to call [reload] after saving audit data.
 class ProjectChartsGridState extends State<ProjectChartsGrid> {
   final List<GlobalKey> _chartKeys = List.generate(4, (_) => GlobalKey());
 
@@ -67,7 +81,8 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     super.dispose();
   }
 
-  // Shared single-chart capture (index 0-3).
+  /// Captures one chart widget as a PNG via its [RepaintBoundary] key.
+  /// Returns null if the widget is not currently in the render tree.
   Future<Uint8List?> _captureOne(int index) async {
     final key = _chartKeys[index];
     try {
@@ -92,6 +107,7 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     }
   }
 
+  /// Captures all four chart widgets sequentially and returns their PNG bytes.
   Future<List<Uint8List?>> _captureCharts() async {
     final results = <Uint8List?>[];
     for (int i = 0; i < _chartKeys.length; i++) {
@@ -100,7 +116,7 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     return results;
   }
 
-  // Captures only chart 4 — Estimated Annual Cost (index 3).
+  /// Captures only chart 4 (Estimated Annual Cost) for the standalone cost report.
   Future<Uint8List?> _captureCostChart() => _captureOne(3);
 
   bool _loading = true;
@@ -116,6 +132,8 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
   List<String>? _monthLabels;
   double _tariffJodPerKwh = energyTariffJodPerKwh;
 
+  /// Loads the project document from Firestore and recomputes all chart data
+  /// (monthly bills, audit kWh totals, savings, and cost projections).
   Future<void> _load() async {
     if (widget.projectId == null) {
       if (mounted) setState(() => _loading = false);
@@ -363,6 +381,8 @@ class ProjectChartsGridState extends State<ProjectChartsGrid> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final twoCol = constraints.maxWidth >= 720;
+        // Each card is wrapped in a keyed RepaintBoundary so it can be
+        // captured as a PNG for the PDF reports.
         Widget bounded(int i) => RepaintBoundary(
               key: _chartKeys[i],
               child: cards[i],

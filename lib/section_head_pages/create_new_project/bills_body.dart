@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Sub-page (overlaid during Create Project) for entering 12 monthly utility
+/// bills. Computes the average monthly bill and reports it via [onAverageChanged].
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
   final void Function(double)? onAverageChanged;
@@ -22,6 +24,7 @@ class BillsBody extends StatefulWidget {
   State<BillsBody> createState() => BillsBodyState();
 }
 
+/// State for [BillsBody]. Exposes [getBillsData] via [GlobalKey].
 class BillsBodyState extends State<BillsBody>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -48,6 +51,7 @@ class BillsBodyState extends State<BillsBody>
     }
     _averageMonthlyBill = widget.initialAverageBill ?? 0;
 
+    // Recompute the average live as the user types any bill amount.
     for (final ctrl in _billCtrls) {
       ctrl.addListener(_recalculateAverage);
     }
@@ -64,6 +68,9 @@ class BillsBodyState extends State<BillsBody>
     super.dispose();
   }
 
+  /// Averages only the bill fields that contain a value > 0, so empty
+  /// months don't drag the average down. Pushes the result up to
+  /// [ProjectInfoBody] through [BillsBody.onAverageChanged].
   void _recalculateAverage() {
     final values = _billCtrls
         .map((c) => double.tryParse(c.text) ?? 0)
@@ -76,6 +83,8 @@ class BillsBodyState extends State<BillsBody>
     widget.onAverageChanged?.call(avg);
   }
 
+  /// Returns the 12 rows (month, energy consumed, bill amount) plus the
+  /// computed average — stored under `projectInfo` in Firestore.
   Map<String, dynamic> getBillsData() {
     return {
       'bills': List.generate(
@@ -90,6 +99,8 @@ class BillsBodyState extends State<BillsBody>
     };
   }
 
+  /// Builds the row labels: the 12 calendar months immediately before the
+  /// current month (e.g. in June 2026 → "June 2025" … "May 2026").
   List<String> _getLast12Months() {
     final now = DateTime.now();
     final startMonth = DateTime(now.year, now.month - 12);

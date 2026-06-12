@@ -5,6 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 2 of the Create Project wizard: building and project information.
+///
+/// Captures project name, building type, floor area, number of floors, operating
+/// hours, days per week, initiation/deadline dates, and average monthly bill.
+/// The "View Bills" button overlays the [BillsBody] sub-page.
 class ProjectInfoBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -29,8 +34,12 @@ class ProjectInfoBody extends StatefulWidget {
   State<ProjectInfoBody> createState() => ProjectInfoBodyState();
 }
 
+/// State for [ProjectInfoBody]. Exposes [getProjectInfo] and
+/// [updateAverageBill] to the parent wizard via a [GlobalKey].
 class ProjectInfoBodyState extends State<ProjectInfoBody>
     with AutomaticKeepAliveClientMixin {
+  // Keep this step's form state alive when the wizard swaps pages,
+  // so typed values survive navigating back and forth between steps.
   @override
   bool get wantKeepAlive => true;
 
@@ -48,6 +57,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
   @override
   void initState() {
     super.initState();
+    // Pre-fill the form when editing an existing draft/project;
+    // a null map means this is a brand-new project.
     final data = widget.initialProjectInfo;
     if (data == null) return;
     _projectNameCtrl.text = data['projectName'] ?? '';
@@ -78,6 +89,8 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
     super.dispose();
   }
 
+  /// Opens a calendar dialog and writes the chosen date into [controller]
+  /// as "d/m/yyyy". Used by the Initiation and Deadline date fields.
   Future<void> _pickDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -93,12 +106,16 @@ class ProjectInfoBodyState extends State<ProjectInfoBody>
     }
   }
 
+  /// Called by the Bills sub-page after the user enters monthly bills:
+  /// shows the computed 12-month average in the read-only bill field.
   void updateAverageBill(double avg) {
     setState(() {
       _avgMonthlyBillCtrl.text = avg > 0 ? avg.toStringAsFixed(2) : '';
     });
   }
 
+  /// Collects every field into the `projectInfo` map that gets saved
+  /// to Firestore (all values kept as raw strings, parsed when needed).
   Map<String, dynamic> getProjectInfo() {
     return {
       'projectName': _projectNameCtrl.text,

@@ -3,17 +3,23 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Read-only review page showing all entered lighting areas in tabular form.
+///
+/// Displayed inside the audit wizard's Review step or from the project summary
+/// when the user taps the 'Lighting' drill-down row.
 class LightingReview extends StatelessWidget {
   final VoidCallback onBack;
   final List<dynamic> lightingData;
 
   const LightingReview({super.key, required this.onBack, this.lightingData = const []});
 
+  /// Safe value accessor: returns [map][key] with optional [suffix], or '—' if absent.
   String _v(Map map, String key, {String suffix = ''}) {
     final val = map[key]?.toString() ?? '';
     return val.isEmpty ? '—' : '$val$suffix';
   }
 
+  /// Builds a two-cell table row (label | value) for the data tables.
   TableRow _row(String label, String value) {
     return TableRow(
       children: [

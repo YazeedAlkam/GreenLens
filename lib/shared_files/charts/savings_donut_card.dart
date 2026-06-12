@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'chart_theme.dart';
 
+/// Immutable data class for one donut segment: a label, percentage value, and color.
 class SavingsCategory {
   final String label;
   final double percent;
@@ -9,6 +10,8 @@ class SavingsCategory {
   const SavingsCategory(this.label, this.percent, this.color);
 }
 
+/// Chart card showing a donut pie chart of savings by energy system,
+/// per-system progress bars, and a total potential annual saving summary row.
 class SavingsDonutCard extends StatelessWidget {
   final ChartTheme theme;
   final List<SavingsCategory> categories;
@@ -23,6 +26,7 @@ class SavingsDonutCard extends StatelessWidget {
     required this.potentialAnnualSavingJod,
   });
 
+  /// Creates a [SavingsDonutCard] pre-filled with hard-coded sample data for previews.
   factory SavingsDonutCard.sample(ChartTheme theme) {
     return SavingsDonutCard(
       theme: theme,
@@ -160,6 +164,7 @@ class SavingsDonutCard extends StatelessWidget {
     );
   }
 
+  /// Formats a double to a comma-separated integer string for the annual saving display.
   static String _formatNumber(double v) {
     final s = v.truncateToDouble() == v
         ? v.toInt().toString()
@@ -174,6 +179,7 @@ class SavingsDonutCard extends StatelessWidget {
   }
 }
 
+/// Renders one savings category row: a label, a proportional progress bar, and a percentage.
 class _BarRow extends StatelessWidget {
   final SavingsCategory category;
   final ChartTheme theme;

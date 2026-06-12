@@ -11,6 +11,10 @@ import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
+/// Full-page list of all active projects (Section Head view).
+///
+/// Navigates to [CreateProjectFlow] for draft projects, [CeoAuditReviewPage]
+/// for projects awaiting audit approval, and [ProjectSummaryPage] for others.
 class ActiveProjectsPage extends StatefulWidget {
   const ActiveProjectsPage({super.key});
 
@@ -18,6 +22,7 @@ class ActiveProjectsPage extends StatefulWidget {
   State<ActiveProjectsPage> createState() => _ActiveProjectsPageState();
 }
 
+/// State for [ActiveProjectsPage]. Loads projects on init.
 class _ActiveProjectsPageState extends State<ActiveProjectsPage> {
   late Future<List<Map<String, dynamic>>> _projectsFuture;
 

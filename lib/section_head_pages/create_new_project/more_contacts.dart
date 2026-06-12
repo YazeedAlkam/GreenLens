@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Displays one contact card with name heading and label/value rows for
+/// position, email, and phone number.
 class MoreContacts extends StatelessWidget {
   final String name;
   final String position;

@@ -11,6 +11,12 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Page for reviewing and approving / denying a submitted audit.
+///
+/// Shows the full audit summary (building info + four category counts) and
+/// allows drilling into each category's detailed review. The "Accept" and
+/// "Deny" actions write to `ceo_approved` or `sectionhead_approved` depending
+/// on [isSectionHead]. Both approvals are required before a project is marked "Ready".
 class CeoAuditReviewPage extends StatefulWidget {
   final Map<String, dynamic> project;
 
@@ -27,6 +33,8 @@ class CeoAuditReviewPage extends StatefulWidget {
   State<CeoAuditReviewPage> createState() => _CeoAuditReviewPageState();
 }
 
+/// State for [CeoAuditReviewPage]. Manages the active review overlay and
+/// approve/deny processing state.
 class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
   final _projectService = ProjectService();
   bool _isProcessing = false;
@@ -36,6 +44,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
+  /// Returns [value] or 'No Data' when null or empty.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
@@ -58,6 +67,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── label builders (mirrors review_eng.dart logic) ─────────────────────────
 
+  /// Returns a human-readable lighting summary ("Not entered", "1 area", "N areas").
   String _lightingLabel() {
     if (_lighting.isEmpty) return 'Not entered';
     final a = _lighting[0] as Map;
@@ -68,6 +78,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     return '${_lighting.length} areas';
   }
 
+  /// Returns a human-readable AC summary ("Not entered", "1 group", "N groups").
   String _acLabel() {
     if (_ac.isEmpty) return 'Not entered';
     final g = _ac[0] as Map;
@@ -80,6 +91,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     return '${_ac.length} groups';
   }
 
+  /// Returns a human-readable equipment summary ("Not entered", "1 item", "N items").
   String _equipmentLabel() {
     if (_equipment.isEmpty) return 'Not entered';
     final filled = _equipment.where((e) {
@@ -91,6 +103,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     return '${filled.length} item${filled.length == 1 ? '' : 's'}';
   }
 
+  /// Returns a human-readable machines summary ("Not entered", "1 machine", "N machines").
   String _machinesLabel() {
     if (_machines.isEmpty) return 'Not entered';
     final filled = _machines.where((e) {
@@ -104,6 +117,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── total annual kWh (mirrors review_eng.dart logic) ──────────────────────
 
+  /// Computes the total annual energy cost in JOD across all four audit categories.
   double _totalEnergyCost() {
     double total = 0;
 
@@ -158,6 +172,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     return total;
   }
 
+  /// Formats the total energy cost for display; returns '—' when zero.
   String _formatTotal() {
     final v = _totalEnergyCost();
     if (v == 0) return '—';
@@ -168,6 +183,8 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── actions ────────────────────────────────────────────────────────────────
 
+  /// Sets the appropriate approval flag (`ceo_approved` or `sectionhead_approved`)
+  /// and marks the project "Ready" once both reviewers have approved.
   Future<void> _acceptProject() async {
     setState(() => _isProcessing = true);
 
@@ -197,6 +214,8 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     }
   }
 
+  /// Resets both approval flags and sets the project status back to "Denied"
+  /// so the engineer can revise and resubmit the audit.
   Future<void> _denyProject() async {
     setState(() => _isProcessing = true);
     // Reset both flags so the next review cycle starts clean
@@ -216,10 +235,15 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     }
   }
 
+  /// Shows the Lighting detailed review overlay.
   void _openLighting() => setState(() => _activeReview = 0);
+  /// Shows the HVAC detailed review overlay.
   void _openHvac() => setState(() => _activeReview = 1);
+  /// Shows the Equipment detailed review overlay.
   void _openEquipment() => setState(() => _activeReview = 2);
+  /// Shows the Machines detailed review overlay.
   void _openMachines() => setState(() => _activeReview = 3);
+  /// Closes the active detailed review overlay and returns to the main view.
   void _closeReview() => setState(() => _activeReview = null);
 
   // ── build ──────────────────────────────────────────────────────────────────
@@ -309,6 +333,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
 
   // ── section helpers ────────────────────────────────────────────────────────
 
+  /// Builds a styled section heading in the primary brand color.
   Widget _sectionTitle(String text) => Text(
         text,
         style: GoogleFonts.firaSans(
@@ -318,7 +343,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
         ),
       );
 
-  // Building Info card
+  /// Builds the bordered card displaying building and project metadata.
   Widget _buildingInfoCard() {
     final avgBillRaw = (_proj['averageMonthlyBill'] as num?)?.toDouble() ?? 0;
     final avgBillDisplay = avgBillRaw > 0
@@ -368,6 +393,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     );
   }
 
+  /// Builds a 60 px-tall label/value row inside the building info card.
   Widget _buildingRow(String label, String value) {
     return SizedBox(
       height: 60,
@@ -396,9 +422,12 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     );
   }
 
+  /// Thin horizontal divider used between card rows.
   Widget _divider() => const Divider(height: 1, thickness: 1, color: Color(0xFFA8A6A7));
 
   // Energy breakdown card
+  /// Builds the bordered card showing all four audit category summaries with
+  /// drill-down arrows for categories that have data.
   Widget _energyBreakdownCard() {
     final sections = [
       ('Lighting', _lightingLabel(), _openLighting),
@@ -432,6 +461,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
     );
   }
 
+  /// Builds one audit-category row; tappable only when [statusLabel] is not 'Not entered'.
   Widget _energyRow(String label, String statusLabel, VoidCallback onTap) {
     final hasData = statusLabel != 'Not entered';
     return InkWell(
@@ -480,6 +510,7 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
   }
 
   // Total annual consumption card
+  /// Builds the green-tinted total energy cost summary card.
   Widget _totalConsumptionCard() {
     return Container(
       width: double.infinity,
@@ -514,6 +545,8 @@ class _CeoAuditReviewPageState extends State<CeoAuditReviewPage> {
   }
 
   // Audit notes
+  /// Builds the bordered text container displaying audit notes,
+  /// with hint text when notes are empty.
   Widget _auditNotesBox(String notes) {
     return Container(
       width: double.infinity,

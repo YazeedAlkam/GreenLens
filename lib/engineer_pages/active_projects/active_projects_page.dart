@@ -9,6 +9,10 @@ import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
+/// Full-page list of all active projects assigned to the current engineer.
+///
+/// Navigates to [ProjectPage] for in-progress/denied projects or
+/// [ProjectSummaryPage] for projects awaiting approval or ready.
 class EngineerActiveProjectsPage extends StatefulWidget {
   const EngineerActiveProjectsPage({super.key});
 
@@ -17,6 +21,7 @@ class EngineerActiveProjectsPage extends StatefulWidget {
       _EngineerActiveProjectsPageState();
 }
 
+/// State for [EngineerActiveProjectsPage]. Loads projects on init.
 class _EngineerActiveProjectsPageState
     extends State<EngineerActiveProjectsPage> {
   late Future<List<Map<String, dynamic>>> _projectsFuture;

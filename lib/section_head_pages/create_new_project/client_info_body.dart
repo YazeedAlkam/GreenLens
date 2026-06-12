@@ -7,6 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/section_head_pages/create_new_project/contact_info_forums.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 1 of the Create Project wizard: client contact information.
+///
+/// Supports one primary contact (Contact 1) and optional extra contacts.
+/// When [readOnly] is true all fields are disabled.
 class ClientInfoBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -31,18 +35,26 @@ class ClientInfoBody extends StatefulWidget {
   ClientInfoBodyState createState() => ClientInfoBodyState();
 }
 
+/// State for [ClientInfoBody]. Uses [AutomaticKeepAliveClientMixin] to preserve
+/// form data when the user navigates between wizard steps.
 class ClientInfoBodyState extends State<ClientInfoBody>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  // Which contact tab is showing: 0 = main contact, 1 = second contact,
+  // 2+ = ids of dynamically added extra contacts.
   int _activeContact = 0;
+
+  // Ids of the extra contact tabs, in display order. Ids are never reused
+  // (see [_nextContactId]) so deleting a tab can't confuse the active tab.
   final List<int> _extraContacts = [];
   int _nextContactId = 2;
 
   @override
   void initState() {
     super.initState();
+    // Pre-fill when editing an existing draft/project; null = new project.
     final data = widget.initialClientInfo;
     if (data == null) return;
 
@@ -106,6 +118,7 @@ class ClientInfoBodyState extends State<ClientInfoBody>
     super.dispose();
   }
 
+  /// Collects all contacts into the `clientInfo` map saved to Firestore.
   Map<String, dynamic> getClientInfo() {
     return {
       'mainContact': {
@@ -133,9 +146,14 @@ class ClientInfoBodyState extends State<ClientInfoBody>
     };
   }
 
+  /// Tab label for an extra contact: position-based, starting at "Contact 3"
+  /// (Contact 1 and 2 are the fixed main/second contacts).
   String _extraContactLabel(int id) =>
       "Contact ${_extraContacts.indexOf(id) + 3}";
 
+  /// Removes the currently selected extra contact tab, disposes its
+  /// controllers, and selects the nearest remaining tab (or Second Contact
+  /// when no extra tabs are left).
   void _deleteCurrentExtraContact() {
     final idx = _extraContacts.indexOf(_activeContact);
     if (idx == -1) return;
@@ -399,6 +417,7 @@ class ClientInfoBodyState extends State<ClientInfoBody>
   }
 }
 
+/// A tab button for switching between client contacts.
 class _ContactTabButton extends StatelessWidget {
   const _ContactTabButton({
     required this.label,

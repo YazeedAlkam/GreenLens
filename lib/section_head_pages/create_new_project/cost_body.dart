@@ -4,6 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 4 of the Create Project wizard: study cost entry.
+///
+/// Captures transportation, machinery operating, and other costs.
+/// The engineer cost is pre-calculated from Firestore and displayed read-only.
 class CostBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -28,7 +32,9 @@ class CostBody extends StatefulWidget {
   CostBodyState createState() => CostBodyState();
 }
 
+/// State for [CostBody]. Exposes [getCosts] via [GlobalKey].
 class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
+  // Keep form state alive when the wizard swaps steps.
   @override
   bool get wantKeepAlive => true;
 
@@ -54,6 +60,9 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
     _recompute();
   }
 
+  // The engineer cost is computed by the parent (sum of assigned engineers'
+  // rates), so refresh the read-only field whenever the parent passes a
+  // new value (e.g. after engineers were added/removed in step 3).
   @override
   void didUpdateWidget(CostBody oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -63,6 +72,8 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
     }
   }
 
+  /// Writes the engineer cost into its read-only field, dropping the
+  /// decimals when the value is a whole number (e.g. "150" not "150.00").
   void _syncEngineerCost() {
     final e = widget.engineerCost;
     _engineerCostCtrl.text = e == null
@@ -72,6 +83,8 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
             : e.toStringAsFixed(2));
   }
 
+  /// Recomputes Total = transportation + machinery + other + engineer cost.
+  /// Shows an empty total until at least one cost has been entered.
   void _recompute() {
     final t = double.tryParse(_transportationCtrl.text) ?? 0;
     final m = double.tryParse(_machineryCtrl.text) ?? 0;
@@ -104,6 +117,8 @@ class CostBodyState extends State<CostBody> with AutomaticKeepAliveClientMixin {
     super.dispose();
   }
 
+  /// Returns the editable cost fields as the `costs` map saved to Firestore
+  /// (engineer cost and total are derived, so they are not stored here).
   Map<String, dynamic> getCosts() {
     return {
       'transportationCost': _transportationCtrl.text,

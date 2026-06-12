@@ -4,6 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 5 of the Create Project wizard: full project data review.
+///
+/// Shows a read-only summary of all entered data before saving as draft or
+/// submitting for CEO approval. Provides a "View All Contacts" drill-down.
 class ReviewBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -36,14 +40,17 @@ class ReviewBody extends StatefulWidget {
   State<ReviewBody> createState() => _ReviewBodyState();
 }
 
+/// State for [ReviewBody].
 class _ReviewBodyState extends State<ReviewBody>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  /// Returns [value] or 'No Data' when null or empty.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
+  /// Parses a "d/M/yyyy" string into a [DateTime], or returns null.
   DateTime? _parseDate(String? s) {
     if (s == null || s.trim().isEmpty) return null;
     final parts = s.split('/');
@@ -55,6 +62,8 @@ class _ReviewBodyState extends State<ReviewBody>
     return DateTime(y, m, d);
   }
 
+  /// Counts working days between [start] and [end] inclusive, skipping
+  /// Friday and Saturday (the weekend in Jordan).
   int _workingDaysBetween(DateTime start, DateTime end) {
     int count = 0;
     DateTime cur = DateTime(start.year, start.month, start.day);
@@ -68,6 +77,9 @@ class _ReviewBodyState extends State<ReviewBody>
     return count;
   }
 
+  /// Total cost shown in the review table:
+  /// transportation + machinery + other + computed engineer cost.
+  /// Returns 'No Data' when nothing has been entered yet.
   String _totalCostDisplay(
     Map<String, dynamic> costs,
     List<Map<String, dynamic>> engs,
@@ -89,6 +101,9 @@ class _ReviewBodyState extends State<ReviewBody>
     return '$formatted JOD';
   }
 
+  /// Estimated engineers cost = Σ (hourly rate × 8 hours × working days)
+  /// over all assigned engineers, between initiation and deadline dates.
+  /// Returns 'No Data' if dates are missing/invalid or no engineer has a rate.
   String _engineerCostDisplay(
     List<Map<String, dynamic>> engs,
     Map<String, dynamic> proj,
@@ -367,15 +382,19 @@ class _ReviewBodyState extends State<ReviewBody>
     );
   }
 
+  /// Table row for a user-entered cost: appends " JOD" or shows 'No Data'.
   TableRow _costRow(String label, String? value) {
     final display =
         (value == null || value.trim().isEmpty) ? 'No Data' : '$value JOD';
     return _infoRow(label, display);
   }
 
+  /// Table row for an already-formatted cost (engineer/total — value
+  /// includes its own "JOD" suffix or 'No Data').
   TableRow _rawCostRow(String label, String value) =>
       _infoRow(label, value);
 
+  /// Generic two-column "label … value" review row.
   TableRow _infoRow(String label, String value) {
     return TableRow(
       children: [
@@ -407,6 +426,7 @@ class _ReviewBodyState extends State<ReviewBody>
     );
   }
 
+  /// Header cell for the assigned-engineers table.
   Widget _engHeader(String text) {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -425,6 +445,7 @@ class _ReviewBodyState extends State<ReviewBody>
     );
   }
 
+  /// Data cell for the assigned-engineers table.
   Widget _engCell(String text) {
     return Padding(
       padding: const EdgeInsets.all(10.0),

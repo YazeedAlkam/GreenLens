@@ -7,6 +7,11 @@ import 'package:greenlens/section_head_pages/create_new_project/all_contacts_bod
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Page for the CEO to review a newly submitted project (before audit data exists).
+///
+/// Displays client info, project info, assigned engineers, and study costs.
+/// Provides Accept and Deny actions that set `ceo_approved` and update the
+/// project status accordingly.
 class CeoProjectReviewPage extends StatefulWidget {
   final Map<String, dynamic> project;
 
@@ -16,6 +21,8 @@ class CeoProjectReviewPage extends StatefulWidget {
   State<CeoProjectReviewPage> createState() => _CeoProjectReviewPageState();
 }
 
+/// State for [CeoProjectReviewPage]. Loads assigned engineer names
+/// and manages the all-contacts overlay.
 class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
   final _projectService = ProjectService();
   List<Map<String, dynamic>> _engineers = [];
@@ -27,6 +34,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     _loadEngineers();
   }
 
+  /// Loads engineer documents for all assigned engineer IDs.
   Future<void> _loadEngineers() async {
     final assignedIds = List<String>.from(
       widget.project['assignedEngineers'] as List? ?? [],
@@ -46,9 +54,13 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     }
   }
 
+  /// Shows the all-contacts overlay.
   void _openContacts() => setState(() => _showingContacts = true);
+  /// Closes the all-contacts overlay.
   void _closeContacts() => setState(() => _showingContacts = false);
 
+  /// Sets the project status to "In Progress", signalling that the CEO has
+  /// approved the project brief and the audit can begin.
   Future<void> _acceptProject() async {
     await _projectService.updateFields(
       widget.project['id'] as String,
@@ -62,6 +74,8 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     }
   }
 
+  /// Sets the project status to "Denied" so the Section Head can revise
+  /// and resubmit it.
   Future<void> _denyProject() async {
     await _projectService.updateFields(
       widget.project['id'] as String,
@@ -75,9 +89,11 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     }
   }
 
+  /// Returns [value] or 'No Data' when null or empty.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
+  /// Parses a "d/M/yyyy" date string into a [DateTime], or returns null.
   DateTime? _parseDate(String? s) {
     if (s == null || s.trim().isEmpty) return null;
     final parts = s.split('/');
@@ -89,6 +105,8 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     return DateTime(y, m, d);
   }
 
+  /// Counts working days (Mon–Thu, Sun) between [start] and [end] inclusive,
+  /// excluding Friday and Saturday (Jordanian weekend).
   int _workingDaysBetween(DateTime start, DateTime end) {
     int count = 0;
     DateTime cur = DateTime(start.year, start.month, start.day);
@@ -102,6 +120,10 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     return count;
   }
 
+  /// Computes and formats the total engineer cost as "N JOD".
+  ///
+  /// Calculated as sum over assigned engineers of (rate × 8 hrs/day × working days).
+  /// Returns 'No Data' when dates are missing or all rates are zero.
   String _engineerCostDisplay() {
     final proj = widget.project['projectInfo'] as Map<String, dynamic>? ?? {};
     final start = _parseDate(proj['initiationDate'] as String?);
@@ -268,6 +290,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a styled section heading in the primary brand color.
   Widget _sectionTitle(String text) {
     return Text(
       text,
@@ -279,6 +302,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a rounded, bordered table containing the given [rows].
   Widget _infoTable(List<TableRow> rows) {
     return Container(
       decoration: BoxDecoration(
@@ -298,6 +322,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a single-cell table row with [label] left-aligned and [value] right-aligned.
   TableRow _infoRow(String label, String value) {
     return TableRow(
       children: [
@@ -329,14 +354,17 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Alias for [_infoRow]; used when the value is already formatted.
   TableRow _rawInfoRow(String label, String value) => _infoRow(label, value);
 
+  /// Builds a cost display row, appending 'JOD' to non-empty values.
   TableRow _costRow(String label, String? value) {
     final display =
         (value == null || value.trim().isEmpty) ? 'No Data' : '$value JOD';
     return _infoRow(label, display);
   }
 
+  /// Builds a tappable 'View All Contacts' row that opens the contacts overlay.
   TableRow _viewAllContactsRow() {
     return TableRow(
       children: [
@@ -369,6 +397,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds the assigned-engineers table (ID | Name | Contact Info).
   Widget _engineersTable() {
     if (_loadingEngineers) {
       return const Center(child: CircularProgressIndicator());
@@ -421,6 +450,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a bold header cell for the engineers table.
   Widget _engHeader(String text) {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -434,6 +464,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a regular data cell for the engineers table.
   Widget _engCell(String text) {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -441,6 +472,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds the bills summary table showing average, maximum, and minimum monthly bills.
   Widget _billsInfoTable() {
     final proj = widget.project['projectInfo'] as Map<String, dynamic>? ?? {};
     final rawBills = proj['bills'] as List? ?? [];
@@ -501,6 +533,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a two-column bills row where the value spans the full remaining width.
   Widget _billsRowSpanned(String label, String value) {
     return SizedBox(
       height: 69,
@@ -539,6 +572,8 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds a three-column bills row (label | month | cost).
+  /// When [isHeader] is true the text is rendered bold.
   Widget _billsRowTriple(
     String col1,
     String col2,
@@ -592,6 +627,7 @@ class _CeoProjectReviewPageState extends State<CeoProjectReviewPage> {
     );
   }
 
+  /// Builds the bordered text container displaying the audit notes.
   Widget _auditNotesBox() {
     final notes = widget.project['auditNotes'] as String? ?? '';
     return Container(

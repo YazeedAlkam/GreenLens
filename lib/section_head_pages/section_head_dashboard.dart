@@ -14,6 +14,20 @@ import 'package:greenlens/section_head_pages/create_new_project/create_new_proje
 import 'package:greenlens/section_head_pages/active_projects/active_projects_page.dart';
 import 'package:greenlens/section_head_pages/previous_projects/previous_projects_page.dart';
 
+/// Section Head's home dashboard.
+///
+/// Provides three main actions:
+///   - Create New Project    → Launches the 5-step CreateProjectFlow wizard
+///   - Assign Engineers      → Opens AssignEngineersFlow to link engineers to a project
+///   - Previous Projects     → Lists all completed projects
+///
+/// Also shows the latest active projects as a quick overview.
+/// Tapping a project navigates based on status — drafts open the edit flow,
+/// "Awaiting Approval" (with audit data) opens the audit review for approval,
+/// and "In Progress" opens a read-only audit view.
+///
+/// Section Head approval is one of two required approvals before a project
+/// reaches "Ready" status (the other is CEO approval).
 class SectionHeadPage extends StatefulWidget {
   const SectionHeadPage({super.key});
 
@@ -21,6 +35,7 @@ class SectionHeadPage extends StatefulWidget {
   State<SectionHeadPage> createState() => _SectionHeadPageState();
 }
 
+/// State for [SectionHeadPage]. Loads the latest projects on init.
 class _SectionHeadPageState extends State<SectionHeadPage> {
   final ProjectService _projectService = ProjectService();
   late Future<List<Map<String, dynamic>>> _latestProjectsFuture;

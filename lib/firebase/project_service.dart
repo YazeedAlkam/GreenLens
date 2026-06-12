@@ -1,6 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// All Firestore read/write operations for projects.
+///
+/// Projects are stored in the `projects` collection. Each document has:
+///   - customId: sequential human-readable ID like "P-0001" (from meta/projectCounter)
+///   - status: Draft → Awaiting Approval → In Progress → Ready / Denied → Completed
+///   - projectInfo, clientInfo, costs: set by the Section Head during project creation
+///   - auditData: set by Engineers during the audit entry flow
+///   - assignedEngineers: list of Firebase Auth UIDs
+///
+/// Status transitions:
+///   Section Head creates → "Draft" or "Awaiting Approval"
+///   CEO approves project info → "In Progress" (engineers can now enter audit data)
+///   Engineer submits audit → "Awaiting Approval" (both CEO and Section Head must approve)
+///   Both approve audit → "Ready"
+///   CEO or Section Head denies → "Denied"
 class ProjectService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -105,7 +120,8 @@ class ProjectService {
     return {'id': doc.id, ...doc.data()!};
   }
 
-  /// Returns recently created projects, ordered by createdAt desc.
+  /// Returns the 10 most recently touched projects, ordered by updatedAt desc.
+  /// Used by the dashboards' "Latest Projects" lists.
   Future<List<Map<String, dynamic>>> getLatestProjects() async {
     final snap = await _firestore
         .collection('projects')
@@ -125,6 +141,11 @@ class ProjectService {
   }
 
   /// Returns all non-completed projects ordered by updatedAt desc.
+  ///
+  /// "Denied" projects are a special case: a project denied BEFORE any audit
+  /// data exists is still active (the Section Head must fix and resubmit the
+  /// project info), but a project denied AFTER the audit was submitted is
+  /// handled in the audit-review flow instead, so it is excluded here.
   Future<List<Map<String, dynamic>>> getActiveProjects() async {
     final snap = await _firestore
         .collection('projects')
@@ -147,6 +168,7 @@ class ProjectService {
   }
 
   /// Returns all completed projects ordered by updatedAt desc.
+  /// Sorting happens in Dart (not Firestore) to avoid needing a composite index.
   Future<List<Map<String, dynamic>>> getPreviousProjects() async {
     final snap = await _firestore
         .collection('projects')

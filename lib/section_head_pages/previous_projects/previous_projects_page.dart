@@ -8,6 +8,8 @@ import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Formats a Firestore [Timestamp] as a human-friendly ordinal date string,
+/// e.g. "3rd of June 2025". Returns 'N/A' for null or non-Timestamp values.
 String _formatDate(dynamic timestamp) {
   if (timestamp == null) return 'N/A';
   if (timestamp is! Timestamp) return 'N/A';
@@ -35,6 +37,7 @@ String _formatDate(dynamic timestamp) {
   return '$day$suffix of ${months[date.month - 1]} ${date.year}';
 }
 
+/// Full-page list of projects with status "Completed" (Section Head view).
 class PreviousProjectsPage extends StatefulWidget {
   const PreviousProjectsPage({super.key});
 
@@ -42,6 +45,7 @@ class PreviousProjectsPage extends StatefulWidget {
   State<PreviousProjectsPage> createState() => _PreviousProjectsPageState();
 }
 
+/// State for [PreviousProjectsPage]. Loads completed projects on init.
 class _PreviousProjectsPageState extends State<PreviousProjectsPage> {
   late Future<List<Map<String, dynamic>>> _projectsFuture;
 
@@ -61,6 +65,8 @@ class _PreviousProjectsPageState extends State<PreviousProjectsPage> {
       body: Column(
         children: [
           Expanded(
+            // Fades the bottom edge of the scrollable list so rows appear to
+            // dissolve before reaching the footer.
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
                 return const LinearGradient(
@@ -225,6 +231,8 @@ class _PreviousProjectsPageState extends State<PreviousProjectsPage> {
   }
 }
 
+/// A single row in the previous-projects list showing the project name and
+/// formatted finish date. Tapping opens [ProjectSummaryPage] in read-only mode.
 class _PreviousProjectRow extends StatelessWidget {
   final Map<String, dynamic> project;
 
