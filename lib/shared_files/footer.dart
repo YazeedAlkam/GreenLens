@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Selects which button combination the [Footer] renders. Each page/step
+/// picks the mode matching its place in the workflow.
 enum FooterMode {
   /// Back + Save Draft + Next Step  (steps 0–3)
   normal,
@@ -35,6 +37,11 @@ enum FooterMode {
   saveChanges,
 }
 
+/// Multi-mode bottom action bar used across all wizard steps and review pages.
+///
+/// Which buttons are rendered is controlled by [FooterMode]. Use [onSaveDraft],
+/// [onSaveProject], [onAccept], [onDeny], [onMarkComplete], and [onSaveChanges]
+/// to wire up the optional async actions; omitted callbacks disable their button.
 class Footer extends StatelessWidget {
   final int currentStep;
   final VoidCallback onNext;
@@ -63,6 +70,7 @@ class Footer extends StatelessWidget {
 
   // ── shared button styles ────────────────────────────────────────────────
 
+  /// White-background outlined style used for secondary buttons (Back, Save Draft).
   ButtonStyle get _outlineStyle => ElevatedButton.styleFrom(
     backgroundColor: Colors.white,
     foregroundColor: Colors.black,
@@ -73,6 +81,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Primary blue style used for the main forward-action button (Next Step, Done).
   ButtonStyle get _primaryStyle => ElevatedButton.styleFrom(
     backgroundColor: primaryColor,
     foregroundColor: Colors.white,
@@ -83,6 +92,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Green style used for save/submit action buttons (Submit for Review, Save Project).
   ButtonStyle get _saveStyle => ElevatedButton.styleFrom(
     backgroundColor: Color(0xFF2e7d32),
     foregroundColor: Colors.white,
@@ -92,6 +102,7 @@ class Footer extends StatelessWidget {
 
   // ── reusable widgets ────────────────────────────────────────────────────
 
+  /// Full-width "Back" button with a left-arrow icon.
   Widget _backButton() => SizedBox(
     width: double.infinity,
     height: 65,
@@ -120,6 +131,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Compact (min-width) "Back" button used when space is shared with other buttons.
   Widget _backButtonCompact() => SizedBox(
     height: 65,
     child: ElevatedButton(
@@ -147,6 +159,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Fixed-width "Save Draft" outline button that triggers [onSaveDraft].
   Widget _saveDraftButton() => SizedBox(
     width: 309,
     height: 65,
@@ -164,6 +177,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Fixed-width "Save" outline button that reuses [onSaveDraft].
   Widget _saveButton() => SizedBox(
     width: 309,
     height: 65,
@@ -181,6 +195,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Full-width primary "Next Step" button with a right-arrow icon.
   Widget _nextStepButton() => SizedBox(
     width: double.infinity,
     height: 65,
@@ -217,6 +232,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Full-width "Done" button that triggers [onNext].
   Widget _doneButton() => SizedBox(
     width: double.infinity,
     height: 65,
@@ -234,6 +250,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Wide green "Submit for Review" button for the engineer's final audit submission.
   Widget _submitForReviewButton() => SizedBox(
     width: 760,
     height: 65,
@@ -251,6 +268,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Wide green "Save Project" button used on the Section Head's review step.
   Widget _saveProjectButton() => SizedBox(
     width: 760,
     height: 65,
@@ -268,6 +286,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Green "Accept Project" button for the CEO / Section Head approval flow.
   Widget _acceptButton() => SizedBox(
     height: 65,
     child: ElevatedButton(
@@ -289,6 +308,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Green "Mark as Completed" button shown when a project is in Ready status.
   Widget _markCompleteButton() => SizedBox(
     height: 65,
     child: ElevatedButton(
@@ -320,6 +340,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Full-width "Save Changes" button used on the CEO engineer cost editing page.
   Widget _saveChangesButton() => SizedBox(
     width: double.infinity,
     height: 65,
@@ -337,6 +358,7 @@ class Footer extends StatelessWidget {
     ),
   );
 
+  /// Red "Deny Project" button for the CEO / Section Head denial flow.
   Widget _denyButton() => SizedBox(
     height: 65,
     child: ElevatedButton(

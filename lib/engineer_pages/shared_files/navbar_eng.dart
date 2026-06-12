@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Step-indicator nav bar for the engineer audit entry wizard.
+///
+/// Renders the six wizard steps (Building → Review) as numbered circles
+/// connected by animated lines, plus a linear progress bar. Tapping a circle
+/// fires [onStepTapped] so the parent can jump to that step.
 class NavigationBarLinesEng extends StatelessWidget {
   final int currentStep;
   final ValueChanged<int>? onStepTapped;
@@ -32,6 +37,7 @@ class NavigationBarLinesEng extends StatelessWidget {
 
   // ================= STEPPER =================
 
+  /// Builds the row of step circles connected by animated connector lines.
   Widget _buildStepper() {
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -51,6 +57,8 @@ class NavigationBarLinesEng extends StatelessWidget {
 
   // ================= STEP =================
 
+  /// Builds one step circle with label. Active steps are filled; completed
+  /// steps show a check mark; future steps are outlined.
   Widget _buildStep(int index) {
     final isActive = index == currentStep;
     final isCompleted = index < currentStep;
@@ -118,6 +126,7 @@ class NavigationBarLinesEng extends StatelessWidget {
 
   // ================= CONNECTOR =================
 
+  /// Builds the animated horizontal line between two step circles.
   Widget _buildConnector(int index) {
     final isCompleted = index < currentStep;
 
@@ -144,6 +153,7 @@ class NavigationBarLinesEng extends StatelessWidget {
 
   // ================= PROGRESS =================
 
+  /// Builds the animated linear progress bar beneath the step circles.
   Widget _buildProgressBar() {
     final progress = (currentStep + 1) / (_steps.length);
 

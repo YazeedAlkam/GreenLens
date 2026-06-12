@@ -5,6 +5,8 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/section_head_pages/create_new_project/more_contacts.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Sub-page (overlaid during Create Project / Review) showing all contacts
+/// for the project in a scrollable list.
 class AllContactPage extends StatefulWidget {
   final VoidCallback onBack;
   final Map<String, dynamic> clientInfo;
@@ -21,11 +23,13 @@ class AllContactPage extends StatefulWidget {
   State<AllContactPage> createState() => _AllContactPageState();
 }
 
+/// State for [AllContactPage].
 class _AllContactPageState extends State<AllContactPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  /// Returns [value] or 'No Data' when null or empty.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
@@ -125,6 +129,8 @@ class _AllContactPageState extends State<AllContactPage>
                 phoneNumber: _v(second['phone'] as String?),
               ),
             ],
+            // Extra contacts are optional tabs — only render the ones where
+            // a name was actually entered.
             for (final extra in extras)
               if ((extra['name'] as String? ?? '').trim().isNotEmpty) ...[
                 const SizedBox(height: 16),
@@ -149,6 +155,7 @@ class _AllContactPageState extends State<AllContactPage>
     );
   }
 
+  /// Generic two-column "label … value" table row.
   TableRow _infoRow(String label, String value) {
     return TableRow(
       children: [

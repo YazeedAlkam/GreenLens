@@ -7,6 +7,8 @@ import 'package:greenlens/main.dart';
 
 import '../firebase/auth_service.dart';
 
+/// Sign-up screen where new users (Engineer, Section Head, or first CEO)
+/// create an account with name, email, password, and role selection.
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -14,6 +16,8 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+/// State for [SignUp]. Manages form controllers, loading/error state,
+/// role selection, and the CEO-existence check.
 class _SignUpState extends State<SignUp> {
   // Controllers
   final _nameController = TextEditingController();
@@ -36,6 +40,10 @@ class _SignUpState extends State<SignUp> {
     _checkCeoExists();
   }
 
+  /// Queries Firestore to determine whether a CEO account already exists.
+  ///
+  /// If none exists, the 'CEO' option is added to the role dropdown so the
+  /// first user can register as CEO.
   Future<void> _checkCeoExists() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -54,6 +62,10 @@ class _SignUpState extends State<SignUp> {
     super.dispose();
   }
 
+  /// Validates the form and delegates account creation to [AuthService.signUp].
+  ///
+  /// On success navigates to the appropriate dashboard based on the user's role.
+  /// On failure displays a localised error message from [AuthService].
   Future<void> _signUp() async {
     // ── Validation ─────────────────────────────────────────────
     if (_nameController.text.trim().isEmpty) {
@@ -64,6 +76,20 @@ class _SignUpState extends State<SignUp> {
       setState(() => _errorMessage = 'Passwords do not match.');
       return;
     }
+
+    // add validation for password here
+    /*
+    final password = _passwordController.text;
+    if (password.length < 8 ||
+        !password.contains(RegExp(r'[A-Z]')) ||
+        !password.contains(RegExp(r'[0-9]')) ||
+        !password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'))) {
+      setState(() => _errorMessage =
+          'Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.');
+      return;
+    }
+    */
+
     if (_selectedRole == null) {
       setState(() => _errorMessage = 'Please select a role.');
       return;
@@ -81,7 +107,6 @@ class _SignUpState extends State<SignUp> {
         _nameController.text.trim(),
         _selectedRole!,
       );
-      // TODO: save _nameController.text & _selectedRole to Firestore here
       if (!mounted) return;
       Navigator.pushNamed(context, '/');
     } catch (e) {
@@ -279,7 +304,7 @@ class _SignUpState extends State<SignUp> {
                             borderSide: BorderSide(
                               color: primaryColor,
                               width: 2,
-                            ), // 👈 was faded
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),

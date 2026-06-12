@@ -5,6 +5,11 @@ import '../shared_files/background.dart';
 import '../main.dart';
 import 'user_model.dart';
 
+/// The app's entry screen. Handles email/password login and password reset.
+///
+/// After a successful login, fetches the user's role from Firestore via
+/// UserModel.fetchCurrent() and navigates to the matching role dashboard.
+/// Also provides a "Forgot password?" dialog that sends a Firebase reset email.
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
@@ -12,6 +17,8 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
+/// State for [SignInPage]. Holds the form controllers, loading/error state,
+/// and the sign-in / forgot-password actions.
 class _SignInPageState extends State<SignInPage> {
   // Controllers
   final _emailController = TextEditingController();
@@ -31,6 +38,7 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
+  /// Signs in with email/password, then routes to the user's role-specific dashboard.
   Future<void> _signIn() async {
     setState(() {
       _isLoading = true;
@@ -67,6 +75,8 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  /// Shows a dialog to send a Firebase password-reset email.
+  /// Pre-fills the email field if the user already typed their email on the sign-in form.
   Future<void> _showForgotPasswordDialog() async {
     final resetEmailController = TextEditingController(
       text: _emailController.text.trim(),

@@ -3,17 +3,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Read-only review page showing all entered production-line machine items
+/// in tabular form.
+///
+/// Displayed inside the audit wizard's Review step or from the project summary
+/// when the user taps the 'Production Lines' drill-down row.
 class ProductionReview extends StatelessWidget {
   final VoidCallback onBack;
   final List<dynamic> machinesData;
 
   const ProductionReview({super.key, required this.onBack, this.machinesData = const []});
 
+  /// Safe value accessor: returns [map][key] with optional [suffix], or '—' if absent.
   String _v(Map map, String key, {String suffix = ''}) {
     final val = map[key]?.toString() ?? '';
     return val.isEmpty ? '—' : '$val$suffix';
   }
 
+  /// Builds a two-cell table row (label | value) for the data tables.
   TableRow _row(String label, String value) {
     return TableRow(
       children: [
@@ -31,6 +38,8 @@ class ProductionReview extends StatelessWidget {
     );
   }
 
+  /// Annual energy use of one machine line in kWh:
+  /// rated power (kW) × quantity × yearly operating hours.
   double _computeKwh(Map item) {
     final power = double.tryParse(item['ratedPower']?.toString() ?? '') ?? 0;
     final qty = double.tryParse(item['quantity']?.toString() ?? '') ?? 0;
@@ -38,18 +47,21 @@ class ProductionReview extends StatelessWidget {
     return power * qty * hours;
   }
 
+  /// Formatted annual energy ("1234 kWh"), or '—' when no data was entered.
   String _totalPower(Map item) {
     final kwh = _computeKwh(item);
     if (kwh == 0) return '—';
     return kwh == kwh.truncateToDouble() ? '${kwh.toInt()} kWh' : '${kwh.toStringAsFixed(2)} kWh';
   }
 
+  /// Annual energy cost = kWh × national tariff (energyTariffJodPerKwh).
   String _energyCost(Map item) {
     final cost = _computeKwh(item) * energyTariffJodPerKwh;
     if (cost == 0) return '—';
     return cost == cost.truncateToDouble() ? '${cost.toInt()} JOD' : '${cost.toStringAsFixed(2)} JOD';
   }
 
+  /// Heading: the machine's name, or "Line N" when unnamed.
   String _lineTitle(Map item, int index) {
     final name = item['name']?.toString().trim() ?? '';
     return name.isNotEmpty ? name : 'Line ${index + 1}';

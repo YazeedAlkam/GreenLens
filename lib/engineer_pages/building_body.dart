@@ -5,6 +5,11 @@ import 'package:greenlens/main.dart';
 
 import '../shared_files/footer.dart';
 
+/// Step 1 of the audit entry wizard: general building information.
+///
+/// Displays read-only project info fields (name, type, area, floors, operating
+/// hours, average bill, dates) and editable audit fields (visit date, sales
+/// mark, notes). When [readOnly] is true all fields are disabled.
 class BuildingBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -28,6 +33,8 @@ class BuildingBody extends StatefulWidget {
   State<BuildingBody> createState() => BuildingBodyState();
 }
 
+/// State for [BuildingBody]. Exposes [getBuildingAuditData] and [getSalesMark]
+/// so the parent wizard can collect form data via a [GlobalKey].
 class BuildingBodyState extends State<BuildingBody> {
   final TextEditingController visitdatecontroller = TextEditingController();
   final TextEditingController salesMarkController = TextEditingController();
@@ -58,6 +65,8 @@ class BuildingBodyState extends State<BuildingBody> {
     }
   }
 
+  /// Pre-fills all text controllers from [widget.projectInfo] and
+  /// [widget.auditBuildingData] when the widget is first created or updated.
   void _populateFromProjectInfo() {
     final info = widget.projectInfo;
     if (info == null) return;
@@ -97,13 +106,18 @@ class BuildingBodyState extends State<BuildingBody> {
     super.dispose();
   }
 
+  /// Returns a map with audit-specific fields (visit date, notes)
+  /// to be stored under `auditData.building` in Firestore.
   Map<String, dynamic> getBuildingAuditData() => {
     'visitDate': visitdatecontroller.text,
     'notes': notesController.text,
   };
 
+  /// Returns the sales-mark string entered by the engineer.
   String getSalesMark() => salesMarkController.text;
 
+  /// Shows a [showDatePicker] dialog and writes the selected date as
+  /// "d/M/yyyy" into [controller].
   Future<void> pickDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -148,6 +162,8 @@ class BuildingBodyState extends State<BuildingBody> {
     );
   }
 
+  /// Greyed-out, non-editable field showing data carried over from the
+  /// project info entered by the Section Head.
   Widget _readOnlyField(TextEditingController ctrl, {String? suffix}) {
     return SizedBox(
       height: 65,

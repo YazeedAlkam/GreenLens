@@ -14,6 +14,21 @@ import 'package:greenlens/engineer_pages/shared_files/navbar_eng_title.dart';
 import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 
+/// 6-step wizard for engineers to enter on-site energy audit data.
+///
+/// Steps:
+///   1. Building     — general building info and sales mark
+///   2. Lighting     — lighting areas (type, quantity, power, hours)
+///   3. AC           — cooling systems (split, packaged, or central)
+///   4. Equipment    — electrical equipment items
+///   5. Machinery    — production line machines
+///   6. Review       — summary of all entered data before submission
+///
+/// Each step is a separate widget kept alive in an IndexedStack using GlobalKeys,
+/// so navigating back and forth does not lose unsaved form data.
+///
+/// When readOnly is true (Section Head or CEO viewing), the Review step shows
+/// a "Close" button instead of "Submit", and all form fields are disabled.
 class AuditEntryFlow extends StatefulWidget {
   final String projectId;
   final bool readOnly;
@@ -23,6 +38,8 @@ class AuditEntryFlow extends StatefulWidget {
   State<AuditEntryFlow> createState() => _AuditEntryFlowState();
 }
 
+/// State for [AuditEntryFlow]. Manages the active step index, review-detail
+/// overlay, and GlobalKeys used to pull data from each step widget.
 class _AuditEntryFlowState extends State<AuditEntryFlow> {
   int _currentStep = 0;
   int? _reviewDetail; // 0=lighting 1=ac 2=equipment 3=machines
@@ -42,6 +59,8 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     _fetchProject();
   }
 
+  /// Loads the project document from Firestore and populates [_projectInfo]
+  /// and [_auditData] used to pre-fill the form steps.
   Future<void> _fetchProject() async {
     final data = await ProjectService().getProjectById(widget.projectId);
     setState(() {
@@ -51,6 +70,8 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     });
   }
 
+  /// Collects data from all 5 audit step widgets into a flat map of
+  /// Firestore dot-notation field paths ready for ProjectService.updateFields().
   Map<String, dynamic> _buildAuditPayload() => {
     'auditData.building': _buildingKey.currentState?.getBuildingAuditData() ?? {},
     'auditData.lighting': _lightingKey.currentState?.getLightingData() ?? [],
@@ -60,6 +81,7 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     'projectInfo.salesMark': _buildingKey.currentState?.getSalesMark() ?? '',
   };
 
+  /// Saves the current audit data as a draft (status stays unchanged) and pops.
   Future<void> _save() async {
     try {
       await ProjectService().updateFields(widget.projectId, _buildAuditPayload());
@@ -78,6 +100,9 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     }
   }
 
+  /// Saves audit data and changes the project status to "Awaiting Approval".
+  /// Also resets both approval flags (ceo_approved, sectionhead_approved) so
+  /// reviewers must re-approve any audit that has been resubmitted after a denial.
   Future<void> _submitForReview() async {
     try {
       await ProjectService().updateFields(widget.projectId, {
@@ -102,10 +127,13 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     }
   }
 
+  /// Advances to the next wizard step (up to step 5).
   void _next() {
     if (_currentStep < 5) setState(() => _currentStep++);
   }
 
+  /// Navigates backward: closes a review-detail overlay first if open,
+  /// then decrements the step, or pops the route when already on step 0.
   void _back() {
     if (_reviewDetail != null) {
       setState(() => _reviewDetail = null);
@@ -118,6 +146,8 @@ class _AuditEntryFlowState extends State<AuditEntryFlow> {
     }
   }
 
+  /// Jumps directly to [step] from the nav-bar step indicator and clears
+  /// any open review-detail overlay.
   void _onStepTapped(int step) {
     setState(() {
       _currentStep = step;

@@ -3,6 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'ac_forum_state.dart';
 
+/// Stateless form card for one AC group.
+///
+/// Reads and writes through the provided [GroupFormState]. Switches between
+/// Split, Packaged, and Central sub-forms based on [state.activeType].
+/// When [readOnly] is true all interactive controls are disabled.
 class GroupForm extends StatelessWidget {
   const GroupForm({
     super.key,
@@ -151,6 +156,7 @@ class GroupForm extends StatelessWidget {
     }
   }
 
+  /// Field label with a red asterisk marking the field as required.
   static Widget _fieldLabel(String textt) => RichText(
     text: TextSpan(
       children: [
@@ -158,7 +164,7 @@ class GroupForm extends StatelessWidget {
           text: textt,
           style: GoogleFonts.firaSans(
             fontSize: 24,
-            fontWeight: FontWeight.w500, //meduim
+            fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
         ),
@@ -166,7 +172,7 @@ class GroupForm extends StatelessWidget {
           text: " *",
           style: GoogleFonts.firaSans(
             fontSize: 24,
-            fontWeight: FontWeight.w500, //meduim
+            fontWeight: FontWeight.w500,
             color: Colors.deepOrange,
           ),
         ),
@@ -561,7 +567,7 @@ Widget _fieldLabelRequired(String text, Color astrickColor) => RichText(
         text: text,
         style: GoogleFonts.firaSans(
           fontSize: 24,
-          fontWeight: FontWeight.w500, //meduim
+          fontWeight: FontWeight.w500,
           color: Colors.black87,
         ),
       ),
@@ -569,13 +575,14 @@ Widget _fieldLabelRequired(String text, Color astrickColor) => RichText(
         text: " *",
         style: GoogleFonts.firaSans(
           fontSize: 24,
-          fontWeight: FontWeight.w500, //meduim
+          fontWeight: FontWeight.w500,
           color: astrickColor,
         ),
       ),
     ],
   ),
 );
+/// Field label without the required-asterisk (for optional fields).
 Widget _fieldLabelUnRequired(String textt) => RichText(
   text: TextSpan(
     children: [
@@ -583,7 +590,7 @@ Widget _fieldLabelUnRequired(String textt) => RichText(
         text: textt,
         style: GoogleFonts.firaSans(
           fontSize: 24,
-          fontWeight: FontWeight.w500, //meduim
+          fontWeight: FontWeight.w500,
           color: Colors.black87,
         ),
       ),
@@ -591,6 +598,8 @@ Widget _fieldLabelUnRequired(String textt) => RichText(
   ),
 );
 
+/// Labeled required text field (numeric by default) used throughout the
+/// AC group forms; renders greyed-out when [readOnly].
 class _FormField extends StatelessWidget {
   const _FormField({
     required this.label,
@@ -664,6 +673,8 @@ class _FormField extends StatelessWidget {
     );
   }
 }
+/// Same as [_FormField] but without the required asterisk — for optional
+/// inputs.
 class _FormFieldUnRequired extends StatelessWidget {
   const _FormFieldUnRequired({
     required this.label,
@@ -734,6 +745,8 @@ class _FormFieldUnRequired extends StatelessWidget {
   }
 }
 
+/// Non-editable display field with a green tint — used for auto-calculated
+/// values (e.g. Total Power) inside the AC forms.
 class _ReadOnlyField extends StatelessWidget {
   const _ReadOnlyField({required this.label, required this.value, this.astrickColor = deniedColor});
   final String label;
@@ -770,6 +783,8 @@ class _ReadOnlyField extends StatelessWidget {
   }
 }
 
+/// Expanding selector button for the top-level AC type row
+/// (Split / Packaged / Central). Filled when active.
 class _AcTypeButton extends StatelessWidget {
   const _AcTypeButton({
     required this.label,
@@ -811,6 +826,8 @@ class _AcTypeButton extends StatelessWidget {
   }
 }
 
+/// Fixed-size two-option toggle (e.g. Inverter / Non-Inverter,
+/// Air / Water cooled). Filled when active.
 class _ToggleButton extends StatelessWidget {
   const _ToggleButton({
     required this.label,
@@ -850,6 +867,7 @@ class _ToggleButton extends StatelessWidget {
   }
 }
 
+/// Tab button for switching between AC groups (Group 1, Group 2, …).
 class _GroupTabButton extends StatelessWidget {
   const _GroupTabButton({
     required this.label,

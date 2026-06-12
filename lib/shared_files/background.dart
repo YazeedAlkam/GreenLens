@@ -3,8 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 import 'dart:ui';
 
+/// Opacity applied to each decorative ellipse shape on auth screens.
 const double opacity = 0.48;
 
+/// Scaffold wrapper used on all authentication screens.
+///
+/// Renders a blurred decorative ellipse background (top and bottom),
+/// the GreenLens logo centered near the top, and the provided [child] content.
 class AuthBackground extends StatelessWidget {
   final Widget child;
 
@@ -52,6 +57,7 @@ class AuthBackground extends StatelessWidget {
 
 // ─── TOP ──────────────────────────────────────────────────────────────────────
 
+/// Sizes and positions the top [_EllipsePainterTop] CustomPainter.
 class _EllipseBackground extends StatelessWidget {
   const _EllipseBackground();
 
@@ -67,6 +73,7 @@ class _EllipseBackground extends StatelessWidget {
   }
 }
 
+/// Draws three overlapping semi-transparent blue ellipses at the top of auth screens.
 class _EllipsePainterTop extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -116,6 +123,7 @@ class _EllipsePainterTop extends CustomPainter {
 
 // ─── BOTTOM ───────────────────────────────────────────────────────────────────
 
+/// Positions the bottom [_EllipsePainterBottom] CustomPainter at the screen's lower edge.
 class _EllipseBackgroundBottom extends StatelessWidget {
   const _EllipseBackgroundBottom();
 
@@ -136,6 +144,7 @@ class _EllipseBackgroundBottom extends StatelessWidget {
   }
 }
 
+/// Draws three overlapping semi-transparent blue ellipses rising from the bottom of auth screens.
 class _EllipsePainterBottom extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

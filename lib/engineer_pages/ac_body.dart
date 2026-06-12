@@ -6,6 +6,10 @@ import '../shared_files/footer.dart';
 import 'shared_files/ac_forum_state.dart';
 import 'shared_files/group_forum.dart';
 
+/// Step 3 of the audit entry wizard: AC / HVAC group data entry.
+///
+/// Supports multiple cooling groups (tab-based). Group 1 always exists; extra
+/// groups can be added or deleted. When [readOnly] is true all fields are disabled.
 class AcBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -27,6 +31,8 @@ class AcBody extends StatefulWidget {
   State<AcBody> createState() => AcBodyState();
 }
 
+/// State for [AcBody]. Manages a list of [GroupFormState] objects (one per group)
+/// and exposes [getAcData] so the parent wizard can collect data via a [GlobalKey].
 class AcBodyState extends State<AcBody> {
   int _activeGroup = 0;
   final List<int> _extraGroup = [];
@@ -51,11 +57,16 @@ class AcBodyState extends State<AcBody> {
     }
   }
 
+  /// Returns all AC groups as a list of maps to be stored under
+  /// `auditData.ac` in Firestore.
   List<Map<String, dynamic>> getAcData() =>
       _groupStates.map((s) => s.toMap()).toList();
 
+  /// Returns the tab label for an extra group, e.g. "Group 2", "Group 3".
   String _extraGroupLabel(int id) => "Group ${_extraGroup.indexOf(id) + 2}";
 
+  /// Removes the currently active group tab, promoting the next group if Group 1
+  /// is deleted, or selecting the nearest remaining group otherwise.
   void _deleteActiveGroup() {
     if (_groupStates.length <= 1) return;
     if (_activeGroup == 0) {
@@ -91,11 +102,13 @@ class AcBodyState extends State<AcBody> {
     super.dispose();
   }
 
+  /// Returns the zero-based index into [_groupStates] for the active tab.
   int get _activeGroupIndex {
     if (_activeGroup == 0) return 0;
     return _extraGroup.indexOf(_activeGroup) + 1;
   }
 
+  /// Returns the display label for the currently active group tab.
   String get _activeGroupLabel {
     if (_activeGroup == 0) return 'Group 1';
     return _extraGroupLabel(_activeGroup);
@@ -230,6 +243,9 @@ class AcBodyState extends State<AcBody> {
   }
 }
 
+/// A tab button for switching between AC groups.
+///
+/// Renders with the primary background when [isActive] is true.
 class _GroupTabButton extends StatelessWidget {
   const _GroupTabButton({
     super.key,

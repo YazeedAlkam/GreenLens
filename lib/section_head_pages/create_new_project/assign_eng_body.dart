@@ -5,6 +5,10 @@ import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 3 of the Create Project wizard: selecting which engineers to assign.
+///
+/// Loads all available engineers from Firestore and lets the Section Head
+/// toggle their selection. Pre-selects [initialAssignedEngineers] when editing.
 class AssignEngBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -27,6 +31,8 @@ class AssignEngBody extends StatefulWidget {
   State<AssignEngBody> createState() => AssignEngBodyState();
 }
 
+/// State for [AssignEngBody]. Exposes [getAssignedEngineers] (UIDs for
+/// Firestore) and [getAssignedEngineersInfo] (display info) via [GlobalKey].
 class AssignEngBodyState extends State<AssignEngBody>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -42,6 +48,8 @@ class AssignEngBodyState extends State<AssignEngBody>
     _loadEngineers();
   }
 
+  /// Fetches all engineers from Firestore and marks the ones that were
+  /// already assigned (when editing a draft) as selected.
   Future<void> _loadEngineers() async {
     try {
       final engineers = await ProjectService().getEngineers();
@@ -66,6 +74,8 @@ class AssignEngBodyState extends State<AssignEngBody>
     }
   }
 
+  /// Firebase Auth UIDs of the selected engineers — what gets stored in the
+  /// project's `assignedEngineers` array.
   List<String> getAssignedEngineers() {
     return _engineers
         .where((e) => e['isAssigned'] == true)
@@ -73,6 +83,8 @@ class AssignEngBodyState extends State<AssignEngBody>
         .toList();
   }
 
+  /// Display info (customId, name, email, hourly rate) of the selected
+  /// engineers — used by the Review step and the engineer-cost calculation.
   List<Map<String, dynamic>> getAssignedEngineersInfo() {
     return _engineers
         .where((e) => e['isAssigned'] == true)
@@ -113,6 +125,8 @@ class AssignEngBodyState extends State<AssignEngBody>
             Center(child: Text('Error loading engineers: $_error'))
           else
             Builder(builder: (context) {
+              // In read-only mode only show the engineers actually assigned;
+              // in edit mode show everyone so they can be toggled.
               final displayed = widget.readOnly
                   ? _engineers.where((e) => e['isAssigned'] == true).toList()
                   : _engineers;
@@ -270,6 +284,7 @@ class AssignEngBodyState extends State<AssignEngBody>
     );
   }
 
+  /// Green bold header cell for the engineers table.
   Widget _headerCell(String text) {
     return Container(
       padding: EdgeInsets.all(10),
@@ -287,6 +302,7 @@ class AssignEngBodyState extends State<AssignEngBody>
     );
   }
 
+  /// Plain data cell for the engineers table.
   Widget _dataCell(String text) {
     return Container(
       padding: EdgeInsets.all(10),

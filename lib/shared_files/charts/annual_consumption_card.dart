@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'chart_theme.dart';
 
+/// Chart card displaying monthly grid electricity usage (kWh) as a curved area line chart.
 class AnnualConsumptionCard extends StatelessWidget {
   final ChartTheme theme;
 
@@ -22,6 +23,7 @@ class AnnualConsumptionCard extends StatelessWidget {
     this.monthLabels,
   }) : assert(electricityKwh.length == 12);
 
+  /// Creates an [AnnualConsumptionCard] pre-filled with hard-coded sample data for previews.
   factory AnnualConsumptionCard.sample(ChartTheme theme) {
     return AnnualConsumptionCard(
       theme: theme,
@@ -139,6 +141,8 @@ class AnnualConsumptionCard extends StatelessWidget {
     );
   }
 
+  /// Builds one [LineChartBarData] series with a curved line, dot markers,
+  /// and a translucent fill area below the line.
   LineChartBarData _series(List<double> data, Color color,
       {double fillAlpha = 0.2}) {
     return LineChartBarData(

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 
+/// Utility class providing the standard app bar used across all dashboard and flow screens.
 class CustomAppBar {
+  /// Builds and returns the standard deep-indigo [AppBar] with the GreenLens
+  /// logo, a large [title], and a smaller [subtitle] below it.
   static AppBar build({required String title, required String subtitle}) {
     return AppBar(
       backgroundColor: primaryColor,

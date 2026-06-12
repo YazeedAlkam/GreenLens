@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'chart_theme.dart';
 
+/// Chart card comparing current vs. post-savings monthly electricity costs as a grouped bar chart.
 class EstimatedCostCard extends StatelessWidget {
   final ChartTheme theme;
 
@@ -28,6 +29,7 @@ class EstimatedCostCard extends StatelessWidget {
   })  : assert(currentCost.length == 12),
         assert(afterSavings.length == 12);
 
+  /// Creates an [EstimatedCostCard] pre-filled with hard-coded sample data for previews.
   factory EstimatedCostCard.sample(ChartTheme theme) {
     return EstimatedCostCard(
       theme: theme,
@@ -187,6 +189,7 @@ class EstimatedCostCard extends StatelessWidget {
     );
   }
 
+  /// Builds a single bar rod with rounded top corners.
   BarChartRodData _rod(double value, Color color) {
     return BarChartRodData(
       toY: value,
@@ -199,6 +202,7 @@ class EstimatedCostCard extends StatelessWidget {
     );
   }
 
+  /// Formats a double as a comma-separated integer string (e.g. 34739 → "34,739").
   static String _formatNumber(double v) {
     final s = v.truncateToDouble() == v
         ? v.toInt().toString()

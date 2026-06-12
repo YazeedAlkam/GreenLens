@@ -15,6 +15,18 @@ import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/ceo_pages/assign_engineer_costs_page.dart';
 import 'package:greenlens/section_head_pages/previous_projects/previous_projects_page.dart';
 
+/// CEO's home dashboard.
+///
+/// Shows active projects (status: In Progress, Awaiting Approval, Ready) and
+/// provides two quick-action buttons:
+///   - Previous Projects      → Lists all completed projects
+///   - Assign Engineer Costs  → Sets hourly rate per engineer (used in cost reports)
+///
+/// Tapping a project routes to the correct review page based on status:
+///   - "Awaiting Approval" with audit data    → CeoAuditReviewPage (approve/deny audit)
+///   - "Awaiting Approval" without audit data → CeoProjectReviewPage (approve/deny project)
+///   - "In Progress"                          → AuditEntryFlow (read-only)
+///   - "Ready"                                → ProjectSummaryPage
 class CEOPage extends StatefulWidget {
   const CEOPage({super.key});
 
@@ -22,6 +34,7 @@ class CEOPage extends StatefulWidget {
   State<CEOPage> createState() => _CEOPageState();
 }
 
+/// State for [CEOPage]. Loads active projects on init.
 class _CEOPageState extends State<CEOPage> {
   final ProjectService _projectService = ProjectService();
   late Future<List<Map<String, dynamic>>> _activeProjectsFuture;
@@ -34,6 +47,8 @@ class _CEOPageState extends State<CEOPage> {
     _activeProjectsFuture = _projectService.getLatestProjects();
   }
 
+  /// Returns the correct onTap callback for a project card based on its status.
+  /// Returns null for statuses that have no action (e.g. Draft).
   VoidCallback? _buildOnTap(
     BuildContext context,
     Map<String, dynamic> project,

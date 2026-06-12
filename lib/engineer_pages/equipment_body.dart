@@ -8,6 +8,10 @@ import '../shared_files/footer.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Data model for one equipment item
 // ─────────────────────────────────────────────────────────────────────────────
+/// Data model and controller holder for one electrical equipment item.
+///
+/// Owns the [TextEditingController]s for all form fields and computes
+/// [totalPower] (kWh/year) and [energyCost] (JOD/year) reactively.
 class EquipmentItem {
   int id; // ← not final anymore so we can reassign after remove
   bool isCompressedAir;
@@ -25,7 +29,7 @@ class EquipmentItem {
         quantityController = TextEditingController(),
         yearlyHoursController = TextEditingController();
 
-  // ← Priority: typed name → "Compressed Air" → "Equipment item N"
+  /// Label shown on the item's tab. Priority: typed name → "Compressed Air" → "Equipment item N".
   String get tabLabel {
     final name = nameController.text.trim();
     if (name.isNotEmpty) return name;
@@ -33,6 +37,7 @@ class EquipmentItem {
     return 'Equipment item $id';
   }
 
+  /// Yearly energy consumption in kWh: ratedPower × quantity × yearlyHours.
   double get totalPower {
     final power = double.tryParse(ratedPowerController.text) ?? 0;
     final qty = double.tryParse(quantityController.text) ?? 0;
@@ -40,10 +45,12 @@ class EquipmentItem {
     return power * qty * hours;
   }
 
+  /// Annual energy cost in JOD: [totalPower] × [energyTariffJodPerKwh].
   double get energyCost {
     return totalPower * energyTariffJodPerKwh;
   }
 
+  /// Serialises the item to a Firestore-friendly map.
   Map<String, dynamic> toMap() => {
     'id': id,
     'isCompressedAir': isCompressedAir,
@@ -55,6 +62,7 @@ class EquipmentItem {
     'energyCost': energyCost > 0 ? energyCost.toStringAsFixed(2) : '',
   };
 
+  /// Deserialises an [EquipmentItem] from a Firestore map.
   static EquipmentItem fromMap(Map<String, dynamic> map) {
     final item = EquipmentItem(id: (map['id'] as int?) ?? 1);
     item.isCompressedAir = (map['isCompressedAir'] as bool?) ?? false;
@@ -78,6 +86,9 @@ class EquipmentItem {
 // ─────────────────────────────────────────────────────────────────────────────
 // Main page widget
 // ─────────────────────────────────────────────────────────────────────────────
+/// Step 4 of the audit entry wizard: electrical equipment data entry.
+///
+/// Each item has its own tab. When [readOnly] is true all fields are disabled.
 class ElectricalEquipmentBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -101,6 +112,8 @@ class ElectricalEquipmentBody extends StatefulWidget {
       ElectricalEquipmentBodyState();
 }
 
+/// State for [ElectricalEquipmentBody]. Manages the [EquipmentItem] list
+/// and exposes [getEquipmentData] for the parent wizard via a [GlobalKey].
 class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
   final List<EquipmentItem> _items = [EquipmentItem(id: 1)];
   int _activeIndex = 0;
@@ -117,16 +130,19 @@ class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
     _reassignIds();
   }
 
+  /// Returns all equipment items serialised to maps, stored under
+  /// `auditData.equipment` in Firestore.
   List<Map<String, dynamic>> getEquipmentData() =>
       _items.map((i) => i.toMap()).toList();
 
-  // ← Reassigns IDs 1,2,3... based on current list positions
+  /// Re-numbers item IDs as 1, 2, 3… after an add or remove operation.
   void _reassignIds() {
     for (int i = 0; i < _items.length; i++) {
       _items[i].id = i + 1;
     }
   }
 
+  /// Appends a new [EquipmentItem] and switches to its tab.
   void _addItem() {
     setState(() {
       _items.add(EquipmentItem(id: _items.length + 1));
@@ -135,6 +151,8 @@ class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
     });
   }
 
+  /// Removes the item at [index], disposes its controllers, and resets IDs.
+  /// Does nothing when only one item remains.
   void _removeItem(int index) {
     if (_items.length == 1) return;
     setState(() {
@@ -232,6 +250,10 @@ class ElectricalEquipmentBodyState extends State<ElectricalEquipmentBody> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Single equipment form card
 // ─────────────────────────────────────────────────────────────────────────────
+/// Form card for editing or viewing a single [EquipmentItem].
+///
+/// Listens to rated-power, quantity, and yearly-hours controllers to
+/// reactively recompute the displayed total power and energy cost.
 class EquipmentItemForm extends StatefulWidget {
   final EquipmentItem item;
   final bool readOnly;
@@ -252,9 +274,12 @@ class EquipmentItemForm extends StatefulWidget {
   State<EquipmentItemForm> createState() => _EquipmentItemFormState();
 }
 
+/// State for [EquipmentItemForm].
 class _EquipmentItemFormState extends State<EquipmentItemForm> {
   EquipmentItem get _item => widget.item;
 
+  /// Handles the "Compressed Air" checkbox: auto-fills the name and clears
+  /// the compressed-air type field when unchecked.
   void _onCompressedAirToggled(bool? value) {
     setState(() {
       _item.isCompressedAir = value ?? false;
@@ -268,9 +293,10 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
     widget.onChanged();
   }
 
+  /// Triggers a rebuild so the computed total power/cost fields update.
   void _recalculate() => setState(() {});
 
-  // ← Triggers parent setState so tab label rerenders as user types
+  /// Triggers [widget.onChanged] so the parent can rebuild the tab label.
   void _onNameChanged() => widget.onChanged();
 
   @override
@@ -524,6 +550,10 @@ class _EquipmentItemFormState extends State<EquipmentItemForm> {
     );
   }
 
+  /// Builds a styled text field for the equipment form.
+  ///
+  /// When [readOnly] or [filled] is true the field is rendered with a grey
+  /// background to indicate it is not editable.
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -592,6 +622,7 @@ Widget _fieldLabelRequired(String text, Color astrickColor) => RichText(
       ),
     );
 
+/// A read-only display field showing a computed value in a green-tinted box.
 class _ReadOnlyField extends StatelessWidget {
   const _ReadOnlyField({required this.label, required this.value, this.astrickColor = deniedColor});
   final String label;
@@ -629,6 +660,7 @@ class _ReadOnlyField extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Tab button
 // ─────────────────────────────────────────────────────────────────────────────
+/// Animated tab button for switching between equipment items.
 class _EquipmentTabButton extends StatelessWidget {
   const _EquipmentTabButton({
     required this.label,
@@ -675,6 +707,7 @@ class _EquipmentTabButton extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Add (+) tab button
 // ─────────────────────────────────────────────────────────────────────────────
+/// The '+' button at the end of the tab row that adds a new equipment item.
 class _AddTabButton extends StatelessWidget {
   const _AddTabButton({required this.onTap});
   final VoidCallback onTap;

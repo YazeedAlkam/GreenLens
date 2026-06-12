@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Form card for entering data for one lighting area.
+///
+/// Automatically computes total power (kWh) and energy cost (JOD) whenever
+/// rated power, number of lights, or yearly hours change. When [readOnly]
+/// is true all fields are rendered disabled.
 class MainAreaForums extends StatefulWidget {
   final TextEditingController lightingTypeController;
   final TextEditingController ratedPowerController;
@@ -30,7 +35,10 @@ class MainAreaForums extends StatefulWidget {
   State<MainAreaForums> createState() => _MainAreaForumsState();
 }
 
+/// State for [MainAreaForums]. Registers listeners to auto-calculate totals.
 class _MainAreaForumsState extends State<MainAreaForums> {
+  /// Computes total energy (kWh/yr) and cost (JOD/yr) from the form inputs
+  /// and writes the results back into the read-only display controllers.
   void _recalculate() {
     final ratedW = double.tryParse(widget.ratedPowerController.text) ?? 0;
     final numLights = double.tryParse(widget.numLightsController.text) ?? 0;
@@ -61,6 +69,9 @@ class _MainAreaForumsState extends State<MainAreaForums> {
     super.dispose();
   }
 
+  /// Returns a consistent [InputDecoration] for all form fields.
+  ///
+  /// When [readOnly] is true the field is filled with [disableColor].
   InputDecoration _fieldDecoration(String hint, {bool readOnly = false}) => InputDecoration(
     hintText: hint,
     hintStyle: GoogleFonts.firaSans(

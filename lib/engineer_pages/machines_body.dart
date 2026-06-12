@@ -6,6 +6,9 @@ import '../shared_files/footer.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Data model for one equipment item
 // ─────────────────────────────────────────────────────────────────────────────
+/// Data model and controller holder for one production-line machine item.
+///
+/// Mirrors [EquipmentItem] but is used for the Machines / Production Lines step.
 class MachineItem {
   int id; // ← not final anymore so we can reassign after remove
   bool isCompressedAir;
@@ -23,7 +26,7 @@ class MachineItem {
       quantityController = TextEditingController(),
       yearlyHoursController = TextEditingController();
 
-  // ← Priority: typed name → "Compressed Air" → "Equipment item N"
+  /// Label shown on the item's tab. Priority: typed name → "Compressed Air" → "Production Line N".
   String get tabLabel {
     final name = nameController.text.trim();
     if (name.isNotEmpty) return name;
@@ -31,6 +34,7 @@ class MachineItem {
     return 'Production Line $id';
   }
 
+  /// Yearly energy consumption in kWh: ratedPower × quantity × yearlyHours.
   double get totalPower {
     final power = double.tryParse(ratedPowerController.text) ?? 0;
     final qty = double.tryParse(quantityController.text) ?? 0;
@@ -38,10 +42,12 @@ class MachineItem {
     return power * qty * hours;
   }
 
+  /// Annual energy cost in JOD: [totalPower] × [energyTariffJodPerKwh].
   double get energyCost {
     return totalPower * energyTariffJodPerKwh;
   }
 
+  /// Serialises the item to a Firestore-friendly map.
   Map<String, dynamic> toMap() => {
     'id': id,
     'isCompressedAir': isCompressedAir,
@@ -53,6 +59,7 @@ class MachineItem {
     'energyCost': energyCost > 0 ? energyCost.toStringAsFixed(2) : '',
   };
 
+  /// Deserialises a [MachineItem] from a Firestore map.
   static MachineItem fromMap(Map<String, dynamic> map) {
     final item = MachineItem(id: (map['id'] as int?) ?? 1);
     item.isCompressedAir = (map['isCompressedAir'] as bool?) ?? false;
@@ -76,6 +83,9 @@ class MachineItem {
 // ─────────────────────────────────────────────────────────────────────────────
 // Main page widget
 // ─────────────────────────────────────────────────────────────────────────────
+/// Step 5 of the audit entry wizard: production-line machines data entry.
+///
+/// Each machine/line has its own tab. When [readOnly] is true all fields are disabled.
 class MachinesBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -98,6 +108,8 @@ class MachinesBody extends StatefulWidget {
   State<MachinesBody> createState() => MachinesBodyState();
 }
 
+/// State for [MachinesBody]. Manages the [MachineItem] list and exposes
+/// [getMachinesData] for the parent wizard via a [GlobalKey].
 class MachinesBodyState extends State<MachinesBody> {
   final List<MachineItem> _items = [MachineItem(id: 1)];
   int _activeIndex = 0;
@@ -114,16 +126,19 @@ class MachinesBodyState extends State<MachinesBody> {
     _reassignIds();
   }
 
+  /// Returns all machine items serialised to maps, stored under
+  /// `auditData.machines` in Firestore.
   List<Map<String, dynamic>> getMachinesData() =>
       _items.map((i) => i.toMap()).toList();
 
-  // ← Reassigns IDs 1,2,3... based on current list positions
+  /// Re-numbers item IDs as 1, 2, 3… after an add or remove operation.
   void _reassignIds() {
     for (int i = 0; i < _items.length; i++) {
       _items[i].id = i + 1;
     }
   }
 
+  /// Appends a new [MachineItem] and switches to its tab.
   void _addItem() {
     setState(() {
       _items.add(MachineItem(id: _items.length + 1));
@@ -132,6 +147,8 @@ class MachinesBodyState extends State<MachinesBody> {
     });
   }
 
+  /// Removes the item at [index], disposes its controllers, and resets IDs.
+  /// Does nothing when only one item remains.
   void _removeItem(int index) {
     if (_items.length == 1) return;
     setState(() {
@@ -229,6 +246,10 @@ class MachinesBodyState extends State<MachinesBody> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Single equipment form card
 // ─────────────────────────────────────────────────────────────────────────────
+/// Form card for editing or viewing a single [MachineItem].
+///
+/// Listens to rated-power, quantity, and yearly-hours controllers to
+/// reactively recompute the displayed total power and energy cost.
 class MachineForm extends StatefulWidget {
   final MachineItem item;
   final bool readOnly;
@@ -249,11 +270,14 @@ class MachineForm extends StatefulWidget {
   State<MachineForm> createState() => _MachineFormState();
 }
 
+/// State for [MachineForm].
 class _MachineFormState extends State<MachineForm> {
   MachineItem get _item => widget.item;
 
+  /// Triggers a rebuild so the computed total power/cost fields update.
   void _recalculate() => setState(() {});
 
+  /// Triggers [widget.onChanged] so the parent can rebuild the tab label.
   void _onNameChanged() => widget.onChanged();
 
   @override
@@ -413,6 +437,7 @@ class _MachineFormState extends State<MachineForm> {
     );
   }
 
+  /// Builds a styled text field for the machine form.
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -477,6 +502,7 @@ Widget _fieldLabelRequired(String text, Color asteriskColor) => RichText(
   ),
 );
 
+/// A read-only display field showing a computed value in a green-tinted box.
 class _ReadOnlyField extends StatelessWidget {
   const _ReadOnlyField({required this.label, required this.value, this.asteriskColor = deniedColor});
   final String label;
@@ -514,6 +540,7 @@ class _ReadOnlyField extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Tab button
 // ─────────────────────────────────────────────────────────────────────────────
+/// Animated tab button for switching between machine items.
 class _MachineTabButton extends StatelessWidget {
   const _MachineTabButton({
     required this.label,
@@ -560,6 +587,7 @@ class _MachineTabButton extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Add (+) tab button
 // ─────────────────────────────────────────────────────────────────────────────
+/// The '+' button at the end of the tab row that adds a new machine item.
 class _AddTabButton extends StatelessWidget {
   const _AddTabButton({required this.onTap});
   final VoidCallback onTap;

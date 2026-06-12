@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Large "Assign Engineers" title displayed in the Assign Engineers flow AppBar.
 class AssignEngNavBarTitle extends StatelessWidget {
   const AssignEngNavBarTitle({super.key});
 

@@ -87,6 +87,7 @@ class ChartTheme {
               color: const Color(0xFF808080),
             );
 
+  /// White rounded card decoration (border + subtle shadow) shared by all chart cards.
   BoxDecoration get cardDecoration => BoxDecoration(
         color: cardBackground,
         borderRadius: BorderRadius.circular(cardRadius),
@@ -100,6 +101,7 @@ class ChartTheme {
         ],
       );
 
+  /// Default 3-letter month abbreviations used as x-axis labels when [monthLabels] is not provided.
   static const months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',

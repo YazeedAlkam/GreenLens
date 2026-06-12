@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:greenlens/main.dart';
 
+/// Maps a project status string to its corresponding badge [Color].
+/// Also writes the result to the global [statusColor]. Returns [draftColor] for unknown statuses.
 Color getStatusColor(String status) {
   switch (status) {
     case 'In Progress':
@@ -24,6 +26,7 @@ Color getStatusColor(String status) {
   }
 }
 
+/// Tappable list-item card showing a project's name and color-coded status badge.
 class Project extends StatelessWidget {
   final String title;
   final String status;

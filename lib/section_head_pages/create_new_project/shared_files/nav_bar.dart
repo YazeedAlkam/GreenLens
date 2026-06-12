@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Step-indicator nav bar for the Create Project wizard.
+///
+/// Renders the five wizard steps (Client Info → Review) as numbered circles
+/// connected by animated lines, plus a linear progress bar.
 class NavigationBarLines extends StatelessWidget {
   final int currentStep;
   final ValueChanged<int>? onStepTapped;
@@ -32,6 +36,8 @@ class NavigationBarLines extends StatelessWidget {
 
   // ================= STEPPER =================
 
+  /// Lays out the step circles with connector lines between them:
+  /// even indexes are steps, odd indexes are connectors.
   Widget _buildStepper() {
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -49,6 +55,8 @@ class NavigationBarLines extends StatelessWidget {
 
   // ================= STEP =================
 
+  /// One numbered circle + label. Completed steps show a check mark,
+  /// the active step is highlighted white, future steps are dimmed.
   Widget _buildStep(int index) {
     final isActive = index == currentStep;
     final isCompleted = index < currentStep;
@@ -117,6 +125,8 @@ class NavigationBarLines extends StatelessWidget {
 
   // ================= CONNECTOR =================
 
+  /// Thin line between two step circles; brightens once the step before
+  /// it is completed.
   Widget _buildConnector(int index) {
     final isCompleted = index < currentStep;
 
@@ -143,6 +153,8 @@ class NavigationBarLines extends StatelessWidget {
 
   // ================= PROGRESS =================
 
+  /// Animated green progress bar under the stepper showing overall
+  /// completion (step+1 / total).
   Widget _buildProgressBar() {
     final progress = (currentStep + 1) / (_steps.length);
 

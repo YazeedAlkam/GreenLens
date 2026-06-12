@@ -12,6 +12,8 @@ import 'package:greenlens/shared_files/charts/project_charts_grid.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Read-only scrollable overview page showing all project data:
+/// client info, building info, costs, assigned engineers, bills, energy breakdown, and charts.
 class ProjectSummaryPage extends StatefulWidget {
   final String projectId;
   final String projectName;
@@ -26,6 +28,8 @@ class ProjectSummaryPage extends StatefulWidget {
   State<ProjectSummaryPage> createState() => _ProjectSummaryPageState();
 }
 
+/// State for [ProjectSummaryPage]: loads project data, derives display values,
+/// and navigates between the main overview and audit section sub-views.
 class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
   final _projectService = ProjectService();
   Map<String, dynamic>? _project;
@@ -41,6 +45,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     _loadData();
   }
 
+  /// Fetches the project document and the names of all assigned engineers from Firestore.
   Future<void> _loadData() async {
     final project = await _projectService.getProjectById(widget.projectId);
     if (project == null) {
@@ -66,41 +71,58 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
 
   // ── data accessors ─────────────────────────────────────────────────────────
 
+  /// Safely extracts the `projectInfo` map from the loaded project document.
   Map<String, dynamic> get _proj =>
       _project?['projectInfo'] as Map<String, dynamic>? ?? {};
 
+  /// Safely extracts the `clientInfo` map from the loaded project document.
   Map<String, dynamic> get _clientInfo =>
       _project?['clientInfo'] as Map<String, dynamic>? ?? {};
 
+  /// Extracts the main contact map from `clientInfo`.
   Map<String, dynamic> get _main =>
       _clientInfo['mainContact'] as Map<String, dynamic>? ?? {};
 
+  /// Extracts the `costs` map (transportation, machinery, engineer, other).
   Map<String, dynamic> get _costs =>
       _project?['costs'] as Map<String, dynamic>? ?? {};
 
+  /// Extracts the `auditData` map containing all audit category lists.
   Map<String, dynamic> get _auditData =>
       _project?['auditData'] as Map<String, dynamic>? ?? {};
 
+  /// Returns the lighting audit list from `auditData`.
   List<dynamic> get _lighting => _auditData['lighting'] as List<dynamic>? ?? [];
+  /// Returns the AC audit list from `auditData`.
   List<dynamic> get _ac => _auditData['ac'] as List<dynamic>? ?? [];
+  /// Returns the electrical equipment audit list from `auditData`.
   List<dynamic> get _equipment =>
       _auditData['equipment'] as List<dynamic>? ?? [];
+  /// Returns the production machines audit list from `auditData`.
   List<dynamic> get _machines => _auditData['machines'] as List<dynamic>? ?? [];
 
   // ── section navigation ─────────────────────────────────────────────────────
 
+  /// Shows the All Contacts sub-view.
   void _openContacts() => setState(() => _activeSection = 0);
+  /// Shows the Lighting review sub-view.
   void _openLighting() => setState(() => _activeSection = 1);
+  /// Shows the AC / HVAC review sub-view.
   void _openHvac() => setState(() => _activeSection = 2);
+  /// Shows the Equipment review sub-view.
   void _openEquipment() => setState(() => _activeSection = 3);
+  /// Shows the Machines review sub-view.
   void _openMachines() => setState(() => _activeSection = 4);
+  /// Returns to the main overview from any sub-view.
   void _closeSection() => setState(() => _activeSection = null);
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
+  /// Returns [value], or "No Data" when null or blank.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
+  /// Formats operating hours/day and days/week into a combined display string.
   String _operatingHours() {
     final hrs = _proj['operatingHrsPerDay']?.toString() ?? '';
     final days = _proj['daysPerWeek']?.toString() ?? '';
@@ -110,6 +132,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '$hrs hrs/day · $days days/wk';
   }
 
+  /// Returns a human-readable summary of how many lighting areas have been entered.
   String _lightingLabel() {
     if (_lighting.isEmpty) return 'Not entered';
     final a = _lighting[0] as Map;
@@ -120,6 +143,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '${_lighting.length} areas';
   }
 
+  /// Returns a human-readable summary of how many AC groups have been entered.
   String _acLabel() {
     if (_ac.isEmpty) return 'Not entered';
     final g = _ac[0] as Map;
@@ -132,6 +156,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '${_ac.length} groups';
   }
 
+  /// Returns a human-readable summary of how many equipment items have been filled in.
   String _equipmentLabel() {
     if (_equipment.isEmpty) return 'Not entered';
     final filled = _equipment.where((e) {
@@ -143,6 +168,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '${filled.length} item${filled.length == 1 ? '' : 's'}';
   }
 
+  /// Returns a human-readable summary of how many machine items have been filled in.
   String _machinesLabel() {
     if (_machines.isEmpty) return 'Not entered';
     final filled = _machines.where((e) {
@@ -154,6 +180,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '${filled.length} machine${filled.length == 1 ? '' : 's'}';
   }
 
+  /// Sums energy costs across all four audit categories using the app tariff.
   double _totalEnergyCost() {
     double total = 0;
     for (final e in _lighting) {
@@ -195,6 +222,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return total;
   }
 
+  /// Formats [_totalEnergyCost] as a JOD string, or "—" when zero.
   String _formatTotal() {
     final v = _totalEnergyCost();
     if (v == 0) return '—';
@@ -203,6 +231,8 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
         : '${v.toStringAsFixed(2)} JOD';
   }
 
+  /// Calculates and formats the total engineer cost as rate × 8 hrs × working days.
+  /// Returns "No Data" if dates or rates are missing.
   String _engineerCostDisplay() {
     final start = _parseDate(_proj['initiationDate'] as String?);
     final end = _parseDate(_proj['deadlineDate'] as String?);
@@ -219,6 +249,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return '$formatted JOD';
   }
 
+  /// Parses a "d/m/yyyy" date string into a [DateTime]; returns null on failure.
   DateTime? _parseDate(String? s) {
     if (s == null || s.trim().isEmpty) return null;
     final parts = s.split('/');
@@ -230,6 +261,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     return DateTime(y, mo, d);
   }
 
+  /// Counts working days (excluding Friday and Saturday) between two dates.
   int _workingDaysBetween(DateTime start, DateTime end) {
     int count = 0;
     DateTime cur = DateTime(start.year, start.month, start.day);
@@ -453,6 +485,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
 
   // ── widget helpers ─────────────────────────────────────────────────────────
 
+  /// Builds a styled section heading in the primary brand color.
   Widget _sectionTitle(String text) => Text(
         text,
         style: GoogleFonts.firaSans(
@@ -484,6 +517,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds a 60 px-tall label/value row with the value right-aligned.
   Widget _row(String label, String value) {
     return SizedBox(
       height: 60,
@@ -504,12 +538,15 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds a cost display row, appending 'JOD' to non-empty values,
+  /// or showing 'No Data' when the value is null or blank.
   Widget _costRow(String label, String? value) {
     final display =
         (value == null || value.trim().isEmpty) ? 'No Data' : '$value JOD';
     return _row(label, display);
   }
 
+  /// Builds a tappable 'View All Contacts' row that navigates to the contacts section.
   Widget _viewAllContactsRow() {
     return GestureDetector(
       onTap: _openContacts,
@@ -539,6 +576,9 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds the bordered card listing all four audit category summaries
+  /// (Lighting, HVAC, Equipment, Production Lines) with drill-down arrows
+  /// for categories that have data entered.
   Widget _energyBreakdownCard() {
     final sections = [
       ('Lighting', _lightingLabel(), _openLighting),
@@ -568,6 +608,10 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds one audit-category row inside the energy breakdown card.
+  ///
+  /// The row is tappable (navigates via [onTap]) only when [statusLabel]
+  /// is not 'Not entered'; grey text and no arrow are shown otherwise.
   Widget _energyRow(String label, String statusLabel, VoidCallback onTap) {
     final hasData = statusLabel != 'Not entered';
     return InkWell(
@@ -609,6 +653,8 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds the green-tinted 'Total Energy Cost' summary card showing the
+  /// aggregated annual cost across all audit categories.
   Widget _totalConsumptionCard() {
     return Container(
       width: double.infinity,
@@ -639,6 +685,9 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds the assigned-engineers table with ID, Name, and Contact Info columns.
+  ///
+  /// Shows a placeholder '—' row when no engineers have been assigned yet.
   Widget _engineersTable() {
     return Container(
       width: double.infinity,
@@ -683,6 +732,7 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds a bold header cell for the engineers table.
   Widget _engHeader(String text) => Padding(
         padding: const EdgeInsets.all(10),
         child: Text(text,
@@ -690,11 +740,14 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
                 fontSize: 24, fontWeight: FontWeight.w500)),
       );
 
+  /// Builds a regular data cell for the engineers table.
   Widget _engCell(String text) => Padding(
         padding: const EdgeInsets.all(10),
         child: Text(text, style: GoogleFonts.firaSans(fontSize: 24)),
       );
 
+  /// Builds the bills summary table showing average, maximum, and minimum
+  /// monthly bills derived from the project's [bills] array in Firestore.
   Widget _billsTable() {
     final rawBills = _proj['bills'] as List? ?? [];
     final bills = rawBills
@@ -753,6 +806,9 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds a two-column bills row where the value spans the full remaining width.
+  ///
+  /// Used for the 'Average Bill Cost' row that doesn't need month/cost columns.
   Widget _billsRowSpanned(String label, String value) {
     return SizedBox(
       height: 69,
@@ -783,6 +839,10 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds a three-column bills row (label | month | cost).
+  ///
+  /// When [isHeader] is true the text is rendered bold, used for the column
+  /// header row ('Max/Min', 'Month', 'Cost').
   Widget _billsRowTriple(
     String col1,
     String col2,
@@ -830,6 +890,9 @@ class _ProjectSummaryPageState extends State<ProjectSummaryPage> {
     );
   }
 
+  /// Builds the bordered text container displaying the audit notes.
+  ///
+  /// Shows placeholder hint text when [notes] is empty.
   Widget _auditNotesBox(String notes) {
     return Container(
       width: double.infinity,

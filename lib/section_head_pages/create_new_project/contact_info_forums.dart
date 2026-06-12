@@ -3,11 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Returns true when [value] contains between 7 and 15 digit characters
+/// (after stripping '+' and spaces), per E.164 constraints.
 bool _isValidPhone(String value) {
   final digits = value.replaceAll(RegExp(r'[+\s]'), '');
   return digits.length >= 7 && digits.length <= 15;
 }
 
+/// Form card for the primary client contact (name, position, email, phone).
+///
+/// Validates the phone number live and shows an inline error when the format
+/// is invalid. When [readOnly] is true all fields are disabled.
 class MainClientForum extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController positionController;
@@ -28,9 +34,11 @@ class MainClientForum extends StatefulWidget {
   State<MainClientForum> createState() => _MainClientForumState();
 }
 
+/// State for [MainClientForum]. Manages inline phone-validation error message.
 class _MainClientForumState extends State<MainClientForum> {
   String? _phoneError;
 
+  /// Validates [value] and updates the phone error message shown below the field.
   void _onPhoneChanged(String value) {
     if (value.isEmpty) {
       setState(() => _phoneError = null);
@@ -268,6 +276,9 @@ class _MainClientForumState extends State<MainClientForum> {
   }
 }
 
+/// Form card for an additional (non-primary) client contact.
+///
+/// Identical layout to [MainClientForum] but used for contacts 2, 3, etc.
 class OtherContactsForum extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController positionController;
@@ -288,9 +299,11 @@ class OtherContactsForum extends StatefulWidget {
   State<OtherContactsForum> createState() => _OtherContactsForumState();
 }
 
+/// State for [OtherContactsForum]. Manages inline phone-validation error message.
 class _OtherContactsForumState extends State<OtherContactsForum> {
   String? _phoneError;
 
+  /// Validates [value] and updates the phone error message shown below the field.
   void _onPhoneChanged(String value) {
     if (value.isEmpty) {
       setState(() => _phoneError = null);

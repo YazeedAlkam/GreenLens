@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/main.dart';
 
+/// Holds the [TextEditingController]s and selection state for one AC group.
+///
+/// Supports three AC types (Split=0, Packaged=1, Central=2). Computed getters
+/// derive kWh totals and JOD costs so the form can display them read-only.
 class GroupFormState {
   int activeType = 0; // 0=Split, 1=Packaged, 2=Central
   int activeInvertor = 0; // 0=Invertor, 1=Non-Invertor
@@ -26,7 +30,7 @@ class GroupFormState {
   final ahuCount = TextEditingController();
   final centralNotes = TextEditingController();
 
-  // Computed fields
+  /// Split-unit total power in kWh: noOfUnits × ratedPower × yearlyHours.
   String get totalPower {
     final units = double.tryParse(noOfUnits.text) ?? 0;
     final power = double.tryParse(ratedPower.text) ?? 0;
@@ -35,12 +39,14 @@ class GroupFormState {
     return (units * power * hours).toStringAsFixed(2);
   }
 
+  /// Split-unit annual energy cost in JOD: [totalPower] × tariff.
   String get energyCost {
     final tp = double.tryParse(totalPower) ?? 0;
     if (tp == 0) return '';
     return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
+  /// Packaged-unit total power in kWh: noOfPackages × packagePower × packageHours.
   String get packageTotalPower {
     final units = double.tryParse(noOfPackages.text) ?? 0;
     final power = double.tryParse(packagePower.text) ?? 0;
@@ -49,12 +55,14 @@ class GroupFormState {
     return (units * power * hours).toStringAsFixed(2);
   }
 
+  /// Packaged-unit annual energy cost in JOD.
   String get packageEnergyCost {
     final tp = double.tryParse(packageTotalPower) ?? 0;
     if (tp == 0) return '';
     return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
+  /// Central-chiller total power in kWh: chillerPower × chillerHours.
   String get centralTotalPower {
     final power = double.tryParse(chillerPower.text) ?? 0;
     final hours = double.tryParse(chillerHours.text) ?? 0;
@@ -62,12 +70,14 @@ class GroupFormState {
     return (power * hours).toStringAsFixed(2);
   }
 
+  /// Central-chiller annual energy cost in JOD.
   String get centralEnergyCost {
     final tp = double.tryParse(centralTotalPower) ?? 0;
     if (tp == 0) return '';
     return (tp * energyTariffJodPerKwh).toStringAsFixed(2);
   }
 
+  /// Restores controller values and type selections from a Firestore map.
   void fromMap(Map<String, dynamic> map) {
     activeType = (map['acType'] as int?) ?? 0;
     activeInvertor = (map['invertor'] as int?) ?? 0;
@@ -88,6 +98,7 @@ class GroupFormState {
     centralNotes.text = map['centralNotes']?.toString() ?? '';
   }
 
+  /// Serialises all fields and computed values to a Firestore-friendly map.
   Map<String, dynamic> toMap() {
     return {
       'acType': activeType,

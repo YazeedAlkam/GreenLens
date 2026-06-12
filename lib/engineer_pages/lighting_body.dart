@@ -6,6 +6,10 @@ import 'package:greenlens/main.dart';
 
 import '../shared_files/footer.dart';
 
+/// Step 2 of the audit entry wizard: lighting area data entry.
+///
+/// Supports multiple lighting areas (tab-based). Area 1 always exists; extra
+/// areas can be added or deleted. When [readOnly] is true all fields are disabled.
 class LightingBody extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -28,6 +32,9 @@ class LightingBody extends StatefulWidget {
   State<LightingBody> createState() => LightingBodyState();
 }
 
+/// State for [LightingBody]. Exposes [getLightingData] so the parent wizard
+/// can collect all area data via a [GlobalKey]. Uses [AutomaticKeepAliveClientMixin]
+/// to preserve form state when the user navigates between wizard steps.
 class LightingBodyState extends State<LightingBody>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -49,6 +56,8 @@ class LightingBodyState extends State<LightingBody>
   // Each entry is [lightingType, ratedPower, numLights, yearlyHours, totalPower, annual]
   final List<List<TextEditingController>> _extraAreaCtrls = [];
 
+  /// Fills one area's six controllers from a saved Firestore `lighting` map
+  /// (order: type, rated power, no. of lights, hours, total power, cost).
   void _populateArea(List<TextEditingController> ctrls, Map<String, dynamic> area) {
     ctrls[0].text = area['lightingType']?.toString() ?? '';
     ctrls[1].text = area['ratedPower']?.toString() ?? '';
@@ -95,6 +104,8 @@ class LightingBodyState extends State<LightingBody>
     super.dispose();
   }
 
+  /// Converts a list of 6 area controllers into the standard lighting area map
+  /// (lightingType, ratedPower, numLights, yearlyHours, totalPower, energyCost).
   Map<String, String> _areaCtrlsToMap(List<TextEditingController> ctrls) => {
     'lightingType': ctrls[0].text,
     'ratedPower': ctrls[1].text,
@@ -104,6 +115,8 @@ class LightingBodyState extends State<LightingBody>
     'energyCost': ctrls[5].text,
   };
 
+  /// Returns all lighting areas as a list of maps, to be stored under
+  /// `auditData.lighting` in Firestore.
   List<Map<String, String>> getLightingData() => [
     {
       'lightingType': _area1LightingType.text,
@@ -116,8 +129,10 @@ class LightingBodyState extends State<LightingBody>
     ..._extraAreaCtrls.map(_areaCtrlsToMap),
   ];
 
+  /// Returns the tab label for an extra area, e.g. "Area 2", "Area 3".
   String _extraAreaLabel(int id) => "Area ${_extraAreas.indexOf(id) + 2}";
 
+  /// Removes Area 1 by promoting the first extra area into the Area 1 controllers.
   void _deleteArea1() {
     if (_extraAreas.isEmpty) return;
     final promotedCtrls = _extraAreaCtrls[0];
@@ -137,6 +152,7 @@ class LightingBodyState extends State<LightingBody>
     });
   }
 
+  /// Removes the currently active extra area tab and selects the nearest remaining tab.
   void _deleteCurrentExtraArea() {
     final idx = _extraAreas.indexOf(_activeArea);
     if (idx == -1) return;
@@ -319,6 +335,9 @@ class LightingBodyState extends State<LightingBody>
   }
 }
 
+/// A tab button for switching between lighting areas.
+///
+/// Renders with the primary background when [isActive] is true.
 class _AreaTabButton extends StatelessWidget {
   const _AreaTabButton({
     required this.label,

@@ -4,6 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Step 6 of the audit entry wizard: full data review before submission.
+///
+/// Displays a summary of the entered building info and per-category item counts.
+/// Each entered category is tappable (fires onViewLighting etc.) to open a
+/// detailed review page. Also shows the computed total energy cost.
+/// In [readOnly] mode the submit button is hidden.
 class ReviewBodyEng extends StatefulWidget {
   final VoidCallback onBack;
   final int currentStep;
@@ -40,10 +46,13 @@ class ReviewBodyEng extends StatefulWidget {
   State<ReviewBodyEng> createState() => _ReviewBodyEngState();
 }
 
+/// State for [ReviewBodyEng].
 class _ReviewBodyEngState extends State<ReviewBodyEng> {
+  /// Returns [value] or 'No Data' when the value is null or empty.
   String _v(String? value) =>
       (value == null || value.trim().isEmpty) ? 'No Data' : value;
 
+  /// Combines daily hours and days-per-week into a single display string.
   String _operatingHours() {
     final hrs = widget.projectInfo?['operatingHrsPerDay']?.toString() ?? '';
     final days = widget.projectInfo?['daysPerWeek']?.toString() ?? '';
@@ -53,13 +62,15 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '$hrs hrs/day · $days days/wk';
   }
 
+  /// Formats the average monthly bill for display, appending 'JOD'.
   String _avgBill() {
     final bill = widget.projectInfo?['averageMonthlyBill']?.toString() ?? '';
     return bill.isEmpty ? 'No Data' : '$bill JOD';
   }
 
-  // Lighting: Area 1 always exists — if 2+ areas, user explicitly added them.
-  // For a single area, check if any field is filled.
+  /// Returns a human-readable lighting summary ("Not entered", "1 area", "N areas").
+  ///
+  /// Area 1 always exists; checks if any field is filled for single-area projects.
   String _lightingLabel() {
     final data = widget.lightingData;
     if (data.isEmpty) return 'Not entered';
@@ -70,8 +81,9 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${data.length} areas';
   }
 
-  // AC: Group 1 always exists — if 2+ groups, user explicitly added them.
-  // For a single group, check any field across all AC types (Split/Packaged/Central).
+  /// Returns a human-readable AC summary ("Not entered", "1 group", "N groups").
+  ///
+  /// Group 1 always exists; checks fields across all three AC sub-types.
   String _acLabel() {
     final data = widget.acData;
     if (data.isEmpty) return 'Not entered';
@@ -85,6 +97,10 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${data.length} groups';
   }
 
+  /// Computes the total annual energy cost in JOD across all four audit categories.
+  ///
+  /// AC cost is re-derived from raw fields (not the stored `energyCost` field)
+  /// to handle all three AC sub-types correctly.
   double _totalEnergyCost() {
     double total = 0;
 
@@ -136,6 +152,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return total;
   }
 
+  /// Formats a JOD total for display; returns '—' when value is zero.
   String _formatTotal(double value) {
     if (value == 0) return '—';
     if (value == value.truncateToDouble()) {
@@ -144,6 +161,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${value.toStringAsFixed(2)} JOD';
   }
 
+  /// Returns a human-readable equipment summary ("Not entered", "1 item", "N items").
   String _equipmentLabel() {
     final data = widget.equipmentData;
     if (data.isEmpty) return 'Not entered';
@@ -154,6 +172,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${data.length} items';
   }
 
+  /// Returns a human-readable machines summary ("Not entered", "1 line", "N lines").
   String _machinesLabel() {
     final data = widget.machinesData;
     if (data.isEmpty) return 'Not entered';
@@ -164,6 +183,7 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     return '${data.length} lines';
   }
 
+  /// Builds a 60 px-tall label/value row inside the building info card.
   Widget _infoRow(String label, String value) {
     return SizedBox(
       height: 60,
@@ -194,6 +214,10 @@ class _ReviewBodyEngState extends State<ReviewBodyEng> {
     );
   }
 
+  /// Builds an audit-category summary row showing [title] and [label].
+  ///
+  /// Tappable (calls [onTap]) only when [label] is not 'Not entered'.
+  /// A horizontal divider is appended when [dividerBelow] is true.
   Widget _sectionRow(String title, {required String label, required bool dividerBelow, VoidCallback? onTap}) {
     final isEntered = label != 'Not entered';
     return Column(

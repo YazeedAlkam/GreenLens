@@ -6,6 +6,10 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Page for the CEO to set an hourly rate (JOD/hr) for each engineer.
+///
+/// The stored rate is used by the report server to compute the engineer cost
+/// section of study cost reports: rate × 8 hrs/day × working days.
 class AssignEngineerCostsPage extends StatefulWidget {
   const AssignEngineerCostsPage({super.key});
 
@@ -14,6 +18,8 @@ class AssignEngineerCostsPage extends StatefulWidget {
       _AssignEngineerCostsPageState();
 }
 
+/// State for [AssignEngineerCostsPage]. Loads engineers and manages per-engineer
+/// rate controllers and the bulk save operation.
 class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
   late Future<List<Map<String, dynamic>>> _engineersFuture;
   final Map<String, TextEditingController> _rateControllers = {};
@@ -34,6 +40,9 @@ class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
     super.dispose();
   }
 
+  /// Fetches all engineer users from Firestore. Each engineer's rate
+  /// controller is created lazily in the table, pre-filled with the stored
+  /// `rate` field.
   Future<List<Map<String, dynamic>>> _fetchEngineers() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -44,6 +53,7 @@ class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
         .toList();
   }
 
+  /// Writes all updated hourly rates back to Firestore in parallel.
   Future<void> _saveChanges(List<Map<String, dynamic>> engineers) async {
     setState(() => _isSaving = true);
     try {
@@ -80,6 +90,7 @@ class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
     }
   }
 
+  /// Header row of the rates table: ID | Name | Email | Cost / hr.
   TableRow _buildHeaderRow() {
     return TableRow(
       children: [
@@ -117,6 +128,7 @@ class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
     );
   }
 
+  /// One engineer row with an editable, digits-only rate field on the right.
   TableRow _buildDataRow(Map<String, dynamic> eng, String docId) {
     final id = eng['customId'];
     final name = eng['name'] as String? ?? '—';
@@ -213,6 +225,7 @@ class _AssignEngineerCostsPageState extends State<AssignEngineerCostsPage> {
     );
   }
 
+  /// Fixed-height table cell; [center] toggles centered vs left alignment.
   Widget _tableCell(Widget child, {bool center = true}) => TableCell(
         verticalAlignment: TableCellVerticalAlignment.middle,
         child: Container(

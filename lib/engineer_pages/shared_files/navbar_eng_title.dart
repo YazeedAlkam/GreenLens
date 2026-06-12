@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Large "Audit Data Entry" title displayed in the wizard's AppBar above the
+/// step indicator.
 class NavBarTitleEng extends StatelessWidget {
   const NavBarTitleEng({super.key});
 

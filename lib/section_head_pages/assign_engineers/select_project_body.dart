@@ -6,6 +6,10 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
+/// Step 1 of the Assign Engineers flow: pick an existing project from the list.
+///
+/// Calls [onProjectSelected] with the chosen project map, which triggers
+/// navigation to step 2.
 class SelectProjectBody extends StatefulWidget {
   final void Function(Map<String, dynamic> project) onProjectSelected;
   final VoidCallback onBack;
@@ -20,6 +24,7 @@ class SelectProjectBody extends StatefulWidget {
   State<SelectProjectBody> createState() => _SelectProjectBodyState();
 }
 
+/// State for [SelectProjectBody]. Fetches all projects on init.
 class _SelectProjectBodyState extends State<SelectProjectBody> {
   late Future<List<Map<String, dynamic>>> _projectsFuture;
 

@@ -3,17 +3,23 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlens/main.dart';
 
+/// Read-only review page showing all entered AC/HVAC groups in tabular form.
+///
+/// Displayed inside the audit wizard's Review step or from the project summary
+/// when the user taps the 'HVAC' drill-down row.
 class AcReview extends StatelessWidget {
   final VoidCallback onBack;
   final List<dynamic> acData;
 
   const AcReview({super.key, required this.onBack, this.acData = const []});
 
+  /// Safe value accessor: returns [map][key] with optional [suffix], or '—' if absent.
   String _v(Map map, String key, {String suffix = ''}) {
     final val = map[key]?.toString() ?? '';
     return val.isEmpty ? '—' : '$val$suffix';
   }
 
+  /// Builds a two-cell table row (label | value) for the data tables.
   TableRow _row(String label, String value) {
     return TableRow(
       children: [
@@ -31,6 +37,11 @@ class AcReview extends StatelessWidget {
     );
   }
 
+  /// Annual energy use of one AC group in kWh. The formula depends on the
+  /// AC type selected in the entry form:
+  ///   Split (0):    units × rated power (kW) × yearly hours
+  ///   Packaged (1): packages × package power (kW) × yearly hours
+  ///   Central (2):  chiller power (kW) × yearly hours (single chiller)
   double _computeKwh(Map g) {
     final acType = g['acType'] as int? ?? 0;
     if (acType == 0) {
@@ -50,18 +61,22 @@ class AcReview extends StatelessWidget {
     }
   }
 
+  /// Formatted annual energy ("1234 kWh"), or '—' when no data was entered.
   String _totalPower(Map g) {
     final kwh = _computeKwh(g);
     if (kwh == 0) return '—';
     return kwh == kwh.truncateToDouble() ? '${kwh.toInt()} kWh' : '${kwh.toStringAsFixed(2)} kWh';
   }
 
+  /// Annual energy cost = kWh × national tariff (energyTariffJodPerKwh).
   String _energyCost(Map g) {
     final cost = _computeKwh(g) * energyTariffJodPerKwh;
     if (cost == 0) return '—';
     return cost == cost.truncateToDouble() ? '${cost.toInt()} JOD' : '${cost.toStringAsFixed(2)} JOD';
   }
 
+  /// Table rows for one group — the field set varies with the AC type
+  /// (split / packaged / central) chosen in the entry form.
   List<TableRow> _groupRows(Map g) {
     final acType = g['acType'] as int? ?? 0;
     if (acType == 0) {
@@ -93,6 +108,8 @@ class AcReview extends StatelessWidget {
     }
   }
 
+  /// Heading like "Group 1 – Split / Inverter", built from the stored
+  /// acType and invertor toggle indexes.
   String _groupTitle(Map g, int index) {
     final acType = g['acType'] as int? ?? 0;
     final invertor = g['invertor'] as int? ?? 0;

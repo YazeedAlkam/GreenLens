@@ -11,6 +11,15 @@ import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// Engineer's home dashboard.
+///
+/// Displays up to 4 active projects assigned to the logged-in engineer.
+/// Tapping a project navigates differently based on its status:
+///   - "In Progress" or "Denied"   → ProjectPage (can enter/edit audit data)
+///   - "Awaiting Approval"          → ProjectSummaryPage (read-only view)
+///   - "Ready"                      → ProjectSummaryPage (with report generation)
+///
+/// Also provides a "Previous Projects" button to view completed work.
 class EngineerPage extends StatefulWidget {
   const EngineerPage({super.key});
 
@@ -18,6 +27,8 @@ class EngineerPage extends StatefulWidget {
   State<EngineerPage> createState() => _EngineerPageState();
 }
 
+/// State for [EngineerPage]. Fetches active projects on init and rebuilds
+/// the project grid whenever the user returns to this screen.
 class _EngineerPageState extends State<EngineerPage> {
   final _projectService = ProjectService();
   late Future<List<Map<String, dynamic>>> _activeProjectsFuture;

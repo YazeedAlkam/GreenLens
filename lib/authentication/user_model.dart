@@ -1,6 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Represents a GreenLens user as stored in Firestore's `users` collection.
+///
+/// Fields stored per user: uid (Firebase Auth UID), name, email, role, createdAt.
+/// The `role` field controls which dashboard the user sees after login:
+///   'Section Head' → SectionHeadPage
+///   'Engineer'     → EngineerPage
+///   'CEO'          → CEOPage
 class UserModel {
   final String uid;
   final String name;

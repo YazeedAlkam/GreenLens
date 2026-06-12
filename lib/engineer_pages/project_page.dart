@@ -11,6 +11,11 @@ import 'package:greenlens/engineer_pages/project_summary_page.dart';
 import 'package:greenlens/shared_files/charts/project_charts_grid.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
+/// Engineer's landing page for a single project once its audit is "Ready".
+///
+/// Shows the four data charts, lets the engineer generate the three PDF
+/// reports (Technical, Cost, Technical & Cost) through the report server,
+/// view the project summary, and finally mark the project as Completed.
 class ProjectPage extends StatefulWidget {
   final String projectName;
   final String projectId;
@@ -26,18 +31,26 @@ class ProjectPage extends StatefulWidget {
   State<ProjectPage> createState() => _ProjectPageState();
 }
 
+/// State for [ProjectPage]. Owns the chart-capture callbacks and the
+/// busy flags for each report-generation button.
 class _ProjectPageState extends State<ProjectPage> {
   final GlobalKey<ProjectChartsGridState> _chartsKey = GlobalKey<ProjectChartsGridState>();
+  // Callbacks wired by ProjectSummaryPage via a GlobalKey so that charts can be
+  // captured as PNG bytes before the report request is sent to the server.
+  // _captureCharts returns all 4 chart images; _captureCostChart returns only
+  // the Savings Donut used by the standalone cost report.
   Future<List<Uint8List?>> Function()? _captureCharts;
   Future<Uint8List?> Function()? _captureCostChart;
 
   bool _isCompleting = false;
-  bool _isGeneratingReport = false;
-  bool _isGeneratingCostReport = false;
-  bool _isGeneratingTechCostReport = false;
+  bool _isGeneratingReport = false;         // Technical Report in progress
+  bool _isGeneratingCostReport = false;     // Cost Report in progress
+  bool _isGeneratingTechCostReport = false; // Technical & Cost Report in progress
 
   bool get _isReady => widget.status == 'Ready';
 
+  /// Final step of the project lifecycle: sets status = "Completed" so the
+  /// project moves from Active Projects to Previous Projects for everyone.
   Future<void> _markAsCompleted() async {
     setState(() => _isCompleting = true);
     try {
@@ -60,6 +73,8 @@ class _ProjectPageState extends State<ProjectPage> {
     }
   }
 
+  /// Captures the Savings Donut chart and sends it with the project data to
+  /// /generate-cost-report. Downloads the resulting cost breakdown PDF to the device.
   Future<void> _generateCostReport() async {
     // Capture the cost chart BEFORE setState so the render tree is still stable.
     debugPrint('[Report] _captureCostChart is ${_captureCostChart == null ? "NULL – callback never wired" : "set"}');
@@ -84,7 +99,10 @@ class _ProjectPageState extends State<ProjectPage> {
     }
   }
 
+  /// Captures the 4 chart images and sends them with the project data to
+  /// /generate-tech-cost-report. Downloads the resulting PDF to the device.
   Future<void> _generateTechCostReport() async {
+    // Capture charts BEFORE setState so the render tree is still stable.
     debugPrint('[Report] _captureCharts is ${_captureCharts == null ? "NULL – callback never wired" : "set"}');
     final chartImages = await _captureCharts?.call() ?? [];
     debugPrint('[Report] captured ${chartImages.where((b) => b != null).length}/${chartImages.length} charts');
@@ -108,6 +126,8 @@ class _ProjectPageState extends State<ProjectPage> {
     }
   }
 
+  /// Captures the 4 chart images and sends them with the project data to
+  /// /generate-report. Downloads the resulting technical audit PDF to the device.
   Future<void> _generateTechnicalReport() async {
     // Capture charts BEFORE setState so the render tree is still stable.
     debugPrint('[Report] _captureCharts is ${_captureCharts == null ? "NULL – callback never wired" : "set"}');
@@ -381,7 +401,7 @@ class _ProjectPageState extends State<ProjectPage> {
                                 AuditEntryFlow(projectId: widget.projectId),
                           ),
                         ).then((result) {
-                          if (!mounted) return;
+                          if (!context.mounted) return;
                           _chartsKey.currentState?.reload();
                           if (result == true) Navigator.pop(context);
                         });

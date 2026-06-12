@@ -11,6 +11,10 @@ import 'package:greenlens/shared_files/custom_app_bar.dart';
 import 'package:greenlens/shared_files/footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 
+/// Full-page list of all active projects (CEO view).
+///
+/// Shows projects with statuses: In Progress, Awaiting Approval, and Ready.
+/// Navigates to the appropriate review or summary page based on project state.
 class CeoActiveProjectsPage extends StatefulWidget {
   const CeoActiveProjectsPage({super.key});
 
@@ -18,6 +22,7 @@ class CeoActiveProjectsPage extends StatefulWidget {
   State<CeoActiveProjectsPage> createState() => _CeoActiveProjectsPageState();
 }
 
+/// State for [CeoActiveProjectsPage]. Loads and filters active projects on init.
 class _CeoActiveProjectsPageState extends State<CeoActiveProjectsPage> {
   static const _activeStatuses = {'In Progress', 'Awaiting Approval', 'Ready'};
 
@@ -29,6 +34,7 @@ class _CeoActiveProjectsPageState extends State<CeoActiveProjectsPage> {
     _projectsFuture = _loadProjects();
   }
 
+  /// Fetches all active projects and filters to only the recognised active statuses.
   Future<List<Map<String, dynamic>>> _loadProjects() async {
     final all = await ProjectService().getActiveProjects();
     return all
