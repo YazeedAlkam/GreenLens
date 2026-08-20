@@ -6,6 +6,7 @@ import 'package:greenlens/authentication/sign_up.dart';
 import 'package:greenlens/section_head_pages/assign_engineers/assign_engineers_flow.dart';
 import 'package:greenlens/section_head_pages/create_new_project/create_new_project_flow.dart';
 import 'package:greenlens/section_head_pages/section_head_dashboard.dart';
+import 'package:greenlens/shared_files/profile_page.dart';
 import 'ceo_pages/ceo_dashboard.dart';
 import 'engineer_pages/engineer_dashboard.dart';
 import 'firebase/firebase_options.dart';
@@ -112,10 +113,27 @@ class MyApp extends StatelessWidget {
         '/engineer_dashboard': (context) => EngineerPage(),
         '/ceo_dashboard': (context) => CEOPage(),
         '/create_new_project': (context) => CreateProjectFlow(),
-        '/assign_engineers': (context) => AssignEngineersFlow()
+        '/assign_engineers': (context) => AssignEngineersFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page
     );
   }
 }
+/*
+everytime you want to add changes to git hub we use this : 
+git add .
+git commit -m "describe your change"
+git push
+
+go to github and then pull req
+check if conflict happened 
+if no conf merge it 
+then do this : 
+git checkout main
+git pull origin main
+git checkout yazeed
+git merge main
+git push origin yazeed
+
+*/
