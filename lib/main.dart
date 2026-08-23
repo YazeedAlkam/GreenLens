@@ -76,9 +76,11 @@ final List<String> roles = ['Section Head', 'Engineer'];
 // if you want a new role add to the list:
 // final List<String> roles = ['Section Head', 'Engineer', 'Role'];
 
-/// National electricity tariff (JOD per kWh) used everywhere the app
-/// converts energy consumption into money: review tables, charts, and the
-/// savings calculations all multiply kWh by this constant.
+/// Effective tariff (JOD per kWh) used everywhere the app converts energy
+/// consumption into money: review tables, charts, and savings calculations
+/// all multiply kWh by this. Starts at the national default (0.12) but is
+/// overwritten with the project-specific value calculated from that
+/// project's bills as soon as BillsBody recalculates.
 const double energyTariffJodPerKwh = 0.12;
 
 /// App entry point. Initializes Firebase before running the widget tree.
@@ -112,7 +114,7 @@ class MyApp extends StatelessWidget {
         '/engineer_dashboard': (context) => EngineerPage(),
         '/ceo_dashboard': (context) => CEOPage(),
         '/create_new_project': (context) => CreateProjectFlow(),
-        '/assign_engineers': (context) => AssignEngineersFlow()
+        '/assign_engineers': (context) => AssignEngineersFlow(),
       },
       theme: ThemeData(fontFamily: GoogleFonts.nunito().fontFamily),
       home: SignInPage(), // start page

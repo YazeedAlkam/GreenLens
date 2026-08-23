@@ -33,11 +33,17 @@ import 'client_info_body.dart';
 class CreateProjectFlow extends StatefulWidget {
   final String? existingProjectId;
   final bool readOnly;
-  const CreateProjectFlow({super.key, this.existingProjectId, this.readOnly = false});
+  const CreateProjectFlow({
+    super.key,
+    this.existingProjectId,
+    this.readOnly = false,
+  });
 
   @override
   State<CreateProjectFlow> createState() => _CreateProjectFlowState();
 }
+// ignore: unused_element
+double _averageTariff = 0;
 
 /// State for [CreateProjectFlow]. Manages step navigation, form GlobalKeys,
 /// and project save/submit logic.
@@ -149,9 +155,9 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
       costs: _costKey.currentState?.getCosts() ?? {},
     );
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Draft saved')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Draft saved')));
       Navigator.pop(context);
     }
   }
@@ -237,7 +243,10 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
         automaticallyImplyLeading: false,
         title: NavBarTitle(
           title: widget.readOnly
-              ? ((_initialData?['projectInfo'] as Map<String, dynamic>?)?['projectName'] as String? ?? _nextProjectId)
+              ? ((_initialData?['projectInfo']
+                            as Map<String, dynamic>?)?['projectName']
+                        as String? ??
+                    _nextProjectId)
               : 'Create New Project',
         ),
         bottom: PreferredSize(
@@ -276,7 +285,8 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                     _projectKey.currentState?.getProjectInfo() ?? {};
                 final assignedEngineers =
                     _assignKey.currentState?.getAssignedEngineersInfo() ?? [];
-                final costs = _costKey.currentState?.getCosts() ??
+                final costs =
+                    _costKey.currentState?.getCosts() ??
                     (_initialData?['costs'] as Map<String, dynamic>? ?? {});
 
                 // IndexedStack keeps every step mounted at once so form
@@ -349,16 +359,32 @@ class _CreateProjectFlowState extends State<CreateProjectFlow> {
                     BillsBody(
                       key: _billsKey,
                       onBack: _back,
-                      onAverageChanged: (avg) =>
-                          _projectKey.currentState?.updateAverageBill(avg),
-                      initialBills: (_initialData?['projectInfo']
-                              as Map<String, dynamic>?)?['bills']
-                          ?.cast<Map<String, dynamic>>(),
-                      initialAverageBill: ((_initialData?['projectInfo']
-                                  as Map<String, dynamic>?)?['averageMonthlyBill']
-                              as num?)
-                          ?.toDouble(),
-                    ), // index 5
+                      onAverageChanged: (avg) => _projectKey.currentState
+                          ?.updateAverageBill(avg), // unchanged, as before
+                      onTariffChanged: (tariff) => setState(
+                        () => _averageTariff = tariff,
+                      ), // just stores it
+                      initialBills:
+                          (_initialData?['projectInfo']
+                                  as Map<String, dynamic>?)?['bills']
+                              ?.cast<Map<String, dynamic>>(),
+                      initialAverageBill:
+                          ((_initialData?['projectInfo']
+                                      as Map<
+                                        String,
+                                        dynamic
+                                      >?)?['averageMonthlyBill']
+                                  as num?)
+                              ?.toDouble(),
+                      initialAverageTariff:
+                          ((_initialData?['projectInfo']
+                                      as Map<
+                                        String,
+                                        dynamic
+                                      >?)?['averageTariff']
+                                  as num?)
+                              ?.toDouble(),
+                    ), // index 5, // index 5
                     AllContactPage(
                       onBack: _back,
                       clientInfo: clientInfo,

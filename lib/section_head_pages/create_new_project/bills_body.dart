@@ -5,19 +5,29 @@ import 'package:greenlens/main.dart';
 import 'package:greenlens/shared_files/footer.dart';
 
 /// Sub-page (overlaid during Create Project) for entering 12 monthly utility
-/// bills. Computes the average monthly bill and reports it via [onAverageChanged].
+/// bills. Computes two things from the same 12 rows:
+///   - the average monthly bill (JOD) — reported via [onAverageChanged],
+///     same as before, for display on the Project Info step.
+///   - the average tariff (JOD/kWh) = Total Cost / Total Energy Consumed —
+///     reported via [onTariffChanged], for use elsewhere (e.g. review
+///     tables, charts, savings calculations) instead of the constant
+///     `energyTariffJodPerKwh` in main.dart.
 class BillsBody extends StatefulWidget {
   final VoidCallback onBack;
   final void Function(double)? onAverageChanged;
+  final void Function(double)? onTariffChanged;
   final List<Map<String, dynamic>>? initialBills;
   final double? initialAverageBill;
+  final double? initialAverageTariff;
 
   const BillsBody({
     super.key,
     required this.onBack,
     this.onAverageChanged,
+    this.onTariffChanged,
     this.initialBills,
     this.initialAverageBill,
+    this.initialAverageTariff,
   });
 
   @override
@@ -34,6 +44,7 @@ class BillsBodyState extends State<BillsBody>
   late final List<TextEditingController> _energyCtrls;
   late final List<TextEditingController> _billCtrls;
   double _averageMonthlyBill = 0;
+  double _averageTariff = 0;
 
   @override
   void initState() {
@@ -50,10 +61,11 @@ class BillsBodyState extends State<BillsBody>
       }
     }
     _averageMonthlyBill = widget.initialAverageBill ?? 0;
+    _averageTariff = widget.initialAverageTariff ?? 0;
 
-    // Recompute the average live as the user types any bill amount.
-    for (final ctrl in _billCtrls) {
-      ctrl.addListener(_recalculateAverage);
+    // Recompute both values live as the user types either energy or bill amount.
+    for (final ctrl in [..._energyCtrls, ..._billCtrls]) {
+      ctrl.addListener(_recalculate);
     }
   }
 
@@ -68,23 +80,44 @@ class BillsBodyState extends State<BillsBody>
     super.dispose();
   }
 
-  /// Averages only the bill fields that contain a value > 0, so empty
-  /// months don't drag the average down. Pushes the result up to
-  /// [ProjectInfoBody] through [BillsBody.onAverageChanged].
-  void _recalculateAverage() {
-    final values = _billCtrls
+  /// Recomputes:
+  ///   - [_averageMonthlyBill]: mean of the bill amounts that are > 0
+  ///     (empty months don't drag the average down) — same as the original
+  ///     logic, reported through [BillsBody.onAverageChanged].
+  ///   - [_averageTariff]: Total Cost / Total Energy Consumed, summed only
+  ///     over months where BOTH fields have a value > 0 — reported through
+  ///     [BillsBody.onTariffChanged].
+  void _recalculate() {
+    final billValues = _billCtrls
         .map((c) => double.tryParse(c.text) ?? 0)
         .where((v) => v > 0)
         .toList();
-    final avg = values.isEmpty
+    final avgBill = billValues.isEmpty
         ? 0.0
-        : values.reduce((a, b) => a + b) / values.length;
-    setState(() => _averageMonthlyBill = avg);
-    widget.onAverageChanged?.call(avg);
+        : billValues.reduce((a, b) => a + b) / billValues.length;
+
+    double totalCost = 0;
+    double totalEnergy = 0;
+    for (int i = 0; i < 12; i++) {
+      final energy = double.tryParse(_energyCtrls[i].text) ?? 0;
+      final cost = double.tryParse(_billCtrls[i].text) ?? 0;
+      if (energy > 0 && cost > 0) {
+        totalCost += cost;
+        totalEnergy += energy;
+      }
+    }
+    final tariff = totalEnergy > 0 ? totalCost / totalEnergy : 0.0;
+
+    setState(() {
+      _averageMonthlyBill = avgBill;
+      _averageTariff = tariff;
+    });
+    widget.onAverageChanged?.call(avgBill);
+    widget.onTariffChanged?.call(tariff);
   }
 
-  /// Returns the 12 rows (month, energy consumed, bill amount) plus the
-  /// computed average — stored under `projectInfo` in Firestore.
+  /// Returns the 12 rows (month, energy consumed, bill amount) plus both
+  /// computed values — stored under `projectInfo` in Firestore.
   Map<String, dynamic> getBillsData() {
     return {
       'bills': List.generate(
@@ -96,6 +129,7 @@ class BillsBodyState extends State<BillsBody>
         },
       ),
       'averageMonthlyBill': _averageMonthlyBill,
+      'averageTariff': _averageTariff,
     };
   }
 
