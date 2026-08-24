@@ -7,6 +7,7 @@ import 'package:greenlens/firebase/project_service.dart';
 import 'package:greenlens/firebase/auth_service.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/shared_files/custom_app_bar.dart';
+import 'package:greenlens/shared_files/dashboards_footer.dart';
 import 'package:greenlens/shared_files/projects_template.dart';
 import 'package:greenlens/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -296,48 +297,7 @@ class _EngineerPageState extends State<EngineerPage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-            child: SizedBox(
-              width: double.infinity,
-              height: 64,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  backgroundColor: const Color(0xFFD32F2F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () async {
-                  await AuthService().signOut();
-                  if (context.mounted) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignInPage()),
-                      (route) => false,
-                    );
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout, color: Colors.white, size: 32),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Logout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          const DashboardFooterActions(),
         ],
       ),
     );
