@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:greenlens/authentication/sign_in.dart';
 import 'package:greenlens/firebase/auth_service.dart';
+import 'package:greenlens/shared_files/profile_page.dart';
 import 'package:greenlens/main.dart';
 
 /// Bottom action bar shown on every role dashboard (Engineer, Section Head,
 /// CEO): a rounded white card with a "Logout" icon button and a "Profile"
 /// icon button side by side.
 ///
-/// The profile button is a placeholder for now — wire up [onProfileTap] once
-/// a profile page exists.
+/// The profile button opens the shared [ProfilePage] by default; pass
+/// [onProfileTap] to override that.
 class DashboardFooterActions extends StatelessWidget {
   const DashboardFooterActions({super.key, this.onProfileTap});
 
@@ -52,7 +53,14 @@ class DashboardFooterActions extends StatelessWidget {
             Expanded(
               child: _FooterActionButton(
                 icon: Icons.person_outline,
-                onTap: onProfileTap ?? () {},
+                onTap:
+                    onProfileTap ??
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfilePage()),
+                      );
+                    },
               ),
             ),
           ],
@@ -77,9 +85,7 @@ class _FooterActionButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: SizedBox(
           height: 84,
-          child: Center(
-            child: Icon(icon, color: primaryColor, size: 32),
-          ),
+          child: Center(child: Icon(icon, color: primaryColor, size: 32)),
         ),
       ),
     );
